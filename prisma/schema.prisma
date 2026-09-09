@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Portfolio {
+  id        String   @id @default(uuid())
+  title     String
+  category  String // 'wedding', 'wisuda', 'photoshoot'
+  imageUrl  String
+  altText   String // Krusial untuk Google Image Search
+  createdAt DateTime @default(now())
+
+  @@map("portfolios")
+}
+
+// Daftar Layanan
+model Service {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  price       Int
+  iconName    String    @default("Sparkles")
+  deletedAt   DateTime?
+  bookings    Booking[]
+
+  @@map("services")
+}
+
+enum StatusBooking {
+  PENDING
+  DP_PAID
+  COMPLETED
+  CANCELED
+}
+
+// Transaksi Klien
+model Booking {
+  id              String        @id @default(uuid())
+  clientName      String
+  whatsapp        String
+  instagram       String?
+  totalPerson     Int
+  serviceId       String
+  eventName       String
+  eventDate       DateTime
+  eventTime       DateTime
+  location        String
+  notes           String?
+  paymentDeadline DateTime
+  customCode      String        @unique
+  service         Service       @relation(fields: [serviceId], references: [id])
+  status          StatusBooking @default(PENDING)
+  totalPrice      Int
+  dpAmount        Int
+  createdAt       DateTime      @default(now())
+  notifications   Notification[]
+
+  @@map("bookings")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  type      String
+  isRead    Boolean  @default(false)
+  bookingId String?
+  createdAt DateTime @default(now())
+
+  booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
