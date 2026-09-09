@@ -29,19 +29,19 @@ export default function BookingFallbackPage() {
       </div>
       
       <h1 className="text-2xl font-bold mb-2">Akses Tidak Diizinkan</h1>
-      <p className="text-muted-foreground mb-8 max-w-md">
+      <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-8 max-w-md">
         Anda tidak dapat mengakses halaman detail booking secara langsung. 
         Harap akses detail melalui halaman daftar booking.
       </p>
 
-      <div className="bg-muted/50 p-6 rounded-2xl border border-foreground/10 max-w-sm w-full">
+      <div className="bg-muted/50 dark:bg-muted-dark/50 dark:bg-muted dark:bg-muted-dark/50 p-6 rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 max-w-sm w-full">
         <p className="text-sm font-medium mb-4">
-          Otomatis kembali dalam <span className="text-primary text-lg font-bold mx-1">{countdown}</span> detik
+          Otomatis kembali dalam <span className="text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark text-lg font-bold mx-1">{countdown}</span> detik
         </p>
 
         <button 
           onClick={() => router.replace('/dashboard/bookings')}
-          className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity"
+          className="w-full flex items-center justify-center gap-2 bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity"
         >
           <ArrowLeft className="w-4 h-4" />
           Kembali ke Daftar Booking

@@ -17,12 +17,12 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col md:flex-row pb-16 md:pb-0 relative">
+    <div className="min-h-screen bg-muted/30 dark:bg-muted-dark/30 text-foreground dark:text-foreground-dark flex flex-col md:flex-row pb-16 md:pb-0 relative">
       <DashboardNavigation userEmail={user.email} />
       <ScrollToTop />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-x-hidden">
+      <main className="flex-1 overflow-x-hidden dark:bg-background-dark bg-background">
         <TopNav userEmail={user.email} />
 
         <div className="p-4 md:p-8">

@@ -13,12 +13,12 @@ export default async function PortfoliosPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-serif tracking-tight text-foreground">Portofolio</h1>
-          <p className="text-muted-foreground mt-1">Kelola galeri hasil karya dan portofolio Anda.</p>
+          <h1 className="text-2xl font-serif tracking-tight text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark">Portofolio</h1>
+          <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mt-1">Kelola galeri hasil karya dan portofolio Anda.</p>
         </div>
         <Link
           href="/dashboard/portfolios/create"
-          className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center justify-center rounded-xl bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark px-4 py-2 text-sm font-medium text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark shadow-sm transition-colors hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Plus className="mr-2 h-4 w-4" />
           Tambah Portofolio
@@ -27,13 +27,13 @@ export default async function PortfoliosPage() {
 
       {portfolios.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed border-border rounded-xl">
-          <p className="text-muted-foreground">Belum ada portofolio yang ditambahkan.</p>
+          <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Belum ada portofolio yang ditambahkan.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {portfolios.map((portfolio: any) => (
-            <Link href={`/dashboard/portfolios/${portfolio.id}`} key={portfolio.id} className="group relative overflow-hidden rounded-2xl border border-foreground/10 bg-background shadow-sm transition-all hover:shadow-md block cursor-pointer">
-              <div className="aspect-[3/4] overflow-hidden bg-muted">
+            <Link href={`/dashboard/portfolios/${portfolio.id}`} key={portfolio.id} className="group relative overflow-hidden rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark shadow-sm transition-all hover:shadow-md block cursor-pointer">
+              <div className="aspect-[3/4] overflow-hidden bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <Image
                   src={portfolio.imageUrl}

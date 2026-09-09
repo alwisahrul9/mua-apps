@@ -173,30 +173,30 @@ async function DashboardData({ searchParams }: { searchParams: any }) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className="bg-background rounded-2xl p-6 border border-foreground/10 shadow-sm flex flex-col justify-center">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Booking {displayTitleSuffix}</h3>
+        <div className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center">
+          <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-2">Total Booking {displayTitleSuffix}</h3>
           <p className="text-3xl font-bold">{totalBookings}</p>
         </div>
-        <div className="bg-background rounded-2xl p-6 border border-foreground/10 shadow-sm flex flex-col justify-center">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Pendapatan (COMPLETED) {displayTitleSuffix}</h3>
+        <div className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center">
+          <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-2">Total Pendapatan (COMPLETED) {displayTitleSuffix}</h3>
           <p className="text-3xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
         </div>
       </div>
 
-      <div className="mt-8 bg-background rounded-2xl p-6 border border-foreground/10 shadow-sm">
+      <div className="mt-8 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           <div className="flex flex-col lg:col-span-3">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4">Persentase Status Booking {displayTitleSuffix}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-4">Persentase Status Booking {displayTitleSuffix}</h3>
             <div className="h-[300px] flex-grow">
               <DashboardStatsChart data={pieChartData} />
             </div>
           </div>
 
           <div className="flex flex-col lg:col-span-2">
-            <h3 className="text-sm font-medium text-muted-foreground mb-4">5 Booking Terbaru {displayTitleSuffix}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-4">5 Booking Terbaru {displayTitleSuffix}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-muted-foreground bg-muted/50 rounded-lg">
+                <thead className="text-xs text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark bg-muted/50 dark:bg-muted-dark/50 dark:bg-muted dark:bg-muted-dark/50 rounded-lg">
                   <tr>
                     <th className="px-4 py-3 font-medium rounded-tl-lg rounded-bl-lg">Kode</th>
                     <th className="px-4 py-3 font-medium">Klien</th>
@@ -206,13 +206,13 @@ async function DashboardData({ searchParams }: { searchParams: any }) {
                 <tbody className="divide-y divide-border">
                   {latestBookings.length === 0 ? (
                     <tr>
-                      <td colSpan={3} className="px-4 py-8 text-center text-muted-foreground">
+                      <td colSpan={3} className="px-4 py-8 text-center text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
                         Belum ada booking
                       </td>
                     </tr>
                   ) : (
                     latestBookings.map((b) => (
-                      <tr key={b.id} className="hover:bg-muted/30 transition-colors">
+                      <tr key={b.id} className="hover:bg-muted/30 dark:bg-muted-dark/30 dark:bg-muted dark:bg-muted-dark/30 transition-colors">
                         <td className="px-4 py-3 font-medium whitespace-nowrap">{b.customCode}</td>
                         <td className="px-4 py-3 truncate max-w-[120px]" title={b.clientName}>{b.clientName}</td>
                         <td className="px-4 py-3 text-right whitespace-nowrap">{getStatusBadge(b.status)}</td>
@@ -227,8 +227,8 @@ async function DashboardData({ searchParams }: { searchParams: any }) {
       </div>
 
       {barChartData.length > 0 && (
-        <div className="mt-8 bg-background rounded-2xl p-6 border border-foreground/10 shadow-sm">
-          <h3 className="text-sm font-medium text-muted-foreground mb-4">Statistik Per Bulan {displayTitleSuffix}</h3>
+        <div className="mt-8 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm">
+          <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-4">Statistik Per Bulan {displayTitleSuffix}</h3>
           <div className="overflow-x-auto">
             <div className="h-[400px]" style={{ minWidth: `${barChartWidth}px` }}>
               <DashboardBarChart data={barChartData} />
@@ -251,7 +251,7 @@ export default async function DashboardOverview({
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-serif">Selamat Datang di Dashboard</h1>
-      <p className="text-muted-foreground">
+      <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
         Ini adalah statistik pesanan Anda.
       </p>
 

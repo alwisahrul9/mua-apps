@@ -39,9 +39,9 @@ export default function MonthRangeFilter() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-end gap-4 p-4 bg-background rounded-2xl border border-foreground/10 shadow-sm">
+    <div className="flex flex-col sm:flex-row items-end gap-4 p-4 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm">
       <div className="flex-1 w-full flex flex-col gap-2">
-        <label className="text-sm font-medium text-muted-foreground">Bulan & Tahun Mulai</label>
+        <label className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Bulan & Tahun Mulai</label>
         <input 
           type="month"
           value={startMonth} 
@@ -50,7 +50,7 @@ export default function MonthRangeFilter() {
         />
       </div>
       <div className="flex-1 w-full flex flex-col gap-2">
-        <label className="text-sm font-medium text-muted-foreground">Bulan & Tahun Akhir</label>
+        <label className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Bulan & Tahun Akhir</label>
         <input 
           type="month"
           value={endMonth} 
@@ -61,13 +61,13 @@ export default function MonthRangeFilter() {
       <div className="flex gap-2 w-full sm:w-auto">
         <button 
           onClick={handleReset} 
-          className="flex-1 sm:flex-none h-10 px-4 py-2 border rounded-md text-sm font-medium hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="flex-1 sm:flex-none h-10 px-4 py-2 border rounded-md text-sm font-medium hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Reset
         </button>
         <button 
           onClick={handleFilter} 
-          className="flex-1 sm:flex-none h-10 px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="flex-1 sm:flex-none h-10 px-4 py-2 bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark rounded-md text-sm font-medium hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Terapkan
         </button>

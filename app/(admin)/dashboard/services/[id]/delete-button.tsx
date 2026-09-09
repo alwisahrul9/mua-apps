@@ -29,17 +29,17 @@ export default function DeleteButton({ action }: { action: () => void }) {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-background rounded-2xl p-6 w-[90%] max-w-md shadow-xl border border-foreground/10"
+              className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 w-[90%] max-w-md shadow-xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10"
             >
-              <h3 className="text-lg font-semibold text-foreground mb-2">Konfirmasi Hapus</h3>
-              <p className="text-muted-foreground mb-6">
+              <h3 className="text-lg font-semibold text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark mb-2">Konfirmasi Hapus</h3>
+              <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-6">
                 Apakah Anda yakin ingin menghapus layanan ini? Tindakan ini tidak dapat dibatalkan.
               </p>
               <div className="flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors text-foreground hover:bg-muted h-10 px-4"
+                  className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark h-10 px-4"
                 >
                   Batal
                 </button>

@@ -38,7 +38,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-foreground/5">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background-dark/80 backdrop-blur-md border-b border-foreground-dark/5">
       <div className="container-custom mx-auto">
         <div className="flex items-center justify-between h-20">
           <Link 
@@ -46,7 +46,7 @@ export function Navbar() {
             onClick={() => setActiveHash("")}
             className="font-serif text-2xl font-medium tracking-tight"
           >
-            Aldena's Makeup <span className="text-primary italic">.</span>
+            Aldena's Makeup <span className="text-primary-dark italic">.</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -63,13 +63,13 @@ export function Navbar() {
                       setActiveHash("");
                     }
                   }}
-                  className={`text-sm font-medium transition-colors hover:text-primary relative ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                  className={`text-sm font-medium transition-colors hover:text-primary-dark relative ${isActive ? "text-primary-dark" : "text-muted-foreground-dark"}`}
                 >
                   {link.label}
                   {isActive && (
                     <motion.div
                       layoutId="navbar-indicator"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-primary rounded-full"
+                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-primary-dark rounded-full"
                     />
                   )}
                 </Link>
@@ -80,7 +80,7 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             <Link
               href="/booking"
-              className="px-5 py-2.5 bg-foreground text-background text-sm font-medium rounded-full hover:bg-foreground/90 transition-colors"
+              className="px-5 py-2.5 bg-foreground-dark text-background-dark text-sm font-medium rounded-full hover:bg-foreground-dark/90 transition-colors"
             >
               Pesan Jadwal
             </Link>

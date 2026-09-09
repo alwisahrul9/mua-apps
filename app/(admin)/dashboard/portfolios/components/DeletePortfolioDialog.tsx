@@ -35,16 +35,16 @@ export default function DeletePortfolioDialog({ id }: { id: string }) {
 
       {isOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-background border border-border rounded-2xl p-6 max-w-md w-full shadow-lg shadow-black/5">
+          <div className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border border-border rounded-2xl p-6 max-w-md w-full shadow-lg shadow-black/5">
             <h3 className="text-lg font-semibold mb-2">Hapus Portofolio?</h3>
-            <p className="text-muted-foreground text-sm mb-6">
+            <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark text-sm mb-6">
               Apakah Anda yakin ingin menghapus portofolio ini? Data dan gambar yang sudah dihapus tidak dapat dikembalikan.
             </p>
             <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
               <button
                 onClick={() => setIsOpen(false)}
                 disabled={isPending}
-                className="px-4 py-2 text-sm font-medium rounded-xl border border-input bg-transparent hover:bg-accent transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium rounded-xl border border-input bg-transparent hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark transition-colors disabled:opacity-50"
               >
                 Batal
               </button>

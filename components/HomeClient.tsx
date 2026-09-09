@@ -35,8 +35,8 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
       <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden container-custom">
         <div className="absolute inset-0 -z-10">
           {/* Subtle gradient blob for background */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-accent/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-dark/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-accent-dark/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
         </div>
 
         <div className="text-center max-w-3xl mx-auto z-10 px-4 mt-20">
@@ -45,21 +45,21 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="text-sm tracking-widest uppercase text-muted-foreground mb-4 block font-semibold">
+            <span className="text-sm tracking-widest uppercase text-muted-foreground-dark mb-4 block font-semibold">
               Professional Makeup Artist
             </span>
             <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl tracking-tight leading-tight mb-6">
               Enhance Your <br className="hidden md:block" />
-              <span className="italic text-primary">Natural Beauty</span>
+              <span className="italic text-primary-dark">Natural Beauty</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground-dark mb-10 max-w-xl mx-auto font-light leading-relaxed">
               Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Tampil percaya diri dengan sentuhan elegan.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/booking"
-                className="group relative inline-flex items-center justify-center px-8 py-4 bg-foreground text-background font-medium rounded-full overflow-hidden transition-all hover:bg-foreground/90 w-full sm:w-auto"
+                className="group relative inline-flex items-center justify-center px-8 py-4 bg-foreground-dark text-background-dark font-medium rounded-full overflow-hidden transition-all hover:bg-foreground-dark/90 w-full sm:w-auto"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Pesan Jadwal Sekarang
@@ -72,7 +72,7 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                   window.location.hash = "#portfolio";
                   window.dispatchEvent(new Event("hashchange"));
                 }}
-                className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-foreground border border-foreground/20 font-medium rounded-full transition-all hover:border-foreground/40 w-full sm:w-auto"
+                className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-foreground-dark border border-foreground-dark/20 font-medium rounded-full transition-all hover:border-foreground-dark/40 w-full sm:w-auto"
               >
                 Lihat Portofolio
               </Link>
@@ -82,11 +82,11 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-24 bg-muted-dark/30">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">Layanan Kami</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">Kami menyediakan berbagai layanan makeup untuk memenuhi kebutuhan di hari spesial Anda.</p>
+            <p className="text-muted-foreground-dark max-w-2xl mx-auto">Kami menyediakan berbagai layanan makeup untuk memenuhi kebutuhan di hari spesial Anda.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -94,17 +94,17 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
               services.map((service) => {
                 const IconComponent = ICON_MAP[service.iconName] || Sparkles;
                 return (
-                  <div key={service.id} className="bg-background p-8 rounded-2xl shadow-sm border border-foreground/5 hover:shadow-md transition-shadow">
-                    <IconComponent className="w-8 h-8 text-primary mb-6" />
+                  <div key={service.id} className="bg-background-dark p-8 rounded-2xl shadow-sm border border-foreground-dark/5 hover:shadow-md transition-shadow">
+                    <IconComponent className="w-8 h-8 text-primary-dark mb-6" />
                     <h3 className="font-serif text-2xl mb-3">{service.name}</h3>
-                    <p className="text-muted-foreground mb-6 line-clamp-3">{service.description || "Layanan makeup profesional untuk kebutuhan momen spesial Anda."}</p>
+                    <p className="text-muted-foreground-dark mb-6 line-clamp-3">{service.description || "Layanan makeup profesional untuk kebutuhan momen spesial Anda."}</p>
                     <div className="font-medium">Mulai dari Rp {service.price.toLocaleString('id-ID')}</div>
                   </div>
                 )
               })
             ) : (
               <div className="col-span-full text-center py-12 border-2 border-dashed border-border rounded-xl">
-                <p className="text-muted-foreground">Layanan sedang diperbarui.</p>
+                <p className="text-muted-foreground-dark">Layanan sedang diperbarui.</p>
               </div>
             )}
           </div>
@@ -112,11 +112,11 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
       </section>
 
       {/* Products Section */}
-      <section className="py-24 bg-muted/30 border-t border-foreground/5">
+      <section className="py-24 bg-muted-dark/30 border-t border-foreground-dark/5">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">Produk Pilihan Kami</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground-dark max-w-2xl mx-auto">
               Kami memastikan hasil makeup yang tahan lama, flawless, dan aman bagi kulit Anda dengan menggunakan produk kosmetik dari brand terpercaya dan berkualitas tinggi.
             </p>
           </div>
@@ -138,7 +138,7 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                       }}
                       className="relative group cursor-pointer"
                     >
-                      <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-background bg-white shadow-md transition-transform duration-300 group-hover:scale-110 flex items-center justify-center">
+                      <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-background-dark bg-white shadow-md transition-transform duration-300 group-hover:scale-110 flex items-center justify-center">
                         <Image
                           src={brand.logo}
                           alt={brand.name}
@@ -148,7 +148,7 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                         />
                       </div>
                       {/* Tooltip */}
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground text-background text-xs px-3 py-1.5 rounded-md whitespace-nowrap z-30 pointer-events-none shadow-lg">
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground-dark text-background-dark text-xs px-3 py-1.5 rounded-md whitespace-nowrap z-30 pointer-events-none shadow-lg">
                         {brand.name}
                         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground"></div>
                       </div>
@@ -162,11 +162,11 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-24 bg-background">
+      <section id="portfolio" className="py-24 bg-background-dark">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">Portofolio</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-muted-foreground-dark max-w-2xl mx-auto">
               Beberapa hasil karya terbaik kami. Temukan inspirasi gaya makeup yang sesuai dengan karakter Anda.
             </p>
           </div>
@@ -180,7 +180,7 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted"
+                  className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted-dark"
                 >
                   <Image
                     src={portfolio.imageUrl}
@@ -199,7 +199,7 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
               ))
             ) : (
               <div className="col-span-full text-center py-12 border-2 border-dashed border-border rounded-xl">
-                <p className="text-muted-foreground">Portofolio sedang dalam proses update.</p>
+                <p className="text-muted-foreground-dark">Portofolio sedang dalam proses update.</p>
               </div>
             )}
           </div>
@@ -207,7 +207,7 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
           <div className="text-center mt-12">
             <Link
               href="/booking"
-              className="inline-flex items-center justify-center px-8 py-4 bg-foreground text-background font-medium rounded-full overflow-hidden transition-all hover:bg-foreground/90"
+              className="inline-flex items-center justify-center px-8 py-4 bg-foreground-dark text-background-dark font-medium rounded-full overflow-hidden transition-all hover:bg-foreground-dark/90"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Tertarik? Pesan Sekarang

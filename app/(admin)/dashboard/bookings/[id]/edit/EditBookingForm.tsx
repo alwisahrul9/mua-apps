@@ -42,15 +42,15 @@ export default function EditBookingForm({ booking }: { booking: any }) {
   }
 
   return (
-    <div className="bg-background rounded-2xl p-6 border border-foreground/10 shadow-sm space-y-8">
+    <div className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm space-y-8">
       {/* Read-only Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/30 p-6 rounded-xl border border-foreground/5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-muted/30 dark:bg-muted-dark/30 dark:bg-muted dark:bg-muted-dark/30 p-6 rounded-xl border border-foreground/5 dark:border-foreground-dark/5 dark:border-foreground dark:border-foreground-dark/5">
         <div>
-          <p className="text-sm text-muted-foreground">Nama Klien</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Nama Klien</p>
           <p className="font-medium text-lg">{booking.clientName}</p>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">No. WhatsApp</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">No. WhatsApp</p>
           <div className="flex items-center gap-2">
             <p className="font-medium">{booking.whatsapp}</p>
             <a
@@ -65,7 +65,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
           </div>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Instagram</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Instagram</p>
           <div className="flex items-center gap-2">
             {booking.instagram ? (
               <>
@@ -89,36 +89,36 @@ export default function EditBookingForm({ booking }: { booking: any }) {
           </div>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Jumlah Orang</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Jumlah Orang</p>
           <p className="font-medium">{booking.totalPerson} Orang</p>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Layanan</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Layanan</p>
           <p className="font-medium">{booking.service.name}</p>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Jenis Acara</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Jenis Acara</p>
           <p className="font-medium">{booking.eventName}</p>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Total Harga</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Total Harga</p>
           <p className="font-medium">Rp {booking.totalPrice.toLocaleString('id-ID')}</p>
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Lokasi</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Lokasi</p>
           <p className="font-medium">{booking.location}</p>
         </div>
         {booking.notes && (
           <div className="md:col-span-2">
-            <p className="text-sm text-muted-foreground">Catatan Tambahan</p>
-            <p className="font-medium bg-background p-3 rounded-lg border border-foreground/10 mt-1">{booking.notes}</p>
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Catatan Tambahan</p>
+            <p className="font-medium bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark p-3 rounded-lg border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 mt-1">{booking.notes}</p>
           </div>
         )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
-          <h3 className="text-lg font-medium border-b border-foreground/10 pb-2">Edit Data</h3>
+          <h3 className="text-lg font-medium border-b border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 pb-2">Edit Data</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -126,7 +126,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as StatusBooking)}
-                className="w-full px-4 py-2.5 rounded-xl border border-foreground/20 bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="w-full px-4 py-2.5 rounded-xl border border-foreground/20 dark:border-foreground-dark/20 dark:border-foreground dark:border-foreground-dark/20 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark focus:outline-none focus:ring-2 focus:ring-primary/50 dark:ring-primary-dark/50 dark:ring-primary dark:ring-primary-dark/50"
               >
                 <option value="PENDING">Pending</option>
                 <option value="DP_PAID">DP Paid</option>
@@ -138,13 +138,13 @@ export default function EditBookingForm({ booking }: { booking: any }) {
             <div className="space-y-2">
               <label className="text-sm font-medium">Tanggal Acara</label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
+                <Calendar className="absolute left-3 top-3 w-5 h-5 text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark" />
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-foreground/20 bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-foreground/20 dark:border-foreground-dark/20 dark:border-foreground dark:border-foreground-dark/20 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark focus:outline-none focus:ring-2 focus:ring-primary/50 dark:ring-primary-dark/50 dark:ring-primary dark:ring-primary-dark/50"
                 />
               </div>
             </div>
@@ -152,31 +152,31 @@ export default function EditBookingForm({ booking }: { booking: any }) {
             <div className="space-y-2">
               <label className="text-sm font-medium">Waktu Acara</label>
               <div className="relative">
-                <Clock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
+                <Clock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark" />
                 <input
                   type="time"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                   required
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-foreground/20 bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-foreground/20 dark:border-foreground-dark/20 dark:border-foreground dark:border-foreground-dark/20 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark focus:outline-none focus:ring-2 focus:ring-primary/50 dark:ring-primary-dark/50 dark:ring-primary dark:ring-primary-dark/50"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-4 pt-6 border-t border-foreground/10">
+        <div className="flex gap-4 pt-6 border-t border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10">
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-2.5 border border-foreground/20 rounded-xl font-medium hover:bg-muted transition-colors flex items-center gap-2"
+            className="px-6 py-2.5 border border-foreground/20 dark:border-foreground-dark/20 dark:border-foreground dark:border-foreground-dark/20 rounded-xl font-medium hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark transition-colors flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" /> Batal
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark px-6 py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
             {loading ? 'Menyimpan...' : 'Simpan Perubahan'}

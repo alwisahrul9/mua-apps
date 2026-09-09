@@ -8,7 +8,7 @@ export default async function BookingModalPage(props: { params: Promise<{ id: st
   if (error || !data) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div className="bg-background p-6 rounded-2xl max-w-sm w-full text-center">
+        <div className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark p-6 rounded-2xl max-w-sm w-full text-center">
           <p className="text-red-500 font-medium">Data tidak ditemukan atau terjadi kesalahan.</p>
         </div>
       </div>

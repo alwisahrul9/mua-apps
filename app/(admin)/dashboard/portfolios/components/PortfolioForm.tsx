@@ -122,17 +122,17 @@ export default function PortfolioForm() {
         <div className="flex flex-col gap-4">
           <label
             htmlFor="image"
-            className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl cursor-pointer bg-muted/30 hover:bg-muted/50 transition-colors ${isPending ? 'opacity-50 cursor-not-allowed' : 'border-foreground/20 hover:border-foreground/40'
+            className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl cursor-pointer bg-muted/30 dark:bg-muted-dark/30 dark:bg-muted dark:bg-muted-dark/30 hover:bg-muted/50 dark:bg-muted-dark/50 dark:bg-muted dark:bg-muted-dark/50 transition-colors ${isPending ? 'opacity-50 cursor-not-allowed' : 'border-foreground/20 dark:border-foreground-dark/20 dark:border-foreground dark:border-foreground-dark/20 hover:border-foreground/40 dark:border-foreground-dark/40 dark:border-foreground dark:border-foreground-dark/40'
               }`}
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground" />
-              <p className="mb-2 text-sm text-muted-foreground text-center px-4">
-                <span className="font-semibold text-foreground">
+              <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark" />
+              <p className="mb-2 text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark text-center px-4">
+                <span className="font-semibold text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark">
                   {previewImage ? "Klik untuk mengganti gambar" : "Klik untuk mengunggah"}
                 </span>
               </p>
-              <p className="text-xs text-muted-foreground">PNG, JPG atau WEBP (Maks. 5MB)</p>
+              <p className="text-xs text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">PNG, JPG atau WEBP (Maks. 5MB)</p>
             </div>
             <input
               type="file"
@@ -147,13 +147,13 @@ export default function PortfolioForm() {
 
           {isPending && progress > 0 && (
             <div className="w-full space-y-2 animate-in fade-in zoom-in duration-300">
-              <div className="flex justify-between text-xs font-medium text-muted-foreground">
+              <div className="flex justify-between text-xs font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
                 <span>Mengunggah file...</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
+                  className="h-full bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark transition-all duration-300 ease-out rounded-full"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -163,7 +163,7 @@ export default function PortfolioForm() {
           {previewImage && (
             <div>
               <p className="text-sm font-medium mb-2">Preview:</p>
-              <div className="relative rounded-2xl border border-foreground/10 overflow-hidden w-full max-w-[240px] aspect-[3/4] bg-muted group">
+              <div className="relative rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 overflow-hidden w-full max-w-[240px] aspect-[3/4] bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
               </div>
@@ -186,7 +186,7 @@ export default function PortfolioForm() {
           name="title"
           disabled={isPending}
           placeholder="Contoh: Wedding Mbak Ayu & Mas Budi"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
         {state?.fieldErrors?.title && (
           <p className="text-xs text-red-500 font-medium">{state.fieldErrors.title[0]}</p>
@@ -224,7 +224,7 @@ export default function PortfolioForm() {
           name="altText"
           disabled={isPending}
           placeholder="Contoh: Makeup Wedding Tradisional Jawa"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
         {state?.fieldErrors?.altText && (
           <p className="text-xs text-red-500 font-medium">{state.fieldErrors.altText[0]}</p>
@@ -234,7 +234,7 @@ export default function PortfolioForm() {
       <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-border">
         <Link
           href="/dashboard/portfolios"
-          className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 ${isPending ? "pointer-events-none opacity-50" : ""
+          className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition-colors border border-input bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark h-11 ${isPending ? "pointer-events-none opacity-50" : ""
             }`}
           aria-disabled={isPending}
         >
@@ -243,7 +243,7 @@ export default function PortfolioForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center rounded-xl bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark px-4 py-2 text-sm font-medium text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark shadow-sm transition-colors hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? (
             <>

@@ -56,8 +56,8 @@ export default function ServiceForm({ service, actionType }: { service?: Service
               onClick={() => setSelectedIcon(name)}
               className={`flex items-center justify-center p-3 rounded-xl border transition-all ${
                 selectedIcon === name 
-                  ? "bg-primary/10 border-primary text-primary shadow-sm" 
-                  : "bg-background border-border text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-primary/10 dark:bg-primary-dark/10 dark:bg-primary dark:bg-primary-dark/10 border-primary dark:border-primary-dark dark:border-primary dark:border-primary-dark text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark shadow-sm" 
+                  : "bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border-border text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
               }`}
               title={name}
             >
@@ -78,7 +78,7 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           defaultValue={service?.name}
           required
           placeholder="Contoh: Wedding Makeup"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 
@@ -94,7 +94,7 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           required
           min="0"
           placeholder="Contoh: 1500000"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 
@@ -108,7 +108,7 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           defaultValue={service?.description || ""}
           rows={4}
           placeholder="Tuliskan deskripsi singkat mengenai layanan ini..."
-          className="flex min-h-[80px] w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex min-h-[80px] w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         ></textarea>
       </div>
 

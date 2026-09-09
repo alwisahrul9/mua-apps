@@ -26,7 +26,7 @@ export default function DashboardStatsChart({ data }: DashboardStatsChartProps) 
 
   if (total === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-muted-foreground">
+      <div className="flex items-center justify-center h-full text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
         Belum ada data pesanan tahun ini.
       </div>
     )

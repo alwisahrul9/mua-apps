@@ -49,32 +49,32 @@ export default function BookingSuccessClient({
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-background border border-foreground/10 rounded-3xl p-8 md:p-10 shadow-sm text-center"
+          className="bg-background-dark border border-foreground-dark/10 rounded-3xl p-8 md:p-10 shadow-sm text-center"
         >
           <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center text-primary">
+            <div className="w-20 h-20 bg-primary-dark/20 rounded-full flex items-center justify-center text-primary-dark">
               <CheckCircle2 className="w-10 h-10" />
             </div>
           </div>
 
           <h1 className="font-serif text-3xl mb-2">Booking Diterima!</h1>
-          <p className="text-muted-foreground mb-8">
-            Booking ID: <span className="font-mono font-medium text-foreground">{customCode}</span>
+          <p className="text-muted-foreground-dark mb-8">
+            Booking ID: <span className="font-mono font-medium text-foreground-dark">{customCode}</span>
           </p>
 
-          <div className="bg-muted/50 rounded-2xl p-6 text-left mb-8 space-y-4">
-            <h3 className="font-medium border-b border-foreground/10 pb-4 mb-4">Ringkasan Pembayaran</h3>
+          <div className="bg-muted-dark/50 rounded-2xl p-6 text-left mb-8 space-y-4">
+            <h3 className="font-medium border-b border-foreground-dark/10 pb-4 mb-4">Ringkasan Pembayaran</h3>
 
             <div className="flex justify-between items-center text-sm">
-              <span className="text-muted-foreground">Total Layanan</span>
+              <span className="text-muted-foreground-dark">Total Layanan</span>
               <span className="font-medium">Rp {totalPrice.toLocaleString("id-ID")}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-muted-foreground">DP yang harus dibayar (50%)</span>
-              <span className="font-medium text-primary text-lg">Rp {dpAmount.toLocaleString("id-ID")}</span>
+              <span className="text-muted-foreground-dark">DP yang harus dibayar (50%)</span>
+              <span className="font-medium text-primary-dark text-lg">Rp {dpAmount.toLocaleString("id-ID")}</span>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-foreground/10">
+            <div className="mt-6 pt-4 border-t border-foreground-dark/10">
               <div className="flex justify-between items-center mb-4 bg-red-500/10 border border-red-500/20 p-3 rounded-xl">
                 <span className="text-sm font-medium text-red-600">Bayar Sebelum</span>
                 <span className="text-sm font-bold text-red-600">
@@ -90,20 +90,20 @@ export default function BookingSuccessClient({
                 </span>
               </div>
 
-              <p className="text-sm text-muted-foreground mb-3">Transfer ke salah satu rekening berikut:</p>
+              <p className="text-sm text-muted-foreground-dark mb-3">Transfer ke salah satu rekening berikut:</p>
               <div className="space-y-3">
                 {accounts.map((acc, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-background border border-foreground/10 p-4 rounded-xl">
+                  <div key={idx} className="flex items-center justify-between bg-background-dark border border-foreground-dark/10 p-4 rounded-xl">
                     <div>
-                      <p className="font-medium">{acc.bank} <span className="text-sm text-muted-foreground font-normal">{acc.name}</span></p>
+                      <p className="font-medium">{acc.bank} <span className="text-sm text-muted-foreground-dark font-normal">{acc.name}</span></p>
                       <p className="font-mono text-lg tracking-wider">{acc.number}</p>
                     </div>
                     <button
                       onClick={() => handleCopy(acc.number, acc.setCopied)}
-                      className="p-2 hover:bg-muted rounded-full transition-colors"
+                      className="p-2 hover:bg-muted-dark rounded-full transition-colors"
                       title="Salin Nomor Rekening"
                     >
-                      {acc.copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5 text-muted-foreground" />}
+                      {acc.copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5 text-muted-foreground-dark" />}
                     </button>
                   </div>
                 ))}
@@ -111,8 +111,8 @@ export default function BookingSuccessClient({
             </div>
           </div>
 
-          <div className="text-sm text-muted-foreground mb-6 bg-blue-500/5 border border-blue-500/20 p-4 rounded-xl text-left space-y-2">
-            <p className="font-medium text-foreground">Langkah Selanjutnya:</p>
+          <div className="text-sm text-muted-foreground-dark mb-6 bg-blue-500/5 border border-blue-500/20 p-4 rounded-xl text-left space-y-2">
+            <p className="font-medium text-foreground-dark">Langkah Selanjutnya:</p>
             <ol className="list-decimal list-inside space-y-1.5 ml-1">
               <li>Lakukan transfer DP ke salah satu rekening di atas.</li>
               <li>Klik tombol <strong>Konfirmasi via WhatsApp</strong> di bawah.</li>
@@ -134,7 +134,7 @@ export default function BookingSuccessClient({
 
             <Link
               href="/"
-              className="w-full py-4 bg-transparent text-foreground border border-foreground/20 rounded-full font-medium transition-all hover:bg-muted flex items-center justify-center gap-2"
+              className="w-full py-4 bg-transparent text-foreground-dark border border-foreground-dark/20 rounded-full font-medium transition-all hover:bg-muted-dark flex items-center justify-center gap-2"
             >
               Kembali ke Beranda
             </Link>

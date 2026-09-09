@@ -97,10 +97,10 @@ export default function DashboardNavigation({ userEmail }: { userEmail: string |
   return (
     <>
       {/* Desktop Sidebar (Hidden on mobile/tablet) */}
-      <aside className="w-64 bg-background border-r border-foreground/10 hidden md:flex flex-col h-screen sticky top-0">
+      <aside className="w-64 bg-background dark:bg-background-dark border-r border-foreground/10 dark:border-foreground-dark/10 hidden md:flex flex-col h-screen sticky top-0">
         <div className="p-6">
           <h2 className="font-serif text-2xl">MUA Admin</h2>
-          <p className="text-sm text-muted-foreground mt-1 truncate">{userEmail}</p>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark mt-1 truncate">{userEmail}</p>
         </div>
 
         <nav className="flex-1 px-4 space-y-2 mt-4">
@@ -111,14 +111,14 @@ export default function DashboardNavigation({ userEmail }: { userEmail: string |
                 key={item.name}
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${active
-                  ? 'bg-primary text-primary-foreground'
-                  : 'hover:bg-muted text-foreground/80'
+                  ? 'bg-primary text-primary-foreground dark:bg-primary-dark dark:text-primary-foreground-dark'
+                  : 'hover:bg-muted text-foreground/80 dark:hover:bg-muted-dark dark:text-foreground-dark/80'
                   }`}
               >
                 <item.icon className="w-5 h-5" />
                 {item.name}
                 {item.badge ? (
-                  <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full ${active ? 'bg-primary-foreground text-primary' : 'bg-primary text-primary-foreground'}`}>
+                  <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full ${active ? 'bg-primary-foreground text-primary dark:bg-primary-foreground-dark dark:text-primary-dark' : 'bg-primary text-primary-foreground dark:bg-primary-dark dark:text-primary-foreground-dark'}`}>
                     {item.badge}
                   </span>
                 ) : null}
@@ -130,7 +130,7 @@ export default function DashboardNavigation({ userEmail }: { userEmail: string |
       </aside>
 
       {/* Mobile Bottom Navbar (Hidden on desktop) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-foreground/10 pb-safe z-40">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-background dark:bg-background-dark border-t border-foreground/10 dark:border-foreground-dark/10 pb-safe z-40">
         <nav className="flex justify-around items-center p-2">
           {navItems.map((item) => {
             const active = isNavActive(item.href, item.exact)
@@ -138,15 +138,15 @@ export default function DashboardNavigation({ userEmail }: { userEmail: string |
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative flex flex-col items-center gap-1 p-2 w-16 transition-colors ${active ? 'text-primary' : 'text-muted-foreground'
+                className={`relative flex flex-col items-center gap-1 p-2 w-16 transition-colors ${active ? 'text-primary dark:text-primary-dark' : 'text-muted-foreground dark:text-muted-foreground-dark'
                   }`}
               >
                 <div className="relative">
                   <item.icon className="w-6 h-6" />
                   {item.badge ? (
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-primary ring-2 ring-background">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-primary dark:bg-primary-dark ring-2 ring-background dark:ring-background-dark">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary dark:bg-primary-dark opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary dark:bg-primary-dark"></span>
                     </span>
                   ) : null}
                 </div>
