@@ -7,7 +7,7 @@ import DeletePortfolioDialog from "../components/DeletePortfolioDialog"
 
 export default async function PortfolioDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  
+
   const portfolio = await prisma.portfolio.findUnique({
     where: { id }
   })
@@ -28,9 +28,9 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard/portfolios"
-            className="inline-flex items-center justify-center p-2 rounded-xl bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border border-input shadow-sm transition-colors hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
+            className="inline-flex items-center justify-center p-2 rounded-xl bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark dark:border-white border border-input shadow-sm transition-colors hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 dark:text-white" />
           </Link>
           <div>
             <h1 className="text-2xl font-serif tracking-tight text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark">Detail Portofolio</h1>
@@ -59,7 +59,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
         <div className="md:col-span-5 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 rounded-3xl p-6 shadow-sm flex flex-col gap-6">
           <div>
             <h2 className="text-xl font-semibold mb-4 border-b border-border pb-2">Informasi Portofolio</h2>
-            
+
             <div className="space-y-5">
               <div>
                 <span className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-1">
@@ -67,7 +67,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
                 </span>
                 <p className="font-medium text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark text-lg">{portfolio.title}</p>
               </div>
-              
+
               <div>
                 <span className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-1">
                   <Tag className="w-4 h-4" /> Kategori
@@ -76,14 +76,14 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
                   {portfolio.category}
                 </span>
               </div>
-              
+
               <div>
                 <span className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-1">
                   <Type className="w-4 h-4" /> Alt Text (SEO)
                 </span>
                 <p className="text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark">{portfolio.altText}</p>
               </div>
-              
+
               <div>
                 <span className="flex items-center gap-2 text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-1">
                   <Calendar className="w-4 h-4" /> Diunggah Pada
