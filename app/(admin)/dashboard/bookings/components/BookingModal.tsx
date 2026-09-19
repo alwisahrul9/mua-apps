@@ -171,10 +171,10 @@ export default function BookingModal({ booking }: { booking: BookingDetail }) {
                       <div>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Tanggal & Waktu</p>
                         <p className="font-medium">
-                          {new Date(booking.eventDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                          {new Date(booking.eventDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })}
                         </p>
                         <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
-                          {new Date(booking.eventTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB
+                          {new Date(booking.eventTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB
                         </p>
                       </div>
                     </div>
@@ -229,7 +229,8 @@ export default function BookingModal({ booking }: { booking: BookingDetail }) {
                         <p className="font-medium text-sm">
                           {new Date(booking.paymentDeadline).toLocaleString('id-ID', {
                             dateStyle: 'medium',
-                            timeStyle: 'short'
+                            timeStyle: 'short',
+                            timeZone: 'Asia/Jakarta'
                           })}
                         </p>
                       </div>

@@ -175,7 +175,8 @@ export default function BookingListClient({ initialBookings }: { initialBookings
                       Dibuat pada: {new Date(booking.createdAt).toLocaleDateString('id-ID', {
                         day: 'numeric',
                         month: 'long',
-                        year: 'numeric'
+                        year: 'numeric',
+                        timeZone: 'Asia/Jakarta'
                       })}
                     </p>
                     <span className={`text-xs px-2.5 py-1 rounded-full border font-medium uppercase tracking-wider ${getStatusColor(booking.status)}`}>

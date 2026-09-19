@@ -98,7 +98,8 @@ export default function NotificationListClient({ initialData }: { initialData: N
                         day: 'numeric',
                         month: 'short',
                         hour: '2-digit',
-                        minute: '2-digit'
+                        minute: '2-digit',
+                        timeZone: 'Asia/Jakarta'
                       })}
                     </span>
                   </div>

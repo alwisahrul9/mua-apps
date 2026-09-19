@@ -16,7 +16,7 @@ function getDisplayTitleSuffix(start: string | undefined, end: string | undefine
   const formatMonthYear = (str: string) => {
     const [y, m] = str.split('-')
     const date = new Date(Number(y), Number(m) - 1, 1)
-    return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+    return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })
   }
 
   if (start && end) {

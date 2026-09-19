@@ -20,6 +20,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
   const formattedDate = new Intl.DateTimeFormat("id-ID", {
     dateStyle: "full",
     timeStyle: "short",
+    timeZone: "Asia/Jakarta",
   }).format(new Date(portfolio.createdAt))
 
   return (
