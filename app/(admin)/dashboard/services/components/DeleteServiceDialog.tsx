@@ -1,11 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { Trash2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function DeleteServiceDialog({ action }: { action: () => void }) {
   const [showModal, setShowModal] = useState(false)
+  const [isPending, startTransition] = useTransition()
+
+  const handleDelete = () => {
+    startTransition(() => {
+      action()
+    })
+  }
 
   return (
     <>
@@ -39,18 +46,22 @@ export default function DeleteServiceDialog({ action }: { action: () => void }) 
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark h-10 px-4"
+                  disabled={isPending}
+                  className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark h-10 px-4 disabled:opacity-50"
                 >
                   Batal
                 </button>
-                <form action={action}>
-                  <button
-                    type="submit"
-                    className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors bg-red-500 text-white hover:bg-red-600 h-10 px-4 shadow-sm"
-                  >
-                    Ya, Hapus
-                  </button>
-                </form>
+                <button
+                  onClick={handleDelete}
+                  disabled={isPending}
+                  className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors bg-red-500 text-white hover:bg-red-600 h-10 px-4 shadow-sm min-w-[100px] disabled:opacity-50"
+                >
+                  {isPending ? (
+                    <span className="inline-block h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Ya, Hapus"
+                  )}
+                </button>
               </div>
             </motion.div>
           </motion.div>
