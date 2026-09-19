@@ -40,8 +40,6 @@ export default async function Home() {
     take: 9,
   });
 
-  console.log(portfolios)
-
   const services = await prisma.service.findMany({
     where: { deletedAt: null },
     orderBy: { name: "asc" }
