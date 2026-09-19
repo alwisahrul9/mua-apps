@@ -23,6 +23,14 @@ const portfolioSchema = z.object({
   imagePath: z.string().min(1, "Path gambar wajib diisi"),
 })
 
+export async function checkPortfolioLimit() {
+  const count = await prisma.portfolio.count()
+  if (count >= 9) {
+    return { error: "Batas maksimum portofolio telah tercapai (9 data). Anda tidak dapat menambah data lagi." }
+  }
+  return { success: true }
+}
+
 export async function createPortfolio(prevState: any, formData: FormData) {
   const rawImagePath = formData.get("imagePath") as string | null
 
@@ -38,37 +46,37 @@ export async function createPortfolio(prevState: any, formData: FormData) {
     }
   }
 
-  // Check limit first
-  const count = await prisma.portfolio.count()
-  if (count >= 9) {
-    await cleanupImage()
-    return { error: "Batas maksimum portofolio telah tercapai (9 data). Anda tidak dapat menambah data lagi." }
-  }
-
-  const validatedFields = portfolioSchema.safeParse({
-    title: formData.get("title"),
-    category: formData.get("category"),
-    altText: formData.get("altText"),
-    imagePath: rawImagePath,
-  })
-
-  if (!validatedFields.success) {
-    await cleanupImage()
-    return {
-      fieldErrors: validatedFields.error.flatten().fieldErrors,
-      error: "Terdapat kesalahan pada isian form Anda. Silakan periksa kembali."
-    }
-  }
-
-  const { title, category, altText, imagePath } = validatedFields.data
-
-  const supabase = await createClient()
-
-  const { data: { publicUrl } } = supabase.storage
-    .from('portfolios')
-    .getPublicUrl(imagePath)
-
   try {
+    // Check limit first
+    const count = await prisma.portfolio.count()
+    if (count >= 9) {
+      await cleanupImage()
+      return { error: "Batas maksimum portofolio telah tercapai (9 data). Anda tidak dapat menambah data lagi." }
+    }
+
+    const validatedFields = portfolioSchema.safeParse({
+      title: formData.get("title"),
+      category: formData.get("category"),
+      altText: formData.get("altText"),
+      imagePath: rawImagePath,
+    })
+
+    if (!validatedFields.success) {
+      await cleanupImage()
+      return {
+        fieldErrors: validatedFields.error.flatten().fieldErrors,
+        error: "Terdapat kesalahan pada isian form Anda. Silakan periksa kembali."
+      }
+    }
+
+    const { title, category, altText, imagePath } = validatedFields.data
+
+    const supabase = await createClient()
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('portfolios')
+      .getPublicUrl(imagePath)
+
     await prisma.portfolio.create({
       data: {
         title,
@@ -78,9 +86,9 @@ export async function createPortfolio(prevState: any, formData: FormData) {
       }
     })
   } catch (error) {
-    console.error("Database error:", error)
+    console.error("Action error:", error)
     await cleanupImage()
-    return { error: "Terjadi kesalahan saat menyimpan data ke database." }
+    return { error: "Terjadi kesalahan saat menyimpan data. Proses dibatalkan dan file dibersihkan." }
   }
 
   redirect("/dashboard/portfolios")

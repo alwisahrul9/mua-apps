@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UploadCloud, Image as ImageIcon } from "lucide-react"
 import * as tus from "tus-js-client"
 import { createClient } from "@/utils/supabase/client"
-import { createPortfolio } from "../actions"
+import { createPortfolio, checkPortfolioLimit } from "../actions"
 
 export default function PortfolioForm() {
   const [state, formAction, isServerPending] = useActionState(createPortfolio, undefined)
@@ -45,9 +45,25 @@ export default function PortfolioForm() {
     setUploadError(null)
     const formData = new FormData(e.currentTarget)
     const file = formData.get("image") as File
+    const title = formData.get("title") as string
+    const category = formData.get("category") as string
+    const altText = formData.get("altText") as string
 
+    // Pre-validasi di sisi klien sebelum mengunggah ke Supabase
     if (!file || file.size === 0) {
       setUploadError("Gambar wajib diunggah")
+      return
+    }
+    if (!title || title.trim().length < 3) {
+      setUploadError("Judul minimal 3 karakter")
+      return
+    }
+    if (!category) {
+      setUploadError("Pilih kategori yang valid")
+      return
+    }
+    if (!altText || altText.trim().length < 3) {
+      setUploadError("Alt text minimal 3 karakter")
       return
     }
 
@@ -55,14 +71,45 @@ export default function PortfolioForm() {
     setProgress(0)
 
     try {
+      // Cek limit dari server sebelum memulai upload
+      const limitCheck = await checkPortfolioLimit()
+      if (limitCheck.error) {
+        setUploadError(limitCheck.error)
+        setIsUploading(false)
+        return
+      }
+
+      if (!navigator.onLine) {
+        setUploadError("Koneksi internet terputus. Silakan periksa jaringan Anda.")
+        setIsUploading(false)
+        return
+      }
+
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
 
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
       const filePath = `images/${fileName}`
+      
+      let upload: tus.Upload
 
-      const upload = new tus.Upload(file, {
+      const handleOffline = async () => {
+        if (upload) {
+          upload.abort()
+        }
+        setUploadError("Koneksi internet terputus. Batal menyimpan portofolio.")
+        setIsUploading(false)
+        window.removeEventListener('offline', handleOffline)
+        
+        try {
+          await supabase.storage.from('portfolios').remove([filePath])
+        } catch (e) {}
+      }
+
+      window.addEventListener('offline', handleOffline)
+
+      upload = new tus.Upload(file, {
         endpoint: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/upload/resumable`,
         retryDelays: [0, 3000, 5000, 10000, 20000],
         headers: {
@@ -78,17 +125,39 @@ export default function PortfolioForm() {
           cacheControl: '3600',
         },
         chunkSize: 6 * 1024 * 1024,
-        onError: function (error) {
+        onError: function (error: any) {
+          window.removeEventListener('offline', handleOffline)
           console.error("Upload error:", error)
-          setUploadError("Gagal mengunggah gambar: " + error.message)
+          let errorMsg = error.message
+          if (error.originalRequest) {
+            try {
+              const response = error.originalRequest.getResponse()
+              const body = JSON.parse(response.getBody())
+              if (body.message) errorMsg = body.message
+              else if (body.error) errorMsg = body.error
+            } catch (e) {}
+          }
+          setUploadError("Gagal mengunggah gambar: " + errorMsg)
           setIsUploading(false)
         },
         onProgress: function (bytesUploaded, bytesTotal) {
           const percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
           setProgress(Number(percentage))
         },
-        onSuccess: function () {
+        onSuccess: async function () {
+          window.removeEventListener('offline', handleOffline)
+          
+          if (!navigator.onLine) {
+            setUploadError("Koneksi internet terputus. Batal menyimpan data.")
+            setIsUploading(false)
+            try {
+              await supabase.storage.from('portfolios').remove([filePath])
+            } catch (e) {}
+            return
+          }
+
           formData.set("imagePath", filePath)
+          formData.delete("image")
           
           startTransition(() => {
             formAction(formData)
@@ -101,7 +170,7 @@ export default function PortfolioForm() {
 
     } catch (error: any) {
       console.error(error)
-      setUploadError(error.message)
+      setUploadError(error.message || "Terjadi kesalahan jaringan.")
       setIsUploading(false)
     }
   }

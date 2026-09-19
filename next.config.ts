@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '5mb', // 👈 Tambahkan baris ini
+    },
+  },
 };
 
 export default nextConfig;
