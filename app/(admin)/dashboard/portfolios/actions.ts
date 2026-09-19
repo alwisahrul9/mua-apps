@@ -21,7 +21,7 @@ const portfolioSchema = z.object({
     message: "Pilih kategori yang valid",
   }),
   altText: z.string().min(3, "Alt text minimal 3 karakter untuk keperluan SEO").transform(toTitleCase),
-  imagePath: z.string().min(1, "Path gambar wajib diisi"),
+  imagePath: z.string().min(1, "Gambar wajib diunggah"),
 })
 
 export async function checkPortfolioLimit() {
@@ -59,7 +59,7 @@ export async function createPortfolio(prevState: any, formData: FormData) {
       title: formData.get("title"),
       category: formData.get("category"),
       altText: formData.get("altText"),
-      imagePath: rawImagePath,
+      imagePath: rawImagePath || "",
     })
 
     if (!validatedFields.success) {
@@ -94,7 +94,7 @@ export async function createPortfolio(prevState: any, formData: FormData) {
 
   revalidatePath("/dashboard/portfolios")
   revalidatePath("/")
-  
+
   redirect("/dashboard/portfolios")
 }
 
@@ -120,7 +120,7 @@ export async function deletePortfolio(id: string) {
     if (urlParts.length > 1) {
       const imagePath = urlParts[1]
       const supabase = await createClient()
-      
+
       const { error: storageError } = await supabase.storage
         .from('portfolios')
         .remove([imagePath])
@@ -139,6 +139,6 @@ export async function deletePortfolio(id: string) {
 
   revalidatePath("/dashboard/portfolios")
   revalidatePath("/")
-  
+
   redirect("/dashboard/portfolios")
 }

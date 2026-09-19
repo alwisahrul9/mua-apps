@@ -43,27 +43,15 @@ export default function PortfolioForm() {
     e.preventDefault()
 
     setUploadError(null)
+
     const formData = new FormData(e.currentTarget)
     const file = formData.get("image") as File
-    const title = formData.get("title") as string
-    const category = formData.get("category") as string
-    const altText = formData.get("altText") as string
 
-    // Pre-validasi di sisi klien sebelum mengunggah ke Supabase
+    // Jika tidak ada file, langsung submit ke server action untuk memicu validasi Zod
     if (!file || file.size === 0) {
-      setUploadError("Gambar wajib diunggah")
-      return
-    }
-    if (!title || title.trim().length < 3) {
-      setUploadError("Judul minimal 3 karakter")
-      return
-    }
-    if (!category) {
-      setUploadError("Pilih kategori yang valid")
-      return
-    }
-    if (!altText || altText.trim().length < 3) {
-      setUploadError("Alt text minimal 3 karakter")
+      startTransition(() => {
+        formAction(formData)
+      })
       return
     }
 
@@ -91,7 +79,7 @@ export default function PortfolioForm() {
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
       const filePath = `images/${fileName}`
-      
+
       let upload: tus.Upload
 
       const handleOffline = async () => {
@@ -101,10 +89,10 @@ export default function PortfolioForm() {
         setUploadError("Koneksi internet terputus. Batal menyimpan portofolio.")
         setIsUploading(false)
         window.removeEventListener('offline', handleOffline)
-        
+
         try {
           await supabase.storage.from('portfolios').remove([filePath])
-        } catch (e) {}
+        } catch (e) { }
       }
 
       window.addEventListener('offline', handleOffline)
@@ -135,7 +123,7 @@ export default function PortfolioForm() {
               const body = JSON.parse(response.getBody())
               if (body.message) errorMsg = body.message
               else if (body.error) errorMsg = body.error
-            } catch (e) {}
+            } catch (e) { }
           }
           setUploadError("Gagal mengunggah gambar: " + errorMsg)
           setIsUploading(false)
@@ -146,19 +134,19 @@ export default function PortfolioForm() {
         },
         onSuccess: async function () {
           window.removeEventListener('offline', handleOffline)
-          
+
           if (!navigator.onLine) {
             setUploadError("Koneksi internet terputus. Batal menyimpan data.")
             setIsUploading(false)
             try {
               await supabase.storage.from('portfolios').remove([filePath])
-            } catch (e) {}
+            } catch (e) { }
             return
           }
 
           formData.set("imagePath", filePath)
           formData.delete("image")
-          
+
           startTransition(() => {
             formAction(formData)
             setIsUploading(false)
@@ -177,16 +165,19 @@ export default function PortfolioForm() {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-      {(state?.error || uploadError) && (
+      {(uploadError) && (
         <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm font-medium">
-          {state?.error || uploadError}
+          {uploadError}
         </div>
       )}
 
       <div className="space-y-2">
-        <label className="text-sm font-medium leading-none">
+        <label className="text-sm font-medium leading-none block">
           Upload Gambar <span className="text-red-500">*</span>
         </label>
+        {state?.fieldErrors?.imagePath && (
+          <p className="text-xs text-red-500 font-medium mt-2 mb-2">{state.fieldErrors.imagePath[0]}</p>
+        )}
 
         <div className="flex flex-col gap-4">
           <label
@@ -214,21 +205,6 @@ export default function PortfolioForm() {
             />
           </label>
 
-          {isPending && progress > 0 && (
-            <div className="w-full space-y-2 animate-in fade-in zoom-in duration-300">
-              <div className="flex justify-between text-xs font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
-                <span>Mengunggah file...</span>
-                <span>{Math.round(progress)}%</span>
-              </div>
-              <div className="w-full h-2 bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark transition-all duration-300 ease-out rounded-full"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-          )}
-
           {previewImage && (
             <div>
               <p className="text-sm font-medium mb-2">Preview:</p>
@@ -239,16 +215,15 @@ export default function PortfolioForm() {
             </div>
           )}
         </div>
-
-        {state?.fieldErrors?.imagePath && (
-          <p className="text-xs text-red-500 font-medium mt-2">{state.fieldErrors.imagePath[0]}</p>
-        )}
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="title" className="text-sm font-medium leading-none">
+        <label htmlFor="title" className="text-sm font-medium leading-none block">
           Judul <span className="text-red-500">*</span>
         </label>
+        {state?.fieldErrors?.title && (
+          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.title[0]}</p>
+        )}
         <input
           type="text"
           id="title"
@@ -257,15 +232,15 @@ export default function PortfolioForm() {
           placeholder="Contoh: Wedding Mbak Ayu & Mas Budi"
           className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
-        {state?.fieldErrors?.title && (
-          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.title[0]}</p>
-        )}
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="category" className="text-sm font-medium leading-none">
+        <label htmlFor="category" className="text-sm font-medium leading-none block">
           Kategori <span className="text-red-500">*</span>
         </label>
+        {state?.fieldErrors?.category && (
+          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.category[0]}</p>
+        )}
         <select
           id="category"
           name="category"
@@ -278,15 +253,15 @@ export default function PortfolioForm() {
           <option value="Wisuda">Wisuda</option>
           <option value="Photoshoot">Photoshoot</option>
         </select>
-        {state?.fieldErrors?.category && (
-          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.category[0]}</p>
-        )}
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="altText" className="text-sm font-medium leading-none">
+        <label htmlFor="altText" className="text-sm font-medium leading-none block">
           Alt Text (Pencarian Google) <span className="text-red-500">*</span>
         </label>
+        {state?.fieldErrors?.altText && (
+          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.altText[0]}</p>
+        )}
         <input
           type="text"
           id="altText"
@@ -295,10 +270,22 @@ export default function PortfolioForm() {
           placeholder="Contoh: Makeup Wedding Tradisional Jawa"
           className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         />
-        {state?.fieldErrors?.altText && (
-          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.altText[0]}</p>
-        )}
       </div>
+
+      {isPending && progress > 0 && (
+        <div className="w-full space-y-2 animate-in fade-in zoom-in duration-300">
+          <div className="flex justify-between text-xs font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
+            <span>Mengunggah file...</span>
+            <span>{Math.round(progress)}%</span>
+          </div>
+          <div className="w-full h-2 bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark transition-all duration-300 ease-out rounded-full"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-border">
         <Link
