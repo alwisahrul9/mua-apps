@@ -3,6 +3,7 @@
 import { z } from "zod"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 import { createClient } from "@/utils/supabase/server"
 
 function toTitleCase(str: string) {
@@ -91,6 +92,9 @@ export async function createPortfolio(prevState: any, formData: FormData) {
     return { error: "Terjadi kesalahan saat menyimpan data. Proses dibatalkan dan file dibersihkan." }
   }
 
+  revalidatePath("/dashboard/portfolios")
+  revalidatePath("/")
+  
   redirect("/dashboard/portfolios")
 }
 
@@ -133,5 +137,8 @@ export async function deletePortfolio(id: string) {
     return { error: "Terjadi kesalahan saat menghapus data." }
   }
 
+  revalidatePath("/dashboard/portfolios")
+  revalidatePath("/")
+  
   redirect("/dashboard/portfolios")
 }
