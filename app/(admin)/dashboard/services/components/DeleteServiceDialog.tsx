@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Trash2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
-export default function DeleteButton({ action }: { action: () => void }) {
+export default function DeleteServiceDialog({ action }: { action: () => void }) {
   const [showModal, setShowModal] = useState(false)
 
   return (

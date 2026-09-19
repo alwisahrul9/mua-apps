@@ -3,13 +3,13 @@ import { notFound } from "next/navigation"
 import { deleteService } from "../actions"
 import Link from "next/link"
 import { Trash2, Edit, ArrowLeft } from "lucide-react"
-import DeleteButton from "./delete-button"
+import DeleteServiceDialog from "../components/DeleteServiceDialog"
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  
+
   const service = await prisma.service.findUnique({
-    where: { id },
+    where: { id: id, deletedAt: null },
   })
 
   if (!service) {
@@ -42,7 +42,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           <p className="text-2xl font-semibold text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark mb-8">
             Rp {service.price.toLocaleString("id-ID")}
           </p>
-          
+
           <div className="space-y-4">
             <div>
               <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-2">Deskripsi</h3>
@@ -56,7 +56,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         </div>
 
         <div className="bg-muted/30 dark:bg-muted-dark/30 dark:bg-muted dark:bg-muted-dark/30 p-6 flex flex-col sm:flex-row justify-end gap-3 border-t border-foreground/5 dark:border-foreground-dark/5 dark:border-foreground dark:border-foreground-dark/5">
-          <DeleteButton action={deleteServiceWithId} />
+          <DeleteServiceDialog action={deleteServiceWithId} />
           <Link
             href={`/dashboard/services/${service.id}/edit`}
             className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90 h-11 px-6 shadow-sm"

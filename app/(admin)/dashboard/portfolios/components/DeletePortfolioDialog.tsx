@@ -27,11 +27,12 @@ export default function DeletePortfolioDialog({ id }: { id: string }) {
   return (
     <>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center justify-center rounded-xl bg-red-500/10 text-red-500 px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-red-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring border border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white h-11 px-6 shadow-sm"
       >
-        <Trash2 className="mr-2 h-4 w-4" />
-        Hapus Portofolio
+        <Trash2 className="h-4 w-4 mr-2" />
+        Hapus
       </button>
 
       <AnimatePresence>
@@ -40,31 +41,31 @@ export default function DeletePortfolioDialog({ id }: { id: string }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
           >
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: "spring", duration: 0.4, bounce: 0.3 }}
-              className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border border-border rounded-2xl p-6 max-w-md w-full shadow-lg shadow-black/5"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 w-[90%] max-w-md shadow-xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10"
             >
-              <h3 className="text-lg font-semibold mb-2">Hapus Portofolio?</h3>
-              <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark text-sm mb-6">
-                Apakah Anda yakin ingin menghapus portofolio ini? Data dan gambar yang sudah dihapus tidak dapat dikembalikan.
+              <h3 className="text-lg font-semibold text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark mb-2">Konfirmasi Hapus</h3>
+              <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-6">
+                Apakah Anda yakin ingin menghapus portofolio ini? Tindakan ini tidak dapat dibatalkan.
               </p>
-              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
+              <div className="flex justify-end gap-3">
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   disabled={isPending}
-                  className="px-4 py-2 text-sm font-medium rounded-xl border border-input bg-transparent hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark transition-colors disabled:opacity-50"
+                  className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark h-10 px-4 disabled:opacity-50"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleDelete}
                   disabled={isPending}
-                  className="px-4 py-2 text-sm font-medium rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50 inline-flex items-center justify-center min-w-[100px]"
+                  className="inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors bg-red-500 text-white hover:bg-red-600 h-10 px-4 shadow-sm min-w-[100px] disabled:opacity-50"
                 >
                   {isPending ? (
                     <span className="inline-block h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
