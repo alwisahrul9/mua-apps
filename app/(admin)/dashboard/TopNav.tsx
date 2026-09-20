@@ -5,6 +5,7 @@ import { LogOut, X, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { PushNotificationManager } from './components/PushNotificationManager'
+import { unsubscribeUser } from './notifications/push-actions'
 
 export default function TopNav({ userEmail }: { userEmail: string | undefined }) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
@@ -74,7 +75,29 @@ export default function TopNav({ userEmail }: { userEmail: string | undefined })
                   >
                     Batal
                   </button>
-                  <form action="/auth/signout" method="post" className="flex-1 flex" onSubmit={() => setIsLoggingOut(true)}>
+                  <form action="/auth/signout" method="post" className="flex-1 flex" onSubmit={async (e) => {
+                    e.preventDefault();
+                    setIsLoggingOut(true);
+                    
+                    try {
+                      if ("serviceWorker" in navigator && "PushManager" in window) {
+                        const registration = await navigator.serviceWorker.ready;
+                        const existingSub = await registration.pushManager.getSubscription();
+                        
+                        if (existingSub) {
+                          // Call server action to delete from DB
+                          await unsubscribeUser(existingSub.endpoint);
+                          // Unsubscribe from browser
+                          await existingSub.unsubscribe();
+                        }
+                      }
+                    } catch (error) {
+                      console.error("Failed to unsubscribe on logout", error);
+                    }
+
+                    // Actually submit the form after unsubscribe is done
+                    (e.target as HTMLFormElement).submit();
+                  }}>
                     <button
                       disabled={isLoggingOut}
                       className="flex-1 py-3 px-4 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"

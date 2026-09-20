@@ -70,7 +70,7 @@ export default function BookingSuccessClient({
               <span className="font-medium">Rp {totalPrice.toLocaleString("id-ID")}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-muted-foreground-dark">DP yang harus dibayar (50%)</span>
+              <span className="text-muted-foreground-dark">DP yang harus dibayar (20%)</span>
               <span className="font-medium text-primary-dark text-lg">Rp {dpAmount.toLocaleString("id-ID")}</span>
             </div>
 
