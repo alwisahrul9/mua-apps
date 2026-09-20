@@ -124,6 +124,9 @@ export default function BookingPage() {
                   ))}
                 </select>
                 {state?.errors?.serviceId && <p className="text-red-500 text-xs mt-1">{state.errors.serviceId[0]}</p>}
+                <p className="text-xs text-foreground-dark/50 mt-1">
+                  *Harga belum termasuk ongkos transportasi, dan/atau biaya lainnya.
+                </p>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Jenis Acara</label>
