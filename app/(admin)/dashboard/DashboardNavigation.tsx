@@ -40,24 +40,7 @@ export default function DashboardNavigation({ userEmail }: { userEmail: string |
         },
         (payload) => {
           setUnreadNotificationsCount((prev) => prev + 1)
-
           console.log(payload)
-
-          if ("Notification" in window && Notification.permission === "granted") {
-            const notification = new Notification(payload.new.title, {
-              body: payload.new.message,
-            })
-
-            notification.onclick = function () {
-              window.focus()
-              if (payload.new.bookingId) {
-                router.push(`/dashboard/bookings/${payload.new.bookingId}/edit`)
-              } else {
-                router.push(`/dashboard/notifications`)
-              }
-              notification.close()
-            }
-          }
         }
       )
       .subscribe()

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { LogOut, X, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { PushNotificationManager } from './components/PushNotificationManager'
 
 export default function TopNav({ userEmail }: { userEmail: string | undefined }) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
@@ -17,6 +18,7 @@ export default function TopNav({ userEmail }: { userEmail: string | undefined })
           {/* Empty space for desktop on the left if needed */}
         </div>
         <div className="flex items-center gap-4">
+          <PushNotificationManager />
           <ThemeToggle />
           <span className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark hidden md:inline-block">{userEmail}</span>
           <button

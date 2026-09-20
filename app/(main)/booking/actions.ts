@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { prisma } from "../../../lib/prisma";
 import { redirect } from "next/navigation";
+import { sendPushNotification } from "@/app/(admin)/dashboard/notifications/push-actions";
 
 const bookingSchema = z.object({
   clientName: z.string().min(1, "Nama lengkap harus diisi"),
@@ -117,6 +118,12 @@ export async function createBooking(prevState: any, formData: FormData) {
         bookingId: newBooking.id,
       }
     });
+
+    // Send push notification
+    await sendPushNotification(
+      "Booking Baru Diterima",
+      `${convertClientName} baru saja membuat booking untuk kedatangan ${data.eventName}.`
+    );
 
   } catch (e: any) {
     console.error(e);

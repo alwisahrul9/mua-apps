@@ -8,6 +8,14 @@ export const metadata: Metadata = {
   verification: {
     google: `${process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION}`
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: "Aldena's Make Up",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: "MUA by Aldena's Makeup - Layanan Makeup Profesional",
     description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Dapatkan tampilan flawless dan elegan yang memancarkan kecantikan natural Anda.",

@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "concurrently -p none 'serwist build --watch' 'next dev'",
+    "dev:once": "cross-env NODE_ENV=development serwist build && next dev",
+    "build": "next build && serwist build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate && prisma skills sync || exit 0"
@@ -12,6 +13,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "@serwist/build": "^9.5.12",
     "@supabase/ssr": "^0.12.6",
     "@supabase/supabase-js": "^2.116.0",
     "chart.js": "^4.5.1",
@@ -26,17 +28,25 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.8",
     "tus-js-client": "^4.3.1",
+    "web-push": "^3.6.7",
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@serwist/cli": "^9.5.12",
+    "@serwist/next": "^9.5.12",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.43",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
     "prisma": "^7.10.0",
+    "serwist": "^9.5.12",
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
     "typescript": "^5.9.3"
