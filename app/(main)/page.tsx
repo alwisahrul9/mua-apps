@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "MUA by Aldena Makeup - Layanan Makeup Profesional",
   description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Dapatkan tampilan flawless dan elegan yang memancarkan kecantikan natural Anda.",
   keywords: ["MUA", "Makeup Artist", "Makeup Wisuda", "Makeup Engagement", "Makeup Wedding", "Jasa Makeup Profesional"],
+  verification: {
+    google: `${process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION}`
+  },
   openGraph: {
     title: "MUA by Aldena Makeup - Layanan Makeup Profesional",
     description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Dapatkan tampilan flawless dan elegan yang memancarkan kecantikan natural Anda.",

@@ -9,7 +9,7 @@ import { createBooking, getServices } from "./actions";
 export default function BookingPage() {
   const [state, formAction, isPending] = useActionState(createBooking, null);
   const [isExpired, setIsExpired] = useState(false);
-  const [services, setServices] = useState<{id: string, name: string, price: number}[]>([]);
+  const [services, setServices] = useState<{ id: string, name: string, price: number }[]>([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function BookingPage() {
         </div>
 
         {isExpired && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-start gap-3"
@@ -111,10 +111,10 @@ export default function BookingPage() {
                 <label className="text-sm font-medium">Layanan Makeup</label>
                 <select required disabled={isLoadingServices || services.length === 0} name="serviceId" defaultValue={state?.data?.serviceId as string || ""} className="w-full px-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all appearance-none disabled:opacity-50">
                   <option value="">
-                    {isLoadingServices 
-                      ? "Memuat layanan..." 
-                      : services.length === 0 
-                        ? "Belum ada layanan tersedia" 
+                    {isLoadingServices
+                      ? "Memuat layanan..."
+                      : services.length === 0
+                        ? "Belum ada layanan tersedia"
                         : "Pilih Layanan"}
                   </option>
                   {services.map((service) => (
@@ -137,7 +137,7 @@ export default function BookingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Tanggal Acara</label>
+                <label className="text-sm font-medium">Tanggal Kedatangan</label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-4 w-5 h-5 text-muted-foreground-dark" />
                   <input required name="eventDate" type="date" defaultValue={state?.data?.eventDate as string || ""} className="w-full pl-10 pr-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all" />
@@ -145,7 +145,7 @@ export default function BookingPage() {
                 {state?.errors?.eventDate && <p className="text-red-500 text-xs mt-1">{state.errors.eventDate[0]}</p>}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Jam Acara</label>
+                <label className="text-sm font-medium">Jam Kedatangan</label>
                 <div className="relative">
                   <Clock className="absolute left-3 top-4 w-5 h-5 text-muted-foreground-dark" />
                   <input required name="eventTime" type="time" defaultValue={state?.data?.eventTime as string || ""} className="w-full pl-10 pr-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all" />

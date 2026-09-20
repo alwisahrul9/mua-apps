@@ -136,7 +136,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Tanggal Acara</label>
+              <label className="text-sm font-medium">Tanggal Kedatangan</label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-3 w-5 h-5 text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark" />
                 <input
@@ -150,7 +150,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Waktu Acara</label>
+              <label className="text-sm font-medium">Waktu Kedatangan</label>
               <div className="relative">
                 <Clock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark" />
                 <input
