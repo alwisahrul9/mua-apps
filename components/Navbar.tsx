@@ -46,7 +46,7 @@ export function Navbar() {
             onClick={() => setActiveHash("")}
             className="font-serif text-2xl font-medium tracking-tight"
           >
-            Aldena Makeup <span className="text-primary-dark italic">.</span>
+            Aldena's Makeup <span className="text-primary-dark italic">.</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
