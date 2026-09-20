@@ -2,17 +2,17 @@ import { Metadata } from "next";
 import HomeClient from "@/components/HomeClient";
 
 export const metadata: Metadata = {
-  title: "MUA by Aldena's Makeup - Layanan Makeup Profesional",
+  title: "MUA by Aldena Makeup - Layanan Makeup Profesional",
   description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Dapatkan tampilan flawless dan elegan yang memancarkan kecantikan natural Anda.",
   keywords: ["MUA", "Makeup Artist", "Makeup Wisuda", "Makeup Engagement", "Makeup Wedding", "Jasa Makeup Profesional"],
   openGraph: {
-    title: "MUA by Aldena's Makeup - Layanan Makeup Profesional",
-    description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda.",
-    url: "https://aldenas.vercel.app",
-    siteName: "MUA Portfolio",
+    title: "MUA by Aldena Makeup - Layanan Makeup Profesional",
+    description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Dapatkan tampilan flawless dan elegan yang memancarkan kecantikan natural Anda.",
+    url: "https://aldena.vercel.app",
+    siteName: "MUA by Aldena Makeup",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1200&auto=format&fit=crop",
+        url: "https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png",
         width: 1200,
         height: 630,
         alt: "MUA Portfolio Preview",
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MUA by Aldena's Makeup - Layanan Makeup Profesional",
     description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda.",
-    images: ["https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1200&auto=format&fit=crop"],
+    images: ["https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png"],
   },
   alternates: {
-    canonical: "https://aldenas.vercel.app",
+    canonical: "https://aldena.vercel.app",
   },
 };
 

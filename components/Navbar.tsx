@@ -11,11 +11,11 @@ export function Navbar() {
 
   useEffect(() => {
     setActiveHash(window.location.hash);
-    
+
     const handleHashChange = () => {
       setActiveHash(window.location.hash);
     };
-    
+
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, [pathname]);
@@ -41,12 +41,12 @@ export function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background-dark/80 backdrop-blur-md border-b border-foreground-dark/5">
       <div className="container-custom mx-auto">
         <div className="flex items-center justify-between h-20">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             onClick={() => setActiveHash("")}
             className="font-serif text-2xl font-medium tracking-tight"
           >
-            Aldena's Makeup <span className="text-primary-dark italic">.</span>
+            Aldena Makeup <span className="text-primary-dark italic">.</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
