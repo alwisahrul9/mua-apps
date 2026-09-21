@@ -60,15 +60,15 @@ export default function NotificationListClient({ initialData }: { initialData: N
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex-1 min-w-[240px]">
           <h1 className="text-3xl font-serif mb-1">Notifikasi</h1>
           <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Pusat pemberitahuan aktivitas aplikasi dan pesanan Anda.</p>
         </div>
         <button 
           onClick={handleMarkAllRead}
           disabled={isMarkingAll || !notifications.some(n => !n.isRead)}
-          className="text-sm font-medium text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark hover:underline disabled:opacity-50 disabled:hover:no-underline"
+          className="ml-auto shrink-0 text-sm font-medium text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark hover:underline disabled:opacity-50 disabled:hover:no-underline"
         >
           {isMarkingAll ? 'Menandai...' : 'Tandai semua dibaca'}
         </button>

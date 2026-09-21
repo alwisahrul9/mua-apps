@@ -222,6 +222,10 @@ export default function BookingModal({ booking }: { booking: BookingDetail }) {
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">DP (Down Payment)</p>
                       <p className="font-medium text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark">{formatCurrency(booking.dpAmount)}</p>
                     </div>
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Sisa Pembayaran</p>
+                      <p className="font-medium text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark">{formatCurrency(booking.totalPrice - booking.dpAmount)}</p>
+                    </div>
                     <div className="border-t border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 pt-3 flex items-start gap-3">
                       <Clock className="w-5 h-5 text-amber-500 shrink-0" />
                       <div>

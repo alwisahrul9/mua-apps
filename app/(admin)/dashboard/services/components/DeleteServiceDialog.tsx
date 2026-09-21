@@ -19,10 +19,10 @@ export default function DeleteServiceDialog({ action }: { action: () => void }) 
       <button
         type="button"
         onClick={() => setShowModal(true)}
-        className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring border border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white h-11 px-6 shadow-sm"
+        className="inline-flex items-center justify-center rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring border border-red-500/20 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white h-10 w-10 shadow-sm shrink-0"
+        title="Hapus Layanan"
       >
-        <Trash2 className="h-4 w-4 mr-2" />
-        Hapus
+        <Trash2 className="h-4 w-4" />
       </button>
       <AnimatePresence>
         {showModal && (
