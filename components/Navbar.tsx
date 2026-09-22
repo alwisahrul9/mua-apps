@@ -23,6 +23,7 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: "Beranda" },
     { href: "/#portfolio", label: "Portofolio" },
+    { href: "/#services", label: "Layanan" },
     { href: "/booking", label: "Booking" },
   ];
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Star, CalendarHeart, Brush, Camera, Crown, Heart, Sparkles, Scissors, Flower2, Gem, Wand2 } from "lucide-react";
+import { ArrowRight, Star, CalendarHeart, Brush, Camera, Crown, Heart, Sparkles, Scissors, Flower2, Gem, Wand2, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -14,15 +14,10 @@ const portfolioImages = [
   { src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800&auto=format&fit=crop", alt: "Editorial Makeup" },
 ];
 
-const productBrands = [
-  { name: "Wardah", logo: "https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://wardahbeauty.com&size=128" },
-  { name: "Make Over", logo: "https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://makeoverforall.com&size=128" },
-  { name: "MAC", logo: "https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://maccosmetics.com&size=128" },
-  { name: "Maybelline", logo: "https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://maybelline.com&size=128" },
-  { name: "Dior Beauty", logo: "https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://dior.com&size=128" },
-  { name: "NARS", logo: "https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://narscosmetics.com&size=128" },
-  { name: "Charlotte Tilbury", logo: "https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://charlottetilbury.com&size=128" },
-];
+const productBrands = Array.from({ length: 13 }).map((_, i) => ({
+  name: `Brand ${i + 1}`,
+  logo: `/brand-images/brand-${i + 1}.webp`
+}));
 
 const ICON_MAP: Record<string, React.ElementType> = {
   Sparkles, Crown, Heart, Camera, Brush, Star, Scissors, Flower2, Gem, Wand2, CalendarHeart
@@ -77,12 +72,34 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                 Lihat Portofolio
               </Link>
             </div>
+
+            {/* Scroll Indicator (Mobile Only) */}
+            <motion.div
+              className="mt-16 sm:mt-24 md:hidden flex justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+            >
+              <Link
+                href="#services"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
+                  window.history.pushState(null, "", "#services");
+                  window.dispatchEvent(new Event("hashchange"));
+                }}
+                className="p-3 rounded-full border border-foreground-dark/30 text-foreground-dark/80 flex items-center justify-center animate-bounce hover:bg-foreground-dark/10 hover:text-foreground-dark transition-colors"
+                aria-label="Lihat layanan"
+              >
+                <ChevronDown className="w-6 h-6" />
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="py-24 bg-muted-dark/30">
+      <section id="services" className="py-24 bg-muted-dark/30">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">Layanan Kami</h2>
@@ -121,41 +138,29 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
             </p>
           </div>
 
-          <div className="flex flex-col justify-center items-center gap-8 pt-8 pb-4">
-            {Array.from({ length: Math.ceil(productBrands.length / 4) }).map((_, rowIndex) => (
-              <div key={rowIndex} className="flex flex-row items-center justify-center gap-6 md:gap-10 w-full flex-wrap">
-                {productBrands.slice(rowIndex * 4, rowIndex * 4 + 4).map((brand, i) => {
-                  const globalIndex = rowIndex * 4 + i;
-                  return (
-                    <motion.div
-                      key={globalIndex}
-                      animate={{ y: [0, -12, 0] }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: globalIndex * 0.3
-                      }}
-                      className="relative group cursor-pointer"
-                    >
-                      <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-background-dark bg-white shadow-md transition-transform duration-300 group-hover:scale-110 flex items-center justify-center">
-                        <Image
-                          src={brand.logo}
-                          alt={brand.name}
-                          width={80}
-                          height={80}
-                          className="object-contain p-2 md:p-3"
-                        />
-                      </div>
-                      {/* Tooltip */}
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground-dark text-background-dark text-xs px-3 py-1.5 rounded-md whitespace-nowrap z-30 pointer-events-none shadow-lg">
-                        {brand.name}
-                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground"></div>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 pt-8 pb-4 max-w-5xl mx-auto">
+            {productBrands.map((brand, i) => (
+              <motion.div
+                key={i}
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.2
+                }}
+                className="relative group cursor-pointer"
+              >
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border border-foreground/10 dark:border-foreground-dark/10 bg-white shadow-sm transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-4 sm:p-5">
+                  <Image
+                    src={brand.logo}
+                    alt={brand.name}
+                    width={100}
+                    height={100}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>

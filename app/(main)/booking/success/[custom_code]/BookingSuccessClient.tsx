@@ -25,9 +25,9 @@ export default function BookingSuccessClient({
   const [copiedShopeePay, setCopiedShopeePay] = useState(false);
 
   const accounts = [
-    { bank: "Mandiri", name: "a.n. NEIL ALDENA HAIDAR R", number: "1390024270658", copied: copiedSeabank, setCopied: setCopiedSeabank },
-    { bank: "Seabank", name: "a.n. Neil Aldena Haidar Romansyah", number: "901219125057", copied: copiedMandiri, setCopied: setCopiedMandiri },
-    { bank: "Shopeepay", name: "a.n. Neil Aldena", number: "085158480059", copied: copiedShopeePay, setCopied: setCopiedShopeePay },
+    { bank: "Mandiri", name: `a.n. ${process.env.NEXT_PUBLIC_MANDIRI_NAME}`, number: `${process.env.NEXT_PUBLIC_MANDIRI_NUMBER}`, copied: copiedSeabank, setCopied: setCopiedSeabank },
+    { bank: "Seabank", name: `a.n. ${process.env.NEXT_PUBLIC_SEABANK_NAME}`, number: `${process.env.NEXT_PUBLIC_SEABANK_NUMBER}`, copied: copiedMandiri, setCopied: setCopiedMandiri },
+    { bank: "Shopeepay", name: `a.n. ${process.env.NEXT_PUBLIC_SHOPEEPAY_NAME}`, number: `${process.env.NEXT_PUBLIC_SHOPEEPAY_NUMBER}`, copied: copiedShopeePay, setCopied: setCopiedShopeePay },
   ];
 
   const handleCopy = (number: string, setCopied: (val: boolean) => void) => {
