@@ -11,6 +11,7 @@ interface BookingSuccessClientProps {
   totalPrice: number;
   dpAmount: number;
   paymentDeadline: Date;
+  totalPerson: number;
 }
 
 export default function BookingSuccessClient({
@@ -18,7 +19,8 @@ export default function BookingSuccessClient({
   customCode,
   totalPrice,
   dpAmount,
-  paymentDeadline
+  paymentDeadline,
+  totalPerson
 }: BookingSuccessClientProps) {
   const [copiedSeabank, setCopiedSeabank] = useState(false);
   const [copiedMandiri, setCopiedMandiri] = useState(false);
@@ -66,11 +68,15 @@ export default function BookingSuccessClient({
             <h3 className="font-medium border-b border-foreground-dark/10 pb-4 mb-4">Ringkasan Pembayaran</h3>
 
             <div className="flex justify-between items-center text-sm">
+              <span className="text-muted-foreground-dark">Jumlah Orang</span>
+              <span className="font-medium">{totalPerson} Orang</span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
               <span className="text-muted-foreground-dark">Total Layanan</span>
               <span className="font-medium">Rp {totalPrice.toLocaleString("id-ID")}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-muted-foreground-dark">DP yang harus dibayar (20%)</span>
+              <span className="text-muted-foreground-dark">DP yang harus dibayar (30%)</span>
               <span className="font-medium text-primary-dark text-lg">Rp {dpAmount.toLocaleString("id-ID")}</span>
             </div>
 

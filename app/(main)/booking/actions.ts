@@ -102,7 +102,7 @@ export async function createBooking(prevState: any, formData: FormData) {
         paymentDeadline: paymentDeadline,
         customCode: customCode,
         totalPrice: price * data.totalPerson,
-        dpAmount: (price * data.totalPerson) * 0.2,
+        dpAmount: (price * data.totalPerson) * 0.3,
         status: 'PENDING'
       }
     });

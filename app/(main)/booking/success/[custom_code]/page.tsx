@@ -31,6 +31,7 @@ export default async function BookingSuccessPage({
       totalPrice={booking.totalPrice}
       dpAmount={booking.dpAmount}
       paymentDeadline={booking.paymentDeadline}
+      totalPerson={booking.totalPerson}
     />
   );
 }
