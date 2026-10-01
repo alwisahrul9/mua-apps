@@ -15,8 +15,8 @@ const bookingSchema = z.object({
   totalPerson: z.coerce.number().min(1, "Jumlah orang minimal 1"),
   serviceId: z.string().min(1, "Layanan harus dipilih"),
   eventName: z.string().min(1, "Jenis acara harus diisi"),
-  eventDate: z.string().min(1, "Tanggal kedatangan harus diisi"),
-  eventTime: z.string().min(1, "Waktu kedatangan harus diisi"),
+  eventDate: z.string().min(1, "Tanggal acara harus diisi"),
+  eventTime: z.string().min(1, "Waktu acara harus diisi"),
   location: z.string().min(1, "Lokasi harus diisi"),
   notes: z.string().optional(),
 });
@@ -113,7 +113,7 @@ export async function createBooking(prevState: any, formData: FormData) {
     await prisma.notification.create({
       data: {
         title: "Booking Baru Diterima",
-        message: `${convertClientName} baru saja membuat booking untuk kedatangan ${data.eventName}.`,
+        message: `${convertClientName} baru saja membuat booking untuk acara ${data.eventName}.`,
         type: "new_booking",
         bookingId: newBooking.id,
       }
@@ -122,7 +122,7 @@ export async function createBooking(prevState: any, formData: FormData) {
     // Send push notification
     await sendPushNotification(
       "Booking Baru Diterima",
-      `${convertClientName} baru saja membuat booking untuk kedatangan ${data.eventName}.`
+      `${convertClientName} baru saja membuat booking untuk acara ${data.eventName}.`
     );
 
   } catch (e: any) {

@@ -140,7 +140,7 @@ export default function BookingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Tanggal Kedatangan</label>
+                <label className="text-sm font-medium">Tanggal Acara</label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-4 w-5 h-5 text-muted-foreground-dark" />
                   <input required name="eventDate" type="date" defaultValue={state?.data?.eventDate as string || ""} className="w-full pl-10 pr-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all" />
@@ -148,7 +148,7 @@ export default function BookingPage() {
                 {state?.errors?.eventDate && <p className="text-red-500 text-xs mt-1">{state.errors.eventDate[0]}</p>}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Jam Kedatangan</label>
+                <label className="text-sm font-medium">Waktu Acara</label>
                 <div className="relative">
                   <Clock className="absolute left-3 top-4 w-5 h-5 text-muted-foreground-dark" />
                   <input required name="eventTime" type="time" defaultValue={state?.data?.eventTime as string || ""} className="w-full pl-10 pr-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all" />
