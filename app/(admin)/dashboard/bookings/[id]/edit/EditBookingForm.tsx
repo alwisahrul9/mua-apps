@@ -12,9 +12,9 @@ export default function EditBookingForm({ booking }: { booking: any }) {
   const [status, setStatus] = useState<StatusBooking>(booking.status)
   const [copied, setCopied] = useState(false)
 
-  // Format dates for input type="date" and type="time"
-  const initialDate = new Date(booking.eventDate).toISOString().split('T')[0]
-  const initialTime = new Date(booking.eventTime).toTimeString().substring(0, 5) // "HH:mm"
+  // Format dates for input type="date" and type="time" enforcing WIB timezone
+  const initialDate = new Date(booking.eventDate).toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' }) // "YYYY-MM-DD"
+  const initialTime = new Date(booking.eventTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' }) // "HH:mm"
 
   const [date, setDate] = useState(initialDate)
   const [time, setTime] = useState(initialTime)
@@ -23,9 +23,9 @@ export default function EditBookingForm({ booking }: { booking: any }) {
     e.preventDefault()
     setLoading(true)
 
-    // Combine date and time
-    const eventDateObj = new Date(`${date}T00:00:00`)
-    const eventTimeObj = new Date(`${date}T${time}:00`)
+    // Combine date and time (enforcing WIB timezone)
+    const eventDateObj = new Date(`${date}T00:00:00+07:00`)
+    const eventTimeObj = new Date(`${date}T${time}:00+07:00`)
 
     const res = await updateBookingStatusAndSchedule(booking.id, {
       status,

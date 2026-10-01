@@ -55,7 +55,7 @@ export async function createBooking(prevState: any, formData: FormData) {
   const [year, month, day] = data.eventDate.split('-');
   const [hour, minute] = data.eventTime.split(':');
 
-  const eventDateTime = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));
+  const eventDateTime = new Date(`${year}-${month}-${day}T${hour}:${minute}:00+07:00`);
 
   let customCode = "";
 
