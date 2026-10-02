@@ -27,7 +27,7 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
   return (
     <main className="flex-grow">
       {/* Hero Section */}
-      <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden container-custom">
+      <section className="relative h-dvh min-h-[600px] flex items-center justify-center overflow-hidden container-custom">
         <div className="absolute inset-0 -z-10">
           {/* Subtle gradient blob for background */}
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-dark/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>

@@ -45,7 +45,7 @@ export default function BookingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 container-custom">
+    <div className="min-h-dvh pt-24 pb-12 px-4 container-custom">
       <Link href="/" className="inline-flex items-center text-muted-foreground-dark hover:text-foreground-dark transition-colors mb-8 text-sm">
         <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
         Kembali ke Beranda
@@ -159,7 +159,7 @@ export default function BookingPage() {
                 <Label className="text-sm font-medium">Tanggal Acara</Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
-                  <Input required name="eventDate" type="date" defaultValue={state?.data?.eventDate as string || ""} className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all" />
+                  <Input required name="eventDate" type="date" defaultValue={state?.data?.eventDate as string || ""} className="w-full pl-10 pr-4 py-3 h-auto min-h-11 rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all appearance-none cursor-pointer" />
                 </div>
                 {state?.errors?.eventDate && <p className="text-red-500 text-xs mt-1">{state.errors.eventDate[0]}</p>}
               </div>
@@ -167,7 +167,7 @@ export default function BookingPage() {
                 <Label className="text-sm font-medium">Waktu Acara</Label>
                 <div className="relative">
                   <Clock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
-                  <Input required name="eventTime" type="time" defaultValue={state?.data?.eventTime as string || ""} className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all" />
+                  <Input required name="eventTime" type="time" defaultValue={state?.data?.eventTime as string || ""} className="w-full pl-10 pr-4 py-3 h-auto min-h-11 rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all appearance-none cursor-pointer" />
                 </div>
                 {state?.errors?.eventTime && <p className="text-red-500 text-xs mt-1">{state.errors.eventTime[0]}</p>}
               </div>

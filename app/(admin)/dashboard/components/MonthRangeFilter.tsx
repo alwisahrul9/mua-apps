@@ -50,7 +50,7 @@ export default function MonthRangeFilter() {
           type="month"
           value={startMonth}
           onChange={(e) => setStartMonth(e.target.value)}
-          className="w-full bg-transparant"
+          className="w-full bg-transparent appearance-none h-11 md:h-10 cursor-pointer"
         />
       </div>
       <div className="flex-1 w-full flex flex-col gap-2">
@@ -60,20 +60,20 @@ export default function MonthRangeFilter() {
           type="month"
           value={endMonth}
           onChange={(e) => setEndMonth(e.target.value)}
-          className="w-full bg-transparant"
+          className="w-full bg-transparent appearance-none h-11 md:h-10 cursor-pointer"
         />
       </div>
       <div className="flex gap-2 w-full sm:w-auto">
         <Button
           variant="outline"
           onClick={handleReset}
-          className="flex-1 bg-transparant sm:flex-none border-foreground/20 dark:border-foreground-dark/20 hover:bg-muted dark:hover:bg-muted-dark"
+          className="flex-1 bg-transparent sm:flex-none border-foreground/20 dark:border-foreground-dark/20 hover:bg-muted dark:hover:bg-muted-dark h-11 md:h-10"
         >
           Reset
         </Button>
         <Button
           onClick={handleFilter}
-          className="flex-1 sm:flex-none bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark hover:bg-primary/90 dark:hover:bg-primary-dark/90"
+          className="flex-1 sm:flex-none bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark hover:bg-primary/90 dark:hover:bg-primary-dark/90 h-11 md:h-10"
         >
           Terapkan
         </Button>

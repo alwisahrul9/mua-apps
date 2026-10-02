@@ -83,7 +83,7 @@ export default function DashboardNavigation({ userEmail }: { userEmail: string |
   return (
     <>
       {/* Desktop Sidebar (Hidden on mobile/tablet) */}
-      <aside className="w-64 bg-background dark:bg-background-dark border-r border-foreground/10 dark:border-foreground-dark/10 hidden md:flex flex-col h-screen sticky top-0">
+      <aside className="w-64 bg-background dark:bg-background-dark border-r border-foreground/10 dark:border-foreground-dark/10 hidden md:flex flex-col h-dvh sticky top-0">
         <div className="p-6">
           <h2 className="font-serif text-2xl">MUA Admin</h2>
           <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark mt-1 truncate">{userEmail}</p>

@@ -184,7 +184,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
                       required
-                      className="pl-10 h-11 rounded-xl bg-background dark:bg-background-dark"
+                      className="pl-10 h-11 min-h-11 appearance-none rounded-xl bg-background dark:bg-background-dark"
                     />
                   </div>
                 </div>
@@ -198,7 +198,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
                       value={time}
                       onChange={(e) => setTime(e.target.value)}
                       required
-                      className="pl-10 h-11 rounded-xl bg-background dark:bg-background-dark"
+                      className="pl-10 h-11 min-h-11 appearance-none rounded-xl bg-background dark:bg-background-dark"
                     />
                   </div>
                 </div>

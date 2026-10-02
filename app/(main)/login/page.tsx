@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [state, action, pending] = useActionState(login, undefined)
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 container-custom flex items-center justify-center">
+    <div className="min-h-dvh pt-24 pb-12 px-4 container-custom flex items-center justify-center">
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
           <h1 className="font-serif text-4xl mb-4">MUA Dashboard</h1>

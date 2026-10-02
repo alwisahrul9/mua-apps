@@ -46,7 +46,7 @@ export default function BookingSuccessClient({
   const whatsappUrl = `https://wa.me/${getPhone}?text=${whatsappMessage}`;
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 container-custom flex items-center justify-center">
+    <div className="min-h-dvh pt-24 pb-12 px-4 container-custom flex items-center justify-center">
       <div className="max-w-2xl w-full">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
