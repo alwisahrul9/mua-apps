@@ -123,14 +123,20 @@ export default function TopNav({ userEmail }: { userEmail: string | undefined })
 
               try {
                 if ("serviceWorker" in navigator && "PushManager" in window) {
-                  const registration = await navigator.serviceWorker.ready;
-                  const existingSub = await registration.pushManager.getSubscription();
+                  const registration = await navigator.serviceWorker.register("/sw.js", {
+                    scope: "/",
+                    updateViaCache: "none",
+                  });
+                  const existingSub = await Promise.race([
+                    registration.pushManager.getSubscription(),
+                    new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500))
+                  ]);
 
                   if (existingSub) {
                     // Call server action to delete from DB
-                    await unsubscribeUser(existingSub.endpoint);
+                    await unsubscribeUser((existingSub as PushSubscription).endpoint);
                     // Unsubscribe from browser
-                    await existingSub.unsubscribe();
+                    await (existingSub as PushSubscription).unsubscribe();
                   }
                 }
               } catch (error) {

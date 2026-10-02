@@ -39,8 +39,12 @@ export function PushNotificationManager() {
         scope: "/",
         updateViaCache: "none",
       });
-      const sub = await registration.pushManager.getSubscription();
-      setSubscription(sub);
+      // Handle Safari bug where getSubscription can hang indefinitely
+      const sub = await Promise.race([
+        registration.pushManager.getSubscription(),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500))
+      ]);
+      setSubscription(sub as PushSubscription | null);
     } catch (error) {
       console.error("Service worker registration failed:", error);
     } finally {
@@ -51,13 +55,20 @@ export function PushNotificationManager() {
   async function subscribeToPush() {
     setIsLoading(true);
     try {
-      const registration = await navigator.serviceWorker.ready;
+      // Use register instead of .ready to prevent hanging if SW isn't active
+      const registration = await navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+        updateViaCache: "none",
+      });
 
       // Check if an existing subscription exists and unsubscribe it first to avoid 
       // "Registration failed - push service error" when VAPID keys have changed.
-      const existingSub = await registration.pushManager.getSubscription();
+      const existingSub = await Promise.race([
+        registration.pushManager.getSubscription(),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500))
+      ]);
       if (existingSub) {
-        await existingSub.unsubscribe();
+        await (existingSub as PushSubscription).unsubscribe();
       }
 
       const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!.trim();
@@ -83,11 +94,17 @@ export function PushNotificationManager() {
   async function unsubscribeFromPush() {
     setIsLoading(true);
     try {
-      const registration = await navigator.serviceWorker.ready;
-      const sub = await registration.pushManager.getSubscription();
+      const registration = await navigator.serviceWorker.register("/sw.js", {
+        scope: "/",
+        updateViaCache: "none",
+      });
+      const sub = await Promise.race([
+        registration.pushManager.getSubscription(),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500))
+      ]);
       if (sub) {
-        await sub.unsubscribe();
-        await unsubscribeUser(sub.endpoint);
+        await (sub as PushSubscription).unsubscribe();
+        await unsubscribeUser((sub as PushSubscription).endpoint);
         setSubscription(null);
       }
     } catch (error) {

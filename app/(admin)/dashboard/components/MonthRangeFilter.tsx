@@ -50,7 +50,7 @@ export default function MonthRangeFilter() {
           type="month"
           value={startMonth}
           onChange={(e) => setStartMonth(e.target.value)}
-          className="w-full"
+          className="w-full bg-transparant"
         />
       </div>
       <div className="flex-1 w-full flex flex-col gap-2">
@@ -60,14 +60,14 @@ export default function MonthRangeFilter() {
           type="month"
           value={endMonth}
           onChange={(e) => setEndMonth(e.target.value)}
-          className="w-full"
+          className="w-full bg-transparant"
         />
       </div>
       <div className="flex gap-2 w-full sm:w-auto">
         <Button
           variant="outline"
           onClick={handleReset}
-          className="flex-1 sm:flex-none border-foreground/20 dark:border-foreground-dark/20 hover:bg-muted dark:hover:bg-muted-dark"
+          className="flex-1 bg-transparant sm:flex-none border-foreground/20 dark:border-foreground-dark/20 hover:bg-muted dark:hover:bg-muted-dark"
         >
           Reset
         </Button>

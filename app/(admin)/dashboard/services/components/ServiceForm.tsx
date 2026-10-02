@@ -56,11 +56,10 @@ export default function ServiceForm({ service, actionType }: { service?: Service
               key={name}
               type="button"
               onClick={() => setSelectedIcon(name)}
-              className={`flex items-center justify-center p-3 rounded-xl border transition-all ${
-                selectedIcon === name 
-                  ? "bg-primary/10 dark:bg-primary-dark/10 dark:bg-primary dark:bg-primary-dark/10 border-primary dark:border-primary-dark dark:border-primary dark:border-primary-dark text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark shadow-sm" 
-                  : "bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border-border text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
-              }`}
+              className={`flex items-center justify-center p-3 rounded-xl border transition-all ${selectedIcon === name
+                ? "bg-primary/10 dark:bg-primary-dark/10 dark:bg-primary dark:bg-primary-dark/10 border-primary dark:border-primary-dark dark:border-primary dark:border-primary-dark text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark shadow-sm"
+                : "bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border-border text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
+                }`}
               title={name}
             >
               <Icon className="w-5 h-5" />
@@ -80,7 +79,7 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           defaultValue={service?.name}
           required
           placeholder="Contoh: Wedding Makeup"
-          className="h-11 rounded-xl"
+          className="h-11 rounded-xl bg-transparant"
         />
       </div>
 
@@ -96,7 +95,7 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           required
           min="0"
           placeholder="Contoh: 1500000"
-          className="h-11 rounded-xl"
+          className="h-11 rounded-xl bg-transparant"
         />
       </div>
 
