@@ -3,6 +3,16 @@ import { prisma } from "@/lib/prisma"
 import DashboardStatsChart from "./components/DashboardStatsChart"
 import DashboardBarChart from "./components/DashboardBarChart"
 import MonthRangeFilter from "./components/MonthRangeFilter"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export const dynamic = "force-dynamic"
 
@@ -155,15 +165,15 @@ async function DashboardData({ searchParams }: { searchParams: any }) {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'PENDING':
-        return <span className="px-2 py-1 bg-amber-500/10 text-amber-500 rounded-full text-xs font-medium">Pending</span>
+        return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20 rounded-full text-xs font-medium px-2 py-1">Pending</Badge>
       case 'DP_PAID':
-        return <span className="px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-medium">DP Paid</span>
+        return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20 hover:bg-blue-500/20 rounded-full text-xs font-medium px-2 py-1">DP Paid</Badge>
       case 'COMPLETED':
-        return <span className="px-2 py-1 bg-green-500/10 text-green-500 rounded-full text-xs font-medium">Completed</span>
+        return <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20 rounded-full text-xs font-medium px-2 py-1">Completed</Badge>
       case 'CANCELED':
-        return <span className="px-2 py-1 bg-red-500/10 text-red-500 rounded-full text-xs font-medium">Canceled</span>
+        return <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500/20 rounded-full text-xs font-medium px-2 py-1">Canceled</Badge>
       default:
-        return <span className="px-2 py-1 bg-slate-500/10 text-slate-500 rounded-full text-xs font-medium">{status}</span>
+        return <Badge variant="outline" className="bg-slate-500/10 text-slate-500 border-slate-500/20 hover:bg-slate-500/20 rounded-full text-xs font-medium px-2 py-1">{status}</Badge>
     }
   }
 
@@ -173,14 +183,22 @@ async function DashboardData({ searchParams }: { searchParams: any }) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <div className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center">
-          <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-2">Total Booking {displayTitleSuffix}</h3>
-          <p className="text-3xl font-bold">{totalBookings}</p>
-        </div>
-        <div className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center">
-          <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-2">Total Pendapatan (COMPLETED) {displayTitleSuffix}</h3>
-          <p className="text-3xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
-        </div>
+        <Card className="rounded-2xl border-foreground/10 dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center bg-background dark:bg-background-dark">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark">Total Booking {displayTitleSuffix}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold">{totalBookings}</p>
+          </CardContent>
+        </Card>
+        <Card className="rounded-2xl border-foreground/10 dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center bg-background dark:bg-background-dark">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark">Total Pendapatan (COMPLETED) {displayTitleSuffix}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="mt-8 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm">
@@ -193,34 +211,34 @@ async function DashboardData({ searchParams }: { searchParams: any }) {
           </div>
 
           <div className="flex flex-col lg:col-span-2">
-            <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-4">5 Booking Terbaru {displayTitleSuffix}</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead className="text-xs text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark bg-muted/50 dark:bg-muted-dark/50 dark:bg-muted dark:bg-muted-dark/50 rounded-lg">
-                  <tr>
-                    <th className="px-4 py-3 font-medium rounded-tl-lg rounded-bl-lg">Kode</th>
-                    <th className="px-4 py-3 font-medium">Klien</th>
-                    <th className="px-4 py-3 font-medium rounded-tr-lg rounded-br-lg text-right">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
+            <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark mb-4">5 Booking Terbaru {displayTitleSuffix}</h3>
+            <div className="overflow-x-auto rounded-lg border border-foreground/10 dark:border-foreground-dark/10">
+              <Table>
+                <TableHeader className="bg-muted/50 dark:bg-muted-dark/50 hover:bg-muted/50 dark:hover:bg-muted-dark/50">
+                  <TableRow className="border-b border-foreground/10 dark:border-foreground-dark/10">
+                    <TableHead className="font-medium h-10">Kode</TableHead>
+                    <TableHead className="font-medium h-10">Klien</TableHead>
+                    <TableHead className="text-right font-medium h-10">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {latestBookings.length === 0 ? (
-                    <tr>
-                      <td colSpan={3} className="px-4 py-8 text-center text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
+                    <TableRow className="border-b border-foreground/10 dark:border-foreground-dark/10">
+                      <TableCell colSpan={3} className="h-24 text-center text-muted-foreground dark:text-muted-foreground-dark">
                         Belum ada booking
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ) : (
                     latestBookings.map((b) => (
-                      <tr key={b.id} className="hover:bg-muted/30 dark:bg-muted-dark/30 dark:bg-muted dark:bg-muted-dark/30 transition-colors">
-                        <td className="px-4 py-3 font-medium whitespace-nowrap">{b.customCode}</td>
-                        <td className="px-4 py-3 truncate max-w-[120px]" title={b.clientName}>{b.clientName}</td>
-                        <td className="px-4 py-3 text-right whitespace-nowrap">{getStatusBadge(b.status)}</td>
-                      </tr>
+                      <TableRow key={b.id} className="hover:bg-muted/30 dark:hover:bg-muted-dark/30 transition-colors border-b border-foreground/10 dark:border-foreground-dark/10">
+                        <TableCell className="font-medium whitespace-nowrap py-3">{b.customCode}</TableCell>
+                        <TableCell className="truncate max-w-[120px] py-3" title={b.clientName}>{b.clientName}</TableCell>
+                        <TableCell className="text-right whitespace-nowrap py-3">{getStatusBadge(b.status)}</TableCell>
+                      </TableRow>
                     ))
                   )}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>

@@ -4,6 +4,8 @@ import { useActionState, useState } from "react"
 import FormActions from "./FormActions"
 import { createService, updateService } from "../actions"
 import { Brush, Camera, Crown, Heart, Sparkles, Star, Scissors, Flower2, Gem, Wand2 } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 type Service = {
   id?: string;
@@ -45,9 +47,9 @@ export default function ServiceForm({ service, actionType }: { service?: Service
       <input type="hidden" name="iconName" value={selectedIcon} />
 
       <div className="space-y-3">
-        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Ikon Layanan <span className="text-red-500">*</span>
-        </label>
+        <Label>
+          Ikon Layanan <span className="text-destructive">*</span>
+        </Label>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-3">
           {AVAILABLE_ICONS.map(({ name, icon: Icon }) => (
             <button
@@ -68,25 +70,25 @@ export default function ServiceForm({ service, actionType }: { service?: Service
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Nama Layanan <span className="text-red-500">*</span>
-        </label>
-        <input
+        <Label htmlFor="name">
+          Nama Layanan <span className="text-destructive">*</span>
+        </Label>
+        <Input
           type="text"
           id="name"
           name="name"
           defaultValue={service?.name}
           required
           placeholder="Contoh: Wedding Makeup"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-11 rounded-xl"
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="price" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Harga (Rp) <span className="text-red-500">*</span>
-        </label>
-        <input
+        <Label htmlFor="price">
+          Harga (Rp) <span className="text-destructive">*</span>
+        </Label>
+        <Input
           type="number"
           id="price"
           name="price"
@@ -94,14 +96,14 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           required
           min="0"
           placeholder="Contoh: 1500000"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="h-11 rounded-xl"
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="description" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        <Label htmlFor="description">
           Deskripsi (Opsional)
-        </label>
+        </Label>
         <textarea
           id="description"
           name="description"

@@ -6,6 +6,15 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { PushNotificationManager } from './components/PushNotificationManager'
 import { unsubscribeUser } from './notifications/push-actions'
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 
 export default function TopNav({ userEmail }: { userEmail: string | undefined }) {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
@@ -82,92 +91,74 @@ export default function TopNav({ userEmail }: { userEmail: string | undefined })
         </div>
       </header>
 
-      {/* Logout Confirmation Modal */}
-      <AnimatePresence>
-        {isLogoutModalOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-              onClick={() => setIsLogoutModalOpen(false)}
-            />
-            <div className="fixed inset-0 flex items-center justify-center z-50 px-4 pointer-events-none">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-3xl p-6 md:p-8 w-full max-w-sm shadow-xl pointer-events-auto relative"
-              >
-                <button
-                  onClick={() => setIsLogoutModalOpen(false)}
-                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+      <AlertDialog open={isLogoutModalOpen} onOpenChange={setIsLogoutModalOpen}>
+        <AlertDialogContent className="rounded-3xl p-6 md:p-8 w-[90%] max-w-sm border-foreground/10 dark:border-foreground-dark/10">
+          <button
+            onClick={() => setIsLogoutModalOpen(false)}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted dark:hover:bg-muted-dark text-muted-foreground dark:text-muted-foreground-dark transition-colors z-10"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
-                <div className="text-center mb-8 mt-2">
-                  <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <LogOut className="w-8 h-8 text-red-500" />
-                  </div>
-                  <h3 className="font-serif text-2xl mb-2">Keluar?</h3>
-                  <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark text-sm">
-                    Apakah Anda yakin ingin keluar dari dashboard MUA? Anda harus login kembali untuk masuk.
-                  </p>
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setIsLogoutModalOpen(false)}
-                    disabled={isLoggingOut}
-                    className="flex-1 py-3 px-4 bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark font-medium rounded-full hover:bg-muted/80 dark:bg-muted-dark/80 dark:bg-muted dark:bg-muted-dark/80 transition-colors disabled:opacity-50"
-                  >
-                    Batal
-                  </button>
-                  <form action="/auth/signout" method="post" className="flex-1 flex" onSubmit={async (e) => {
-                    e.preventDefault();
-                    setIsLoggingOut(true);
-
-                    try {
-                      if ("serviceWorker" in navigator && "PushManager" in window) {
-                        const registration = await navigator.serviceWorker.ready;
-                        const existingSub = await registration.pushManager.getSubscription();
-
-                        if (existingSub) {
-                          // Call server action to delete from DB
-                          await unsubscribeUser(existingSub.endpoint);
-                          // Unsubscribe from browser
-                          await existingSub.unsubscribe();
-                        }
-                      }
-                    } catch (error) {
-                      console.error("Failed to unsubscribe on logout", error);
-                    }
-
-                    // Actually submit the form after unsubscribe is done
-                    (e.target as HTMLFormElement).submit();
-                  }}>
-                    <button
-                      disabled={isLoggingOut}
-                      className="flex-1 py-3 px-4 bg-red-500 text-white font-medium rounded-full hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                    >
-                      {isLoggingOut ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          Keluar...
-                        </>
-                      ) : (
-                        'Ya, Keluar'
-                      )}
-                    </button>
-                  </form>
-                </div>
-              </motion.div>
+          <div className="text-center mb-8 mt-2">
+            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <LogOut className="w-8 h-8 text-red-500" />
             </div>
-          </>
-        )}
-      </AnimatePresence>
+            <AlertDialogTitle className="font-serif text-2xl mb-2 text-center text-foreground dark:text-foreground-dark">Keluar?</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground dark:text-muted-foreground-dark text-sm text-center">
+              Apakah Anda yakin ingin keluar dari dashboard MUA? Anda harus login kembali untuk masuk.
+            </AlertDialogDescription>
+          </div>
+
+          <AlertDialogFooter className="flex flex-row gap-3 sm:space-x-0">
+            <AlertDialogCancel
+              disabled={isLoggingOut}
+              className="flex-1 py-3 px-4 h-auto rounded-full mt-0 border-0 shadow-none text-foreground dark:text-foreground-dark bg-muted dark:bg-muted-dark hover:bg-muted/80 dark:hover:bg-muted-dark/80"
+            >
+              Batal
+            </AlertDialogCancel>
+            <form action="/auth/signout" method="post" className="flex-1 flex" onSubmit={async (e) => {
+              e.preventDefault();
+              setIsLoggingOut(true);
+
+              try {
+                if ("serviceWorker" in navigator && "PushManager" in window) {
+                  const registration = await navigator.serviceWorker.ready;
+                  const existingSub = await registration.pushManager.getSubscription();
+
+                  if (existingSub) {
+                    // Call server action to delete from DB
+                    await unsubscribeUser(existingSub.endpoint);
+                    // Unsubscribe from browser
+                    await existingSub.unsubscribe();
+                  }
+                }
+              } catch (error) {
+                console.error("Failed to unsubscribe on logout", error);
+              }
+
+              // Actually submit the form after unsubscribe is done
+              (e.target as HTMLFormElement).submit();
+            }}>
+              <Button
+                variant="destructive"
+                disabled={isLoggingOut}
+                type="submit"
+                className="w-full flex-1 py-3 px-4 h-auto rounded-full font-medium flex items-center justify-center gap-2"
+              >
+                {isLoggingOut ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Keluar...
+                  </>
+                ) : (
+                  'Ya, Keluar'
+                )}
+              </Button>
+            </form>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

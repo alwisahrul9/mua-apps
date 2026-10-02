@@ -6,6 +6,9 @@ import { usePathname, useRouter } from 'next/navigation'
 import { Home, List, Bell, Briefcase, Globe } from 'lucide-react'
 import { createClient } from '../../../utils/supabase/client'
 import { getUnreadNotificationsCount } from './notifications/actions'
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 export default function DashboardNavigation({ userEmail }: { userEmail: string | undefined }) {
   const pathname = usePathname()
@@ -93,17 +96,28 @@ export default function DashboardNavigation({ userEmail }: { userEmail: string |
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${active
-                  ? 'bg-primary text-primary-foreground dark:bg-primary-dark dark:text-primary-foreground-dark'
-                  : 'hover:bg-muted text-foreground/80 dark:hover:bg-muted-dark dark:text-foreground-dark/80'
-                  }`}
+                className={cn(
+                  buttonVariants({ variant: active ? "default" : "ghost" }),
+                  "w-full justify-start gap-3 px-3 py-5 rounded-xl text-sm font-medium transition-all shadow-none",
+                  active
+                    ? 'dark:bg-primary-dark dark:text-primary-foreground-dark'
+                    : 'text-foreground/80 dark:hover:bg-muted-dark dark:text-foreground-dark/80 hover:bg-muted'
+                )}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className="w-5 h-5 shrink-0" />
                 {item.name}
                 {item.badge ? (
-                  <span className={`ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full ${active ? 'bg-primary-foreground text-primary dark:bg-primary-foreground-dark dark:text-primary-dark' : 'bg-primary text-primary-foreground dark:bg-primary-dark dark:text-primary-foreground-dark'}`}>
+                  <Badge 
+                    variant={active ? "secondary" : "default"}
+                    className={cn(
+                      "ml-auto text-[10px] rounded-full px-2 py-0 border-0",
+                      active 
+                        ? 'bg-primary-foreground text-primary dark:bg-primary-foreground-dark dark:text-primary-dark hover:bg-primary-foreground/80' 
+                        : 'bg-primary text-primary-foreground dark:bg-primary-dark dark:text-primary-foreground-dark hover:bg-primary/80'
+                    )}
+                  >
                     {item.badge}
-                  </span>
+                  </Badge>
                 ) : null}
               </Link>
             )

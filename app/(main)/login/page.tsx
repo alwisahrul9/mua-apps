@@ -4,6 +4,9 @@ import { useActionState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Lock, ArrowRight, Loader2 } from 'lucide-react'
 import { login } from './actions'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState(login, undefined)
@@ -29,37 +32,43 @@ export default function LoginPage() {
 
           <form action={action} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Email</label>
+              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
-                <input 
+                <Input 
+                  id="email"
                   required 
                   name="email" 
                   type="email" 
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all" 
+                  autoComplete="email"
+                  suppressHydrationWarning
+                  className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all" 
                   placeholder="admin@example.com" 
                 />
               </div>
             </div>
             
             <div className="space-y-2">
-              <label className="text-sm font-medium">Password</label>
+              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
-                <input 
+                <Input 
+                  id="password"
                   required 
                   name="password" 
                   type="password" 
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all" 
+                  autoComplete="current-password"
+                  suppressHydrationWarning
+                  className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all" 
                   placeholder="••••••••" 
                 />
               </div>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={pending}
-              className="w-full py-4 bg-primary-dark text-primary-foreground-dark rounded-full font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full h-auto py-4 bg-primary-dark text-primary-foreground-dark hover:bg-primary-dark rounded-full font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {pending ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                 <>
@@ -67,7 +76,7 @@ export default function LoginPage() {
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
-            </button>
+            </Button>
           </form>
         </motion.div>
       </div>

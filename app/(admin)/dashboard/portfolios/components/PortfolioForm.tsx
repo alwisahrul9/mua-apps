@@ -6,6 +6,17 @@ import { UploadCloud, Image as ImageIcon } from "lucide-react"
 import * as tus from "tus-js-client"
 import { createClient } from "@/utils/supabase/client"
 import { createPortfolio, checkPortfolioLimit } from "../actions"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { cn } from "cn"
 
 export default function PortfolioForm() {
   const [state, formAction, isServerPending] = useActionState(createPortfolio, undefined)
@@ -172,9 +183,9 @@ export default function PortfolioForm() {
       )}
 
       <div className="space-y-2">
-        <label className="text-sm font-medium leading-none block">
+        <Label className="text-sm font-medium leading-none block">
           Upload Gambar <span className="text-red-500">*</span>
-        </label>
+        </Label>
         {state?.fieldErrors?.imagePath && (
           <p className="text-xs text-red-500 font-medium mt-2 mb-2">{state.fieldErrors.imagePath[0]}</p>
         )}
@@ -218,57 +229,55 @@ export default function PortfolioForm() {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="title" className="text-sm font-medium leading-none block">
+        <Label htmlFor="title" className="text-sm font-medium leading-none block">
           Judul <span className="text-red-500">*</span>
-        </label>
+        </Label>
         {state?.fieldErrors?.title && (
           <p className="text-xs text-red-500 font-medium">{state.fieldErrors.title[0]}</p>
         )}
-        <input
+        <Input
           type="text"
           id="title"
           name="title"
           disabled={isPending}
           placeholder="Contoh: Wedding Mbak Ayu & Mas Budi"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-full rounded-xl bg-transparent px-3 py-1 shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark"
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="category" className="text-sm font-medium leading-none block">
+        <Label htmlFor="category" className="text-sm font-medium leading-none block">
           Kategori <span className="text-red-500">*</span>
-        </label>
+        </Label>
         {state?.fieldErrors?.category && (
           <p className="text-xs text-red-500 font-medium">{state.fieldErrors.category[0]}</p>
         )}
-        <select
-          id="category"
-          name="category"
-          disabled={isPending}
-          defaultValue=""
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 appearance-none"
-        >
-          <option value="" disabled>Pilih Kategori</option>
-          <option value="Pertunangan">Pertunangan</option>
-          <option value="Wisuda">Wisuda</option>
-          <option value="Photoshoot">Photoshoot</option>
-        </select>
+        <Select name="category" disabled={isPending}>
+          <SelectTrigger className="flex h-11 w-full rounded-xl bg-transparent px-3 py-1 shadow-sm transition-colors text-foreground dark:text-foreground-dark data-placeholder:text-muted-foreground dark:data-placeholder:text-muted-foreground-dark">
+            <SelectValue placeholder="Pilih Kategori" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Pertunangan">Pertunangan</SelectItem>
+            <SelectItem value="Wisuda">Wisuda</SelectItem>
+            <SelectItem value="Photoshoot">Photoshoot</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="altText" className="text-sm font-medium leading-none block">
+        <Label htmlFor="altText" className="text-sm font-medium leading-none block">
           Alt Text (Pencarian Google) <span className="text-red-500">*</span>
-        </label>
+        </Label>
         {state?.fieldErrors?.altText && (
           <p className="text-xs text-red-500 font-medium">{state.fieldErrors.altText[0]}</p>
         )}
-        <input
+        <Input
           type="text"
           id="altText"
           name="altText"
           disabled={isPending}
           placeholder="Contoh: Makeup Wedding Tradisional Jawa"
-          className="flex h-11 w-full rounded-xl border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-11 w-full rounded-xl bg-transparent px-3 py-1 shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark"
         />
       </div>
 
@@ -290,16 +299,19 @@ export default function PortfolioForm() {
       <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-border">
         <Link
           href="/dashboard/portfolios"
-          className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition-colors border border-input bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark h-11 ${isPending ? "pointer-events-none opacity-50" : ""
-            }`}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "h-11 rounded-xl px-4 py-2 border-input bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark",
+            isPending && "pointer-events-none opacity-50"
+          )}
           aria-disabled={isPending}
         >
           Batal
         </Link>
-        <button
+        <Button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center justify-center rounded-xl bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark px-4 py-2 text-sm font-medium text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark shadow-sm transition-colors hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90 h-11 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="h-11 rounded-xl bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark px-4 py-2 text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90"
         >
           {isPending ? (
             <>
@@ -312,7 +324,7 @@ export default function PortfolioForm() {
           ) : (
             "Simpan Portofolio"
           )}
-        </button>
+        </Button>
       </div>
     </form>
   )

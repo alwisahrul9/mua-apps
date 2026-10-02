@@ -2,6 +2,9 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 
 export default function MonthRangeFilter() {
   const router = useRouter()
@@ -39,39 +42,43 @@ export default function MonthRangeFilter() {
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-end gap-4 p-4 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm">
+    <div className="flex flex-col sm:flex-row items-end gap-4 p-4 bg-background dark:bg-background-dark rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 shadow-sm">
       <div className="flex-1 w-full flex flex-col gap-2">
-        <label className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Bulan & Tahun Mulai</label>
-        <input
+        <Label htmlFor="start-month" className="text-muted-foreground dark:text-muted-foreground-dark">Bulan & Tahun Mulai</Label>
+        <Input
+          id="start-month"
           type="month"
           value={startMonth}
           onChange={(e) => setStartMonth(e.target.value)}
-          className="h-10 px-3 py-2 bg-transparent border rounded-md text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring w-full focus:ring-offset-2"
+          className="w-full"
         />
       </div>
       <div className="flex-1 w-full flex flex-col gap-2">
-        <label className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">Bulan & Tahun Akhir</label>
-        <input
+        <Label htmlFor="end-month" className="text-muted-foreground dark:text-muted-foreground-dark">Bulan & Tahun Akhir</Label>
+        <Input
+          id="end-month"
           type="month"
           value={endMonth}
           onChange={(e) => setEndMonth(e.target.value)}
-          className="h-10 px-3 py-2 bg-transparent border rounded-md text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring w-full focus:ring-offset-2"
+          className="w-full"
         />
       </div>
       <div className="flex gap-2 w-full sm:w-auto">
-        <button
+        <Button
+          variant="outline"
           onClick={handleReset}
-          className="flex-1 sm:flex-none h-10 px-4 py-2 border rounded-md text-sm font-medium hover:bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="flex-1 sm:flex-none border-foreground/20 dark:border-foreground-dark/20 hover:bg-muted dark:hover:bg-muted-dark"
         >
           Reset
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleFilter}
-          className="flex-1 sm:flex-none h-10 px-4 py-2 bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark rounded-md text-sm font-medium hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="flex-1 sm:flex-none bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark hover:bg-primary/90 dark:hover:bg-primary-dark/90"
         >
           Terapkan
-        </button>
+        </Button>
       </div>
     </div>
   )
 }
+

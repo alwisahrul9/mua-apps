@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AlertTriangle, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function BookingFallbackPage() {
   const router = useRouter()
@@ -34,19 +36,21 @@ export default function BookingFallbackPage() {
         Harap akses detail melalui halaman daftar booking.
       </p>
 
-      <div className="bg-muted/50 dark:bg-muted-dark/50 dark:bg-muted dark:bg-muted-dark/50 p-6 rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 max-w-sm w-full">
-        <p className="text-sm font-medium mb-4">
-          Otomatis kembali dalam <span className="text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark text-lg font-bold mx-1">{countdown}</span> detik
-        </p>
+      <Card className="max-w-sm w-full bg-muted/50 dark:bg-muted-dark/50 border-foreground/10 dark:border-foreground-dark/10 shadow-sm rounded-2xl">
+        <CardContent className="p-6">
+          <p className="text-sm font-medium mb-4">
+            Otomatis kembali dalam <span className="text-primary dark:text-primary-dark text-lg font-bold mx-1">{countdown}</span> detik
+          </p>
 
-        <button 
-          onClick={() => router.replace('/dashboard/bookings')}
-          className="w-full flex items-center justify-center gap-2 bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Kembali ke Daftar Booking
-        </button>
-      </div>
+          <Button 
+            onClick={() => router.replace('/dashboard/bookings')}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-medium"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Kembali ke Daftar Booking
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   )
 }
