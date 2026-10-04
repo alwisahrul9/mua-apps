@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { SerwistProvider } from "@serwist/next/react";
 import { cn } from "@/lib/utils";
 
-const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
+const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,10 +28,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // INI BRANCH DEV
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("h-full", "antialiased", "scroll-smooth", inter.variable, playfair.variable, "font-sans", figtree.variable)}
+      className={cn(
+        "h-full",
+        "antialiased",
+        "scroll-smooth",
+        inter.variable,
+        playfair.variable,
+        "font-sans",
+        figtree.variable,
+      )}
     >
       <head />
       <body className="min-h-full flex flex-col font-sans bg-background-dark text-foreground-dark selection:bg-primary/30">
