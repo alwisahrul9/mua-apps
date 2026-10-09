@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"
+import { getPortfolio } from "@/lib/api/dashboard"
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -12,9 +12,7 @@ import { Badge } from "@/components/ui/badge"
 export default async function PortfolioDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  const portfolio = await prisma.portfolio.findUnique({
-    where: { id }
-  })
+  const portfolio = await getPortfolio(id).catch(() => null)
 
   if (!portfolio) {
     notFound()

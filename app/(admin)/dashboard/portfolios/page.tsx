@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Plus } from "lucide-react"
-import { prisma } from "@/lib/prisma"
+import { listPortfolios } from "@/lib/api/dashboard"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -8,10 +8,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 export default async function PortfoliosPage() {
-  const portfolios = await prisma.portfolio.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 9,
-  })
+  const portfolios = (await listPortfolios()).slice(0, 9)
 
   return (
     <div className="space-y-6">

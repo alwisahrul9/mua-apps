@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Calendar, MapPin, Clock, Info, CreditCard, User, Phone, MessageCircle, Copy, Check, Edit2 } from 'lucide-react'
+import { Calendar, MapPin, Clock, Info, User, Phone, MessageCircle, Copy, Check, Edit2 } from 'lucide-react'
 import Link from 'next/link'
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { formatEventTime } from "@/lib/date-time"
 
 // You might want to define this type in a shared location later
 type BookingDetail = {
@@ -22,7 +23,7 @@ type BookingDetail = {
   totalPerson: number
   eventName: string
   eventDate: Date
-  eventTime: Date
+  eventTime: string
   location: string
   notes: string | null
   paymentDeadline: Date
@@ -158,7 +159,7 @@ export default function BookingModal({ booking }: { booking: BookingDetail }) {
                         {new Date(booking.eventDate).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })}
                       </p>
                       <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
-                        {new Date(booking.eventTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })} WIB
+                        {formatEventTime(booking.eventTime)} WIB
                       </p>
                     </div>
                   </div>
@@ -230,7 +231,7 @@ export default function BookingModal({ booking }: { booking: BookingDetail }) {
                 <div>
                   <h3 className="text-sm font-semibold text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark uppercase tracking-wider mb-2">Catatan Tambahan</h3>
                   <p className="text-sm bg-muted/30 dark:bg-muted-dark/30 dark:bg-muted dark:bg-muted-dark/30 p-4 rounded-xl border border-foreground/5 dark:border-foreground-dark/5 dark:border-foreground dark:border-foreground-dark/5 italic">
-                    "{booking.notes}"
+                    &ldquo;{booking.notes}&rdquo;
                   </p>
                 </div>
               )}
@@ -243,7 +244,7 @@ export default function BookingModal({ booking }: { booking: BookingDetail }) {
           <div className="p-6 border-t border-foreground/10 dark:border-foreground-dark/10 flex justify-end bg-muted/20 dark:bg-muted-dark/20">
             <Button
               onClick={() => {
-                window.location.href = `/dashboard/bookings/${booking.id}/edit`
+                router.push(`/dashboard/bookings/${booking.id}/edit`)
               }}
               className="flex items-center gap-2 px-6 h-11 rounded-xl font-medium shadow-sm bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark hover:bg-primary/90 dark:hover:bg-primary-dark/90 transition-colors"
             >

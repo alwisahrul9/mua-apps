@@ -1,60 +1,127 @@
-import { Metadata } from "next";
-import HomeClient from "@/components/HomeClient";
+import type { Metadata } from "next";
+import PlatformLanding from "@/components/PlatformLanding";
+import { siteConfig } from "@/lib/site-config";
+
+const title = "JadiCantik — Platform Booking dan Website untuk MUA";
+const description =
+  "Buat website MUA profesional, tampilkan portofolio, kelola layanan, dan terima booking klien dalam satu platform yang mudah digunakan.";
 
 export const metadata: Metadata = {
-  title: "MUA by Aldena's Makeup - Layanan Makeup Profesional",
-  description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Dapatkan tampilan flawless dan elegan yang memancarkan kecantikan natural Anda.",
-  keywords: ["MUA", "Makeup Artist", "Makeup Wisuda", "Makeup Engagement", "Makeup Wedding", "Jasa Makeup Profesional"],
-  verification: {
-    google: `${process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION}`
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'default',
-    title: "Aldena's Make Up",
-  },
-  formatDetection: {
-    telephone: false,
+  title: { absolute: title },
+  description,
+  keywords: [
+    "aplikasi MUA",
+    "website makeup artist",
+    "aplikasi booking MUA",
+    "platform makeup artist Indonesia",
+    "manajemen bisnis MUA",
+    "portofolio MUA online",
+  ],
+  alternates: { canonical: siteConfig.url },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   openGraph: {
-    title: "MUA by Aldena's Makeup - Layanan Makeup Profesional",
-    description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Dapatkan tampilan flawless dan elegan yang memancarkan kecantikan natural Anda.",
-    url: "https://aldenas.vercel.app",
-    siteName: "MUA by Aldena Makeup",
-    images: [
-      {
-        url: "https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png",
-        width: 1200,
-        height: 630,
-        alt: "MUA Portfolio Preview",
-      },
-    ],
+    title,
+    description,
+    url: siteConfig.url,
+    siteName: "JadiCantik",
     locale: "id_ID",
     type: "website",
+    images: [
+      {
+        url: "/icon.png",
+        alt: "JadiCantik untuk Makeup Artist",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MUA by Aldena's Makeup - Layanan Makeup Profesional",
-    description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda.",
-    images: ["https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png"],
-  },
-  alternates: {
-    canonical: "https://aldenas.vercel.app",
+    title,
+    description,
+    images: ["/icon.png"],
   },
 };
 
-import { prisma } from "@/lib/prisma";
+export default function Home() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}/#website`,
+        name: "JadiCantik",
+        url: siteConfig.url,
+        description,
+        inLanguage: "id-ID",
+        publisher: { "@id": `${siteConfig.url}/#organization` },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${siteConfig.url}/#organization`,
+        name: siteConfig.name,
+        legalName: siteConfig.legalName,
+        url: siteConfig.url,
+        logo: `${siteConfig.url}/icon.png`,
+        description,
+        sameAs: [
+          siteConfig.instagramUrl,
+          siteConfig.tiktokUrl,
+          siteConfig.googleBusinessUrl,
+        ].filter(Boolean),
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${siteConfig.url}/#software`,
+        name: "JadiCantik",
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        url: siteConfig.url,
+        description,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "IDR" },
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: [
+          [
+            "Apakah JadiCantik bisa digunakan gratis?",
+            "Ya. MUA dapat membuat akun dan menyiapkan halaman untuk mulai menerima booking.",
+          ],
+          [
+            "Apakah saya perlu bisa membuat website?",
+            "Tidak. Halaman publik terbentuk otomatis dari data yang Anda kelola melalui dashboard.",
+          ],
+          [
+            "Apakah klien harus login untuk booking?",
+            "Tidak. Klien dapat melihat layanan dan mengisi booking langsung dari halaman MUA.",
+          ],
+        ].map(([name, text]) => ({
+          "@type": "Question",
+          name,
+          acceptedAnswer: { "@type": "Answer", text },
+        })),
+      },
+    ],
+  };
 
-export default async function Home() {
-  const portfolios = await prisma.portfolio.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 9,
-  });
-
-  const services = await prisma.service.findMany({
-    where: { deletedAt: null },
-    orderBy: { name: "asc" }
-  });
-
-  return <HomeClient portfolios={portfolios} services={services} />;
+  return (
+    <>
+      <script
+        id="platform-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\u003c"),
+        }}
+      />
+      <PlatformLanding />
+    </>
+  );
 }

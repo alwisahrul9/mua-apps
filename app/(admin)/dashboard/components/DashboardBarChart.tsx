@@ -8,6 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  type TooltipItem,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 
@@ -91,9 +92,9 @@ export default function DashboardBarChart({ data }: DashboardBarChartProps) {
       },
       tooltip: {
         callbacks: {
-          label: (context: any) => {
-            let label = context.dataset.label || ''
-            let value = context.parsed.y
+          label: (context: TooltipItem<'bar'>) => {
+            const label = context.dataset.label || ''
+            let value: string | number = context.parsed.y ?? 0
             if (label.includes('Pendapatan')) {
               value = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value)
             }
@@ -128,14 +129,15 @@ export default function DashboardBarChart({ data }: DashboardBarChartProps) {
           drawOnChartArea: false, // only want the grid lines for one axis to show up
         },
         ticks: {
-          callback: (value: any) => {
-            if (value >= 1000000) {
-              return (value / 1000000).toFixed(1) + ' Jt'
+          callback: (value: string | number) => {
+            const numericValue = Number(value)
+            if (numericValue >= 1000000) {
+              return (numericValue / 1000000).toFixed(1) + ' Jt'
             }
-            if (value >= 1000) {
-              return (value / 1000).toFixed(0) + ' K'
+            if (numericValue >= 1000) {
+              return (numericValue / 1000).toFixed(0) + ' K'
             }
-            return value
+            return numericValue
           }
         }
       },
@@ -143,8 +145,16 @@ export default function DashboardBarChart({ data }: DashboardBarChartProps) {
   }
 
   return (
-    <div className="w-full h-full relative min-h-[350px]">
-      <Bar data={chartData} options={options} />
+    <div
+      className="h-full w-full overflow-x-auto overscroll-x-contain pb-2"
+      aria-label="Grafik statistik bulanan, geser horizontal untuk melihat seluruh data"
+    >
+      <div
+        className="relative h-full min-h-[350px]"
+        style={{ minWidth: `${Math.max(640, sortedData.length * 100)}px` }}
+      >
+        <Bar data={chartData} options={options} />
+      </div>
     </div>
   )
 }

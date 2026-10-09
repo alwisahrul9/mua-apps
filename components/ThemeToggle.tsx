@@ -1,57 +1,68 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { motion } from "framer-motion"
+import * as React from "react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
+import { motion } from "framer-motion";
+
+const subscribe = () => () => undefined;
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = React.useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
 
   if (!mounted) {
     return (
-      <div className="w-[52px] h-7 rounded-full bg-muted dark:bg-muted-dark border border-foreground/5 dark:border-foreground-dark/5" />
-    )
+      <div
+        className="h-8 w-14 shrink-0 rounded-full border border-foreground/10 bg-muted dark:border-foreground-dark/10 dark:bg-muted-dark"
+        aria-hidden="true"
+      />
+    );
   }
 
-  const isDark = theme === "dark"
+  const isDark = resolvedTheme === "dark";
 
   return (
     <button
+      type="button"
+      role="switch"
+      aria-checked={isDark}
+      aria-label={isDark ? "Nonaktifkan mode gelap" : "Aktifkan mode gelap"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className={`relative inline-flex h-7 w-[52px] items-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-        isDark ? "bg-muted-dark" : "bg-muted"
+      className={`group relative h-8 w-14 shrink-0 appearance-none rounded-full border transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:shadow-inner ${
+        isDark
+          ? "border-primary-dark/30 bg-primary-dark/30"
+          : "border-foreground/10 bg-muted"
       }`}
-      title="Toggle theme"
     >
-      <span className="sr-only">Toggle theme</span>
-      
-      {/* Background Icon hints (optional but looks nice) */}
-      <span className="absolute left-1.5 flex h-4 w-4 items-center justify-center text-muted-foreground/50">
-        <Moon className="h-3 w-3" />
-      </span>
-      <span className="absolute right-1.5 flex h-4 w-4 items-center justify-center text-muted-foreground/50">
-        <Sun className="h-3 w-3" />
-      </span>
-
-      <motion.div
-        layout
-        transition={{ type: "spring", stiffness: 700, damping: 30 }}
-        className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-background dark:bg-background-dark shadow-sm z-10 ${
-          isDark ? "ml-1" : "ml-[28px]"
-        }`}
+      <motion.span
+        initial={false}
+        animate={{ x: isDark ? 24 : 0 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 380, damping: 26, mass: 0.7 }}
+        className="pointer-events-none absolute left-1 top-1 flex h-6 w-6 transform-gpu items-center justify-center rounded-full bg-background shadow-sm ring-1 ring-black/5 will-change-transform dark:bg-background-dark dark:ring-white/10"
       >
-        {isDark ? (
-          <Moon className="h-3 w-3 text-foreground-dark" />
-        ) : (
-          <Sun className="h-3 w-3 text-foreground" />
-        )}
-      </motion.div>
+        <motion.span
+          initial={false}
+          animate={{ opacity: isDark ? 0 : 1, rotate: isDark ? 90 : 0, scale: isDark ? 0.5 : 1 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="absolute flex items-center justify-center"
+        >
+          <Sun className="h-3.5 w-3.5 text-foreground" />
+        </motion.span>
+        <motion.span
+          initial={false}
+          animate={{ opacity: isDark ? 1 : 0, rotate: isDark ? 0 : -90, scale: isDark ? 1 : 0.5 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="absolute flex items-center justify-center"
+        >
+          <Moon className="h-3.5 w-3.5 text-foreground-dark" />
+        </motion.span>
+      </motion.span>
     </button>
-  )
+  );
 }

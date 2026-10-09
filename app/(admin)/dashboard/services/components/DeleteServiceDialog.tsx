@@ -13,15 +13,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { toast } from "@/components/ui/toast"
 
-export default function DeleteServiceDialog({ action }: { action: () => void }) {
+export default function DeleteServiceDialog({ action }: { action: () => Promise<{ error?: string } | void> }) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault()
-    startTransition(() => {
-      action()
+    startTransition(async () => {
+      const result = await action()
+      if (result?.error) {
+        toast.add({ title: "Gagal menghapus layanan", description: result.error, type: "error", timeout: 6000 })
+        setOpen(false)
+      }
     })
   }
 

@@ -1,16 +1,52 @@
-"use server";
+"use server"
 
-import { z } from "zod";
-import { prisma } from "../../../lib/prisma";
-import { redirect } from "next/navigation";
-import { sendPushNotification } from "@/app/(admin)/dashboard/notifications/push-actions";
+import axios, { AxiosError } from "axios"
+import { z } from "zod"
+import { createPublicBooking, getPublicServices } from "@/lib/api/public"
+
+type BookingFields = {
+  muaSlug: string
+  clientName: string
+  whatsapp: string
+  instagram: string
+  totalPerson: string
+  serviceId: string
+  eventName: string
+  eventDate: string
+  eventTime: string
+  location: string
+  notes: string
+}
+
+export type BookingState = {
+  message?: string
+  errors?: Partial<Record<keyof BookingFields, string[]>>
+  redirectTo?: string
+}
+
+type LaravelValidationResponse = {
+  message?: string
+  errors?: Record<string, string[]>
+}
+
+const backendFieldNames: Record<string, keyof BookingFields> = {
+  username: "muaSlug",
+  service_id: "serviceId",
+  client_name: "clientName",
+  whatsapp: "whatsapp",
+  instagram: "instagram",
+  total_person: "totalPerson",
+  event_name: "eventName",
+  event_date: "eventDate",
+  event_time: "eventTime",
+  location: "location",
+  notes: "notes",
+}
 
 const bookingSchema = z.object({
+  muaSlug: z.string().min(1),
   clientName: z.string().min(1, "Nama lengkap harus diisi"),
-  whatsapp: z
-    .string()
-    .min(11, "Nomor WhatsApp minimal 10 digit")
-    .regex(/^08[0-9]+$/, "Nomor WhatsApp harus diawali dengan 08 dan hanya berisi angka"),
+  whatsapp: z.string().min(10, "Nomor WhatsApp minimal 10 digit").regex(/^08[0-9]+$/, "Nomor WhatsApp harus diawali dengan 08"),
   instagram: z.string().optional(),
   totalPerson: z.coerce.number().min(1, "Jumlah orang minimal 1"),
   serviceId: z.string().min(1, "Layanan harus dipilih"),
@@ -19,119 +55,76 @@ const bookingSchema = z.object({
   eventTime: z.string().min(1, "Waktu acara harus diisi"),
   location: z.string().min(1, "Lokasi harus diisi"),
   notes: z.string().optional(),
-});
+})
 
-import { unstable_cache } from "next/cache";
-
-const getCachedServices = unstable_cache(
-  async () => {
-    return await prisma.service.findMany({
-      where: { deletedAt: null },
-      orderBy: { name: 'asc' }
-    });
-  },
-  ['services-list'],
-  { tags: ['services'], revalidate: 3600 }
-);
-
-export async function getServices() {
-  return await getCachedServices();
+export async function getServices(username: string) {
+  return getPublicServices(username)
 }
 
-export async function createBooking(prevState: any, formData: FormData) {
-  const parsed = bookingSchema.safeParse(Object.fromEntries(formData.entries()));
-
+export async function createBooking(
+  _prevState: BookingState | null,
+  formData: FormData,
+): Promise<BookingState> {
+  const raw = Object.fromEntries(formData.entries())
+  const parsed = bookingSchema.safeParse(raw)
   if (!parsed.success) {
     return {
       errors: parsed.error.flatten().fieldErrors,
       message: "Validasi gagal, mohon periksa kembali isian form Anda.",
-      data: Object.fromEntries(formData.entries()),
-    };
+    }
   }
 
-  const data = parsed.data;
-
-  // Convert date and time
-  const [year, month, day] = data.eventDate.split('-');
-  const [hour, minute] = data.eventTime.split(':');
-
-  const eventDateTime = new Date(`${year}-${month}-${day}T${hour}:${minute}:00+07:00`);
-
-  let customCode = "";
-
+  const data = parsed.data
+  let bookingCode: string | undefined
   try {
-    // Fetch service price from database
-    const service = await prisma.service.findUnique({
-      where: { id: data.serviceId, deletedAt: null }
-    });
-
-    if (!service) {
+    const booking = await createPublicBooking({
+      username: data.muaSlug,
+      service_id: data.serviceId,
+      client_name: data.clientName,
+      whatsapp: data.whatsapp,
+      instagram: data.instagram || null,
+      total_person: data.totalPerson,
+      event_name: data.eventName,
+      event_date: data.eventDate,
+      event_time: data.eventTime,
+      location: data.location,
+      notes: data.notes || null,
+    })
+    bookingCode = booking.customCode
+  } catch (error) {
+    if (!axios.isAxiosError(error)) {
       return {
-        message: "Layanan tidak ditemukan.",
-        data: Object.fromEntries(formData.entries()),
-      };
+        message:
+          error instanceof Error ? error.message : "Gagal membuat booking.",
+      }
     }
 
-    const price = service.price;
+    const response = (error as AxiosError<LaravelValidationResponse>).response
+    const errors: BookingState["errors"] = {}
 
-    const paymentDeadline = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    customCode = "BKG-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    const findCode = await prisma.booking.findUnique({
-      where: {
-        customCode: customCode,
-      },
-    });
-
-    if (findCode) {
-      customCode = "BKG-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    for (const [backendField, messages] of Object.entries(
+      response?.data?.errors ?? {},
+    )) {
+      const field = backendFieldNames[backendField]
+      if (field && Array.isArray(messages)) errors[field] = messages
     }
 
-    const newBooking = await prisma.booking.create({
-      data: {
-        clientName: data.clientName.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-        whatsapp: data.whatsapp.replace(/^0/, '62'),
-        instagram: data.instagram ? data.instagram.replace(/@/g, '') : data.instagram,
-        totalPerson: data.totalPerson,
-        serviceId: data.serviceId,
-        eventName: data.eventName,
-        eventDate: eventDateTime,
-        eventTime: eventDateTime,
-        location: data.location,
-        notes: data.notes,
-        paymentDeadline: paymentDeadline,
-        customCode: customCode,
-        totalPrice: price * data.totalPerson,
-        dpAmount: (price * data.totalPerson) * 0.3,
-        status: 'PENDING'
-      }
-    });
-
-    // Convert client name to title case
-    const convertClientName = data.clientName.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-
-    await prisma.notification.create({
-      data: {
-        title: "Booking Baru Diterima",
-        message: `${convertClientName} baru saja membuat booking untuk acara ${data.eventName}.`,
-        type: "new_booking",
-        bookingId: newBooking.id,
-      }
-    });
-
-    // Send push notification
-    await sendPushNotification(
-      "Booking Baru Diterima",
-      `${convertClientName} baru saja membuat booking untuk acara ${data.eventName}.`
-    );
-
-  } catch (e: any) {
-    console.error(e);
+    const hasFieldErrors = Object.keys(errors).length > 0
     return {
-      message: "Gagal menyimpan data booking. " + e.message,
-    };
+      message:
+        response?.data?.message ??
+        (hasFieldErrors
+          ? "Periksa kembali data booking Anda."
+          : "Gagal membuat booking. Silakan coba lagi."),
+      ...(hasFieldErrors ? { errors } : {}),
+    }
   }
 
-  // Next.js redirect must be called outside try/catch
-  redirect(`/booking/success/${customCode}`);
+  if (!bookingCode) {
+    return { message: "Kode booking tidak diterima. Silakan coba lagi." }
+  }
+
+  return {
+    redirectTo: `/${encodeURIComponent(data.muaSlug)}/booking/success/${encodeURIComponent(bookingCode)}`,
+  }
 }

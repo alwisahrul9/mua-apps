@@ -5,13 +5,20 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
-export function Navbar() {
+export function Navbar({
+  username,
+  brandName = "JadiCantik",
+}: {
+  username?: string;
+  brandName?: string;
+}) {
   const pathname = usePathname();
-  const [activeHash, setActiveHash] = useState("");
+  const homeHref = username ? `/${username}` : "/";
+  const [activeHash, setActiveHash] = useState(() =>
+    typeof window === "undefined" ? "" : window.location.hash,
+  );
 
   useEffect(() => {
-    setActiveHash(window.location.hash);
-
     const handleHashChange = () => {
       setActiveHash(window.location.hash);
     };
@@ -20,20 +27,29 @@ export function Navbar() {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, [pathname]);
 
-  const navLinks = [
-    { href: "/", label: "Beranda" },
-    { href: "/#portfolio", label: "Portofolio" },
-    { href: "/#services", label: "Layanan" },
-    { href: "/booking", label: "Booking" },
-  ];
+  const navLinks = username
+    ? [
+        { href: homeHref, label: "Beranda" },
+        { href: `${homeHref}#about`, label: "Tentang" },
+        { href: `${homeHref}#services`, label: "Layanan" },
+        { href: `${homeHref}#portfolio`, label: "Portofolio" },
+        { href: `${homeHref}#faq`, label: "FAQ" },
+        { href: `${homeHref}/booking`, label: "Booking" },
+      ]
+    : [
+        { href: "/", label: "Beranda" },
+        { href: "/#fitur", label: "Fitur" },
+        { href: "/#cara-kerja", label: "Cara kerja" },
+        { href: "/#faq", label: "FAQ" },
+      ];
 
   const checkIsActive = (href: string) => {
     if (href.includes("#")) {
       const [path, hash] = href.split("#");
       return pathname === path && activeHash === `#${hash}`;
     }
-    if (href === "/") {
-      return pathname === "/" && !activeHash;
+    if (href === homeHref) {
+      return pathname === homeHref && !activeHash;
     }
     return pathname === href;
   };
@@ -43,11 +59,11 @@ export function Navbar() {
       <div className="container-custom mx-auto">
         <div className="flex items-center justify-between h-20">
           <Link
-            href="/"
+            href={homeHref}
             onClick={() => setActiveHash("")}
             className="font-serif text-2xl font-medium tracking-tight"
           >
-            Aldena's Makeup <span className="text-primary-dark italic">.</span>
+            {brandName} <span className="text-primary-dark italic">.</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -60,7 +76,7 @@ export function Navbar() {
                   onClick={() => {
                     if (link.href.includes("#")) {
                       setActiveHash("#" + link.href.split("#")[1]);
-                    } else if (link.href === "/") {
+                    } else if (link.href === homeHref) {
                       setActiveHash("");
                     }
                   }}
@@ -80,10 +96,10 @@ export function Navbar() {
 
           <div className="flex items-center gap-4">
             <Link
-              href="/booking"
+              href={username ? `${homeHref}/booking` : "/register"}
               className="px-5 py-2.5 bg-foreground-dark text-background-dark text-sm font-medium rounded-full hover:bg-foreground-dark/90 transition-colors"
             >
-              Pesan Jadwal
+              {username ? "Pesan Jadwal" : "Daftar Gratis"}
             </Link>
           </div>
         </div>

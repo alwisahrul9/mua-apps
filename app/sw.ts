@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import { Serwist } from "serwist";
@@ -8,7 +10,7 @@ declare global {
   }
 }
 
-declare const self: any;
+declare const self: ServiceWorkerGlobalScope & typeof globalThis;
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
@@ -20,38 +22,39 @@ const serwist = new Serwist({
 
 serwist.addEventListeners();
 
-self.addEventListener("push", (event: any) => {
-  if (event.data) {
-    const data = event.data.json();
-    const options: any = {
-      body: data.body,
-      icon: data.icon || "https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png",
-      badge: "https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png",
-      vibrate: [100, 50, 100],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: "2",
-        url: data.url || "/",
-      },
-    };
-    event.waitUntil(self.registration.showNotification(data.title, options));
-  }
+self.addEventListener("push", (event: PushEvent) => {
+  if (!event.data) return;
+  event.waitUntil((async () => {
+    try {
+      const data = event.data!.json() as { title: string; body: string; userId: string; icon?: string; tag?: string; url?: string; bookingId?: string };
+      const response = await fetch("/api/auth/session", { credentials: "same-origin", cache: "no-store" });
+      if (!response.ok) return;
+      const session = await response.json() as { user?: { id?: string } };
+      if (!session.user?.id || session.user.id !== data.userId) return;
+      await self.registration.showNotification(data.title, {
+        body: data.body,
+        icon: data.icon || "/icon.png",
+        badge: "/icon.png",
+        tag: data.tag,
+        data: { url: data.url || "/dashboard/bookings", bookingId: data.bookingId },
+      });
+      const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      for (const client of clients) client.postMessage({ type: "booking-notification", bookingId: data.bookingId });
+    } catch {
+      // Ignore malformed payloads or unavailable login sessions.
+    }
+  })());
 });
 
-self.addEventListener("notificationclick", (event: any) => {
+self.addEventListener("notificationclick", (event: NotificationEvent) => {
   event.notification.close();
-  const urlToOpen = new URL(event.notification.data.url, self.location.origin).href;
+  const target = new URL(event.notification.data?.url || "/dashboard/bookings", self.location.origin);
+  if (target.origin !== self.location.origin) return;
+  const urlToOpen = target.href;
   
   event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients: any[]) => {
-      let matchingClient = null;
-      for (let i = 0; i < windowClients.length; i++) {
-        const windowClient = windowClients[i];
-        if (windowClient.url === urlToOpen) {
-          matchingClient = windowClient;
-          break;
-        }
-      }
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
+      const matchingClient = windowClients.find((client) => client.url === urlToOpen);
 
       if (matchingClient) {
         return matchingClient.focus();

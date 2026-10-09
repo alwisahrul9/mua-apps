@@ -1,79 +1,59 @@
-'use server'
+"use server"
 
-import { prisma } from '@/lib/prisma'
-import { Prisma, StatusBooking } from '@/generated/prisma/client'
+import { revalidatePath } from "next/cache"
+import { apiErrorMessage, unwrapData } from "@/lib/api/client"
+import { getBooking, listBookings } from "@/lib/api/dashboard"
+import { serverApi } from "@/lib/api/server"
+import type { Booking, BookingStatus } from "@/lib/api/types"
+import { databaseTimeValue } from "@/lib/date-time"
 
-export async function getBookings(skip: number = 0, take: number = 10, searchQuery?: string, statusFilter?: string) {
+export async function getBookings(
+  page = 1,
+  searchQuery?: string,
+  statusFilter?: string,
+) {
   try {
-    const whereClause: Prisma.BookingWhereInput = {}
-
-    if (searchQuery) {
-      whereClause.OR = [
-        { clientName: { contains: searchQuery, mode: 'insensitive' } },
-        { customCode: { contains: searchQuery, mode: 'insensitive' } }
-      ]
-    }
-
-    if (statusFilter && statusFilter !== 'all') {
-      whereClause.status = statusFilter as StatusBooking
-    }
-
-    const bookings = await prisma.booking.findMany({
-      where: whereClause,
-      skip,
-      take,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        clientName: true,
-        customCode: true,
-        status: true,
-        createdAt: true,
-      },
+    const result = await listBookings({
+      page,
+      search: searchQuery?.trim() || undefined,
+      status: statusFilter && statusFilter !== "all" ? statusFilter : undefined,
     })
-    return { data: bookings }
+    return {
+      data: result.data,
+      currentPage: result.currentPage ?? page,
+      lastPage: result.lastPage ?? page,
+    }
   } catch (error) {
-    console.error('Failed to fetch bookings:', error)
-    return { error: 'Failed to fetch bookings' }
+    return {
+      data: [],
+      currentPage: page,
+      lastPage: page,
+      error: apiErrorMessage(error, "Gagal memuat booking."),
+    }
   }
 }
 
 export async function getBookingDetail(id: string) {
   try {
-    const booking = await prisma.booking.findUnique({
-      where: { id },
-      include: {
-        service: true
-      }
-    })
-
-    if (!booking) return { error: 'Booking not found' }
-
-    return { data: booking }
+    return { data: await getBooking(id) }
   } catch (error) {
-    console.error('Failed to fetch booking detail:', error)
-    return { error: 'Failed to fetch booking detail' }
+    return { error: apiErrorMessage(error, "Booking tidak ditemukan.") }
   }
 }
 
-import { revalidatePath } from 'next/cache'
-
-export async function updateBookingStatusAndSchedule(id: string, data: { status: StatusBooking, eventDate: Date, eventTime: Date }) {
+export async function updateBooking(
+  id: string,
+  data: { status: BookingStatus; eventDate: string; eventTime: string },
+) {
   try {
-    const updated = await prisma.booking.update({
-      where: { id },
-      data: {
-        status: data.status,
-        eventDate: data.eventDate,
-        eventTime: data.eventTime,
-      }
+    const response = await (await serverApi()).put(`/dashboard/bookings/${encodeURIComponent(id)}`, {
+      status: data.status,
+      event_date: data.eventDate,
+      event_time: databaseTimeValue(data.eventTime),
     })
-    revalidatePath('/dashboard')
-    return { data: updated }
+    revalidatePath("/dashboard")
+    return { data: unwrapData<Booking>(response.data) }
   } catch (error) {
-    console.error('Failed to update booking:', error)
-    return { error: 'Failed to update booking' }
+    return { error: apiErrorMessage(error, "Gagal memperbarui booking.") }
   }
 }

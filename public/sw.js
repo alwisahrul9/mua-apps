@@ -3264,35 +3264,35 @@ var serwist = new Serwist({
 });
 serwist.addEventListeners();
 self.addEventListener("push", (event) => {
-  if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: data.icon || "https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png",
-      badge: "https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png",
-      vibrate: [100, 50, 100],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: "2",
-        url: data.url || "/"
-      }
-    };
-    event.waitUntil(self.registration.showNotification(data.title, options));
-  }
+  if (!event.data) return;
+  event.waitUntil((async () => {
+    try {
+      const data = event.data.json();
+      const response = await fetch("/api/auth/session", { credentials: "same-origin", cache: "no-store" });
+      if (!response.ok) return;
+      const session = await response.json();
+      if (!session.user?.id || session.user.id !== data.userId) return;
+      await self.registration.showNotification(data.title, {
+        body: data.body,
+        icon: data.icon || "/icon.png",
+        badge: "/icon.png",
+        tag: data.tag,
+        data: { url: data.url || "/dashboard/bookings", bookingId: data.bookingId }
+      });
+      const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      for (const client of clients) client.postMessage({ type: "booking-notification", bookingId: data.bookingId });
+    } catch {
+    }
+  })());
 });
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const urlToOpen = new URL(event.notification.data.url, self.location.origin).href;
+  const target = new URL(event.notification.data?.url || "/dashboard/bookings", self.location.origin);
+  if (target.origin !== self.location.origin) return;
+  const urlToOpen = target.href;
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
-      let matchingClient = null;
-      for (let i = 0; i < windowClients.length; i++) {
-        const windowClient = windowClients[i];
-        if (windowClient.url === urlToOpen) {
-          matchingClient = windowClient;
-          break;
-        }
-      }
+      const matchingClient = windowClients.find((client) => client.url === urlToOpen);
       if (matchingClient) {
         return matchingClient.focus();
       } else {

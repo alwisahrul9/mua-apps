@@ -1,12 +1,11 @@
 "use client"
 
-import { useActionState, useState, useRef, startTransition } from "react"
+import { useActionState, useState } from "react"
 import Link from "next/link"
-import { UploadCloud, Image as ImageIcon } from "lucide-react"
-import * as tus from "tus-js-client"
-import { createClient } from "@/utils/supabase/client"
-import { createPortfolio, checkPortfolioLimit } from "../actions"
+import { ImageIcon, Loader2 } from "lucide-react"
+import { createPortfolio, deletePendingPortfolioImage } from "../actions"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -16,314 +15,160 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { cn } from "cn"
+import { useActionToast } from "@/hooks/use-action-toast"
+import ResumableImageUpload from "@/components/ResumableImageUpload"
+import { toast } from "@/components/ui/toast"
 
 export default function PortfolioForm() {
-  const [state, formAction, isServerPending] = useActionState(createPortfolio, undefined)
-  const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const [progress, setProgress] = useState(0)
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadError, setUploadError] = useState<string | null>(null)
-  const formRef = useRef<HTMLFormElement>(null)
+  const [state, action, pending] = useActionState(createPortfolio, undefined)
+  const [imageUrl, setImageUrl] = useState("")
+  const [title, setTitle] = useState("")
+  const [category, setCategory] = useState("")
+  const [altText, setAltText] = useState("")
+  const [removingImage, setRemovingImage] = useState(false)
+  useActionToast(state)
 
-  const isPending = isServerPending || isUploading
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setUploadError("Ukuran gambar maksimal 5MB")
-        e.target.value = ''
-        return
-      }
-      const acceptedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
-      if (!acceptedTypes.includes(file.type)) {
-        setUploadError("Format gambar harus .jpg, .jpeg, .png, atau .webp")
-        e.target.value = ''
-        return
-      }
-      setUploadError(null)
-      const url = URL.createObjectURL(file)
-      setPreviewImage(url)
-    } else {
-      setPreviewImage(null)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    setUploadError(null)
-
-    const formData = new FormData(e.currentTarget)
-    const file = formData.get("image") as File
-
-    // Jika tidak ada file, langsung submit ke server action untuk memicu validasi Zod
-    if (!file || file.size === 0) {
-      startTransition(() => {
-        formAction(formData)
-      })
-      return
-    }
-
-    setIsUploading(true)
-    setProgress(0)
-
+  async function removeUploadedImage() {
+    if (!imageUrl || removingImage) return false
+    setRemovingImage(true)
     try {
-      // Cek limit dari server sebelum memulai upload
-      const limitCheck = await checkPortfolioLimit()
-      if (limitCheck.error) {
-        setUploadError(limitCheck.error)
-        setIsUploading(false)
-        return
+      const result = await deletePendingPortfolioImage(imageUrl)
+      if (result.error) {
+        toast.add({
+          title: "Gagal menghapus gambar",
+          description: result.error,
+          type: "error",
+          timeout: 6000,
+        })
+        return false
       }
 
-      if (!navigator.onLine) {
-        setUploadError("Koneksi internet terputus. Silakan periksa jaringan Anda.")
-        setIsUploading(false)
-        return
-      }
-
-      const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
-
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `images/${fileName}`
-
-      let upload: tus.Upload
-
-      const handleOffline = async () => {
-        if (upload) {
-          upload.abort()
-        }
-        setUploadError("Koneksi internet terputus. Batal menyimpan portofolio.")
-        setIsUploading(false)
-        window.removeEventListener('offline', handleOffline)
-
-        try {
-          await supabase.storage.from('portfolios').remove([filePath])
-        } catch (e) { }
-      }
-
-      window.addEventListener('offline', handleOffline)
-
-      upload = new tus.Upload(file, {
-        endpoint: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/upload/resumable`,
-        retryDelays: [0, 3000, 5000, 10000, 20000],
-        headers: {
-          authorization: `Bearer ${session?.access_token ?? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}`,
-          'x-upsert': 'true',
-        },
-        uploadDataDuringCreation: true,
-        removeFingerprintOnSuccess: true,
-        metadata: {
-          bucketName: 'portfolios',
-          objectName: filePath,
-          contentType: file.type,
-          cacheControl: '3600',
-        },
-        chunkSize: 6 * 1024 * 1024,
-        onError: function (error: any) {
-          window.removeEventListener('offline', handleOffline)
-          console.error("Upload error:", error)
-          let errorMsg = error.message
-          if (error.originalRequest) {
-            try {
-              const response = error.originalRequest.getResponse()
-              const body = JSON.parse(response.getBody())
-              if (body.message) errorMsg = body.message
-              else if (body.error) errorMsg = body.error
-            } catch (e) { }
-          }
-          setUploadError("Gagal mengunggah gambar: " + errorMsg)
-          setIsUploading(false)
-        },
-        onProgress: function (bytesUploaded, bytesTotal) {
-          const percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
-          setProgress(Number(percentage))
-        },
-        onSuccess: async function () {
-          window.removeEventListener('offline', handleOffline)
-
-          if (!navigator.onLine) {
-            setUploadError("Koneksi internet terputus. Batal menyimpan data.")
-            setIsUploading(false)
-            try {
-              await supabase.storage.from('portfolios').remove([filePath])
-            } catch (e) { }
-            return
-          }
-
-          formData.set("imagePath", filePath)
-          formData.delete("image")
-
-          startTransition(() => {
-            formAction(formData)
-            setIsUploading(false)
-          })
-        }
+      setImageUrl("")
+      toast.add({
+        title: result.success ?? "Gambar berhasil dihapus.",
+        type: "success",
+        timeout: 5000,
       })
-
-      upload.start()
-
-    } catch (error: any) {
-      console.error(error)
-      setUploadError(error.message || "Terjadi kesalahan jaringan.")
-      setIsUploading(false)
+      return true
+    } catch {
+      toast.add({
+        title: "Gagal menghapus gambar",
+        description: "Silakan coba lagi.",
+        type: "error",
+        timeout: 6000,
+      })
+      return false
+    } finally {
+      setRemovingImage(false)
     }
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-      {(uploadError) && (
-        <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm font-medium">
-          {uploadError}
-        </div>
-      )}
+    <form action={action} noValidate className="space-y-6">
+      {state?.error && <p className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500">{state.error}</p>}
+
+      <ResumableImageUpload
+        id="image"
+        name="imageUrl"
+        label="Gambar"
+        purpose="portfolio"
+        value={imageUrl}
+        onChange={setImageUrl}
+        required
+        disabled={pending || removingImage}
+        error={state?.fieldErrors?.imageUrl?.[0]}
+        onRemove={removeUploadedImage}
+        removeDisabled={removingImage}
+        requireRemoveBeforeReplace
+      />
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium leading-none block">
-          Upload Gambar <span className="text-red-500">*</span>
+        <Label htmlFor="title">
+          Judul <span className="text-destructive">*</span>
         </Label>
-        {state?.fieldErrors?.imagePath && (
-          <p className="text-xs text-red-500 font-medium mt-2 mb-2">{state.fieldErrors.imagePath[0]}</p>
-        )}
-
-        <div className="flex flex-col gap-4">
-          <label
-            htmlFor="image"
-            className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl cursor-pointer bg-muted/30 dark:bg-muted-dark/30 dark:bg-muted dark:bg-muted-dark/30 hover:bg-muted/50 dark:bg-muted-dark/50 dark:bg-muted dark:bg-muted-dark/50 transition-colors ${isPending ? 'opacity-50 cursor-not-allowed' : 'border-foreground/20 dark:border-foreground-dark/20 dark:border-foreground dark:border-foreground-dark/20 hover:border-foreground/40 dark:border-foreground-dark/40 dark:border-foreground dark:border-foreground-dark/40'
-              }`}
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark" />
-              <p className="mb-2 text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark text-center px-4">
-                <span className="font-semibold text-foreground dark:text-foreground-dark dark:text-foreground dark:text-foreground-dark">
-                  {previewImage ? "Klik untuk mengganti gambar" : "Klik untuk mengunggah"}
-                </span>
-              </p>
-              <p className="text-xs text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">PNG, JPG atau WEBP (Maks. 5MB)</p>
-            </div>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/jpeg, image/jpg, image/png, image/webp"
-              onChange={handleImageChange}
-              disabled={isPending}
-              className="hidden"
-            />
-          </label>
-
-          {previewImage && (
-            <div>
-              <p className="text-sm font-medium mb-2">Preview:</p>
-              <div className="relative rounded-2xl border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 overflow-hidden w-full max-w-[240px] aspect-[3/4] bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark group">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="title" className="text-sm font-medium leading-none block">
-          Judul <span className="text-red-500">*</span>
-        </Label>
-        {state?.fieldErrors?.title && (
-          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.title[0]}</p>
-        )}
         <Input
-          type="text"
           id="title"
           name="title"
-          disabled={isPending}
-          placeholder="Contoh: Wedding Mbak Ayu & Mas Budi"
-          className="flex h-11 w-full rounded-xl bg-transparent px-3 py-1 shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          placeholder="Contoh: Makeup Wedding Tradisional"
+          disabled={pending}
+          aria-invalid={Boolean(state?.fieldErrors?.title)}
+          aria-describedby={state?.fieldErrors?.title ? "title-error" : undefined}
+          className="h-11 rounded-xl bg-background px-3 text-base shadow-none touch-manipulation dark:bg-background-dark md:text-sm"
         />
+        {state?.fieldErrors?.title && (
+          <p id="title-error" className="text-xs text-red-500">
+            {state.fieldErrors.title[0]}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="category" className="text-sm font-medium leading-none block">
-          Kategori <span className="text-red-500">*</span>
+        <Label htmlFor="category-trigger">
+          Kategori <span className="text-destructive">*</span>
         </Label>
-        {state?.fieldErrors?.category && (
-          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.category[0]}</p>
-        )}
-        <Select name="category" disabled={isPending}>
-          <SelectTrigger className="flex h-11 w-full rounded-xl bg-transparent px-3 py-1 shadow-sm transition-colors text-foreground dark:text-foreground-dark data-placeholder:text-muted-foreground dark:data-placeholder:text-muted-foreground-dark">
-            <SelectValue placeholder="Pilih Kategori" />
+        <input type="hidden" name="category" value={category} />
+        <Select
+          value={category}
+          onValueChange={(value) => setCategory(value ?? "")}
+          disabled={pending}
+        >
+          <SelectTrigger
+            id="category-trigger"
+            aria-invalid={Boolean(state?.fieldErrors?.category)}
+            aria-describedby={
+              state?.fieldErrors?.category ? "category-error" : undefined
+            }
+            className="h-11 w-full rounded-xl bg-background px-3 text-base shadow-none touch-manipulation dark:bg-background-dark md:text-sm"
+          >
+            <SelectValue placeholder="Pilih kategori" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent align="start" className="rounded-xl">
             <SelectItem value="Pertunangan">Pertunangan</SelectItem>
             <SelectItem value="Wisuda">Wisuda</SelectItem>
             <SelectItem value="Photoshoot">Photoshoot</SelectItem>
           </SelectContent>
         </Select>
+        {state?.fieldErrors?.category && (
+          <p id="category-error" className="text-xs text-red-500">
+            {state.fieldErrors.category[0]}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="altText" className="text-sm font-medium leading-none block">
-          Alt Text (Pencarian Google) <span className="text-red-500">*</span>
+        <Label htmlFor="altText">
+          Alt Text (SEO) <span className="text-destructive">*</span>
         </Label>
+        <div className="relative">
+          <ImageIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="altText"
+            name="altText"
+            value={altText}
+            onChange={(event) => setAltText(event.target.value)}
+            className="h-11 rounded-xl bg-background pl-10 pr-3 text-base shadow-none touch-manipulation dark:bg-background-dark md:text-sm"
+            placeholder="Jelaskan isi foto secara singkat"
+            disabled={pending}
+            aria-invalid={Boolean(state?.fieldErrors?.altText)}
+            aria-describedby={
+              state?.fieldErrors?.altText ? "alt-text-error" : undefined
+            }
+          />
+        </div>
         {state?.fieldErrors?.altText && (
-          <p className="text-xs text-red-500 font-medium">{state.fieldErrors.altText[0]}</p>
+          <p id="alt-text-error" className="text-xs text-red-500">
+            {state.fieldErrors.altText[0]}
+          </p>
         )}
-        <Input
-          type="text"
-          id="altText"
-          name="altText"
-          disabled={isPending}
-          placeholder="Contoh: Makeup Wedding Tradisional Jawa"
-          className="flex h-11 w-full rounded-xl bg-transparent px-3 py-1 shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark"
-        />
       </div>
 
-      {isPending && progress > 0 && (
-        <div className="w-full space-y-2 animate-in fade-in zoom-in duration-300">
-          <div className="flex justify-between text-xs font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
-            <span>Mengunggah file...</span>
-            <span>{Math.round(progress)}%</span>
-          </div>
-          <div className="w-full h-2 bg-muted dark:bg-muted-dark dark:bg-muted dark:bg-muted-dark rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark transition-all duration-300 ease-out rounded-full"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-border">
-        <Link
-          href="/dashboard/portfolios"
-          className={cn(
-            buttonVariants({ variant: "outline" }),
-            "h-11 rounded-xl px-4 py-2 border-input bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark",
-            isPending && "pointer-events-none opacity-50"
-          )}
-          aria-disabled={isPending}
-        >
-          Batal
-        </Link>
-        <Button
-          type="submit"
-          disabled={isPending}
-          className="h-11 rounded-xl bg-primary dark:bg-primary-dark dark:bg-primary dark:bg-primary-dark px-4 py-2 text-primary-foreground dark:text-primary-foreground-dark dark:text-primary-foreground dark:text-primary-foreground-dark hover:bg-primary/90 dark:bg-primary-dark/90 dark:bg-primary dark:bg-primary-dark/90"
-        >
-          {isPending ? (
-            <>
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Menyimpan dan Mengunggah...
-            </>
-          ) : (
-            "Simpan Portofolio"
-          )}
+      <div className="flex flex-col-reverse gap-3 border-t pt-4 sm:flex-row sm:justify-end">
+        <Link href="/dashboard/portfolios" className={cn(buttonVariants({ variant: "ghost" }), "h-11 rounded-xl touch-manipulation")}>Batal</Link>
+        <Button type="submit" disabled={pending || removingImage || !imageUrl} className="h-11 rounded-xl touch-manipulation">
+          {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Simpan Portofolio
         </Button>
       </div>
     </form>

@@ -1,16 +1,14 @@
-import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
+import { auth, signOut } from '@/auth'
+import { createApiClient } from '@/lib/api/client'
 
-export async function POST(request: Request) {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (user) {
-    await supabase.auth.signOut()
+export async function POST() {
+  const session = await auth()
+  if (session?.accessToken) {
+    try {
+      await createApiClient(session.accessToken).post('/auth/logout')
+    } catch {
+      // Tetap hapus sesi frontend jika token backend sudah tidak valid.
+    }
   }
-
-  return redirect('/login')
+  await signOut({ redirectTo: '/' })
 }

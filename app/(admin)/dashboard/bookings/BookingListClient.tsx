@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { type FormEvent, useState, useRef, useCallback } from 'react'
 import { getBookings } from './actions'
 import { Loader2, Search, Filter } from 'lucide-react'
 import Link from 'next/link'
@@ -15,15 +15,37 @@ type BookingItem = {
   clientName: string
   customCode: string | null
   status: string
-  createdAt: Date
+  createdAt: string
 }
 
-export default function BookingListClient({ initialBookings }: { initialBookings: BookingItem[] }) {
+type BookingListClientProps = {
+  initialBookings: BookingItem[]
+  initialPage: number
+  initialLastPage: number
+}
+
+function mapStatusToApi(status: string) {
+  switch (status) {
+    case 'Pending': return 'PENDING'
+    case 'DP Paid': return 'DP_PAID'
+    case 'Completed': return 'COMPLETED'
+    case 'Canceled': return 'CANCELED'
+    case 'Semua Status':
+    default: return 'all'
+  }
+}
+
+export default function BookingListClient({
+  initialBookings,
+  initialPage,
+  initialLastPage,
+}: BookingListClientProps) {
   const [bookings, setBookings] = useState<BookingItem[]>(initialBookings)
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(initialPage)
   const [loading, setLoading] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
-  const [hasMore, setHasMore] = useState(initialBookings.length === 10)
+  const [hasMore, setHasMore] = useState(initialPage < initialLastPage)
+  const [error, setError] = useState<string | null>(null)
 
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState('')
@@ -31,63 +53,65 @@ export default function BookingListClient({ initialBookings }: { initialBookings
   const [activeSearch, setActiveSearch] = useState('')
   const [activeFilter, setActiveFilter] = useState('Semua Status')
 
-  const mapStatusToApi = (status: string) => {
-    switch (status) {
-      case 'Pending': return 'PENDING'
-      case 'DP Paid': return 'DP_PAID'
-      case 'Completed': return 'COMPLETED'
-      case 'Canceled': return 'CANCELED'
-      case 'Semua Status':
-      default: return 'all'
+  const observer = useRef<IntersectionObserver | null>(null)
+
+  const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsSearching(true)
+    setError(null)
+    const normalizedSearch = searchQuery.trim()
+    setActiveSearch(normalizedSearch)
+    setActiveFilter(statusFilter)
+
+    const apiFilter = mapStatusToApi(statusFilter)
+    const result = await getBookings(1, normalizedSearch, apiFilter)
+
+    if (result.error) {
+      setError(result.error)
+    } else {
+      setBookings(result.data)
+      setPage(result.currentPage)
+      setHasMore(result.currentPage < result.lastPage)
     }
+    setIsSearching(false)
   }
 
-  const observer = useRef<IntersectionObserver | null>(null)
+  const loadMoreBookings = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    const nextPage = page + 1
+    const apiFilter = mapStatusToApi(activeFilter)
+    const result = await getBookings(nextPage, activeSearch, apiFilter)
+
+    if (result.error) {
+      setError(result.error)
+    } else {
+      setBookings((current) => {
+        const existingIds = new Set(current.map((booking) => booking.id))
+        return [
+          ...current,
+          ...result.data.filter((booking) => !existingIds.has(booking.id)),
+        ]
+      })
+      setPage(result.currentPage)
+      setHasMore(result.currentPage < result.lastPage)
+    }
+    setLoading(false)
+  }, [activeFilter, activeSearch, page])
+
   const lastBookingElementRef = useCallback(
     (node: HTMLAnchorElement | null) => {
       if (loading || isSearching) return
       if (observer.current) observer.current.disconnect()
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          loadMoreBookings()
+          void loadMoreBookings()
         }
       })
       if (node) observer.current.observe(node)
     },
-    [loading, isSearching, hasMore]
+    [hasMore, isSearching, loadMoreBookings, loading],
   )
-
-  const handleSearch = async () => {
-    setIsSearching(true)
-    setActiveSearch(searchQuery)
-    setActiveFilter(statusFilter)
-
-    const apiFilter = mapStatusToApi(statusFilter)
-    const { data } = await getBookings(0, 10, searchQuery, apiFilter)
-
-    if (data) {
-      setBookings(data)
-      setPage(1)
-      setHasMore(data.length === 10)
-    }
-    setIsSearching(false)
-  }
-
-  const loadMoreBookings = async () => {
-    setLoading(true)
-    const nextSkip = page * 10
-    const apiFilter = mapStatusToApi(activeFilter)
-    const { data } = await getBookings(nextSkip, 10, activeSearch, apiFilter)
-
-    if (data) {
-      setBookings((prev) => [...prev, ...data])
-      setPage((prev) => prev + 1)
-      if (data.length < 10) {
-        setHasMore(false)
-      }
-    }
-    setLoading(false)
-  }
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -108,7 +132,7 @@ export default function BookingListClient({ initialBookings }: { initialBookings
   return (
     <div className="space-y-6">
       {/* Search and Filter Section */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-3 w-5 h-5 text-muted-foreground dark:text-muted-foreground-dark" />
           <Input
@@ -138,14 +162,20 @@ export default function BookingListClient({ initialBookings }: { initialBookings
             </Select>
           </div>
           <Button
-            onClick={handleSearch}
+            type="submit"
             disabled={isSearching}
             className="h-11 px-6 rounded-xl bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark hover:opacity-90 transition-opacity"
           >
             Cari
           </Button>
         </div>
-      </div>
+      </form>
+
+      {error && (
+        <p role="alert" className="text-sm text-red-500">
+          {error}
+        </p>
+      )}
 
       {isSearching ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
@@ -173,7 +203,7 @@ export default function BookingListClient({ initialBookings }: { initialBookings
             return (
               <Link
                 href={`/dashboard/bookings/${booking.id}`}
-                key={index}
+                key={booking.id}
                 className="block h-full"
                 ref={isLastElement ? lastBookingElementRef : null}
               >

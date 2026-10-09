@@ -2,7 +2,7 @@ import { getBookings } from './actions'
 import BookingListClient from './BookingListClient'
 
 export default async function BookingsPage() {
-  const { data: initialBookings } = await getBookings(0, 10)
+  const initialResult = await getBookings(1)
 
   return (
     <div className="space-y-6">
@@ -13,7 +13,11 @@ export default async function BookingsPage() {
         </div>
       </div>
 
-      <BookingListClient initialBookings={initialBookings || []} />
+      <BookingListClient
+        initialBookings={initialResult.data}
+        initialPage={initialResult.currentPage}
+        initialLastPage={initialResult.lastPage}
+      />
     </div>
   )
 }

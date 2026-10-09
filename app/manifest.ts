@@ -1,25 +1,36 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
+import { siteConfig } from "@/lib/site-config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Aldena's Makeup",
-    short_name: "Aldena's MUA",
-    description: "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda.",
-    start_url: '/login',
-    display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#e85c5cff',
-    icons: [
+    name: "JadiCantik",
+    short_name: "JadiCantik",
+    description:
+      "Platform website dan booking online untuk makeup artist Indonesia.",
+    start_url: "/dashboard",
+    scope: "/",
+    id: "/",
+    display: "standalone",
+    related_applications: [
       {
-        src: 'https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png',
-        sizes: '192x192',
-        type: 'image/png',
-      },
-      {
-        src: 'https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png',
-        sizes: '512x512',
-        type: 'image/png',
+        platform: "webapp",
+        url: `${siteConfig.url}/manifest.webmanifest`,
+        id: siteConfig.url,
       },
     ],
-  }
+    background_color: "#1a1918",
+    theme_color: "#1a1918",
+    icons: [
+      {
+        src: "/icon.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        src: "/icon.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
+  };
 }

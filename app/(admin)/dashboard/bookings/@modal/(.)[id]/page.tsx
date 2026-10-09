@@ -15,7 +15,5 @@ export default async function BookingModalPage(props: { params: Promise<{ id: st
     )
   }
 
-  // Type casting needed because prisma relation typing might differ slightly 
-  // from our component prop types without explicit mapping, but it should match structurally.
   return <BookingModal booking={data as any} />
 }

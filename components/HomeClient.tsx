@@ -1,34 +1,136 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Star, CalendarHeart, Brush, Camera, Crown, Heart, Sparkles, Scissors, Flower2, Gem, Wand2, ChevronDown } from "lucide-react";
+import {
+  ArrowRight,
+  Star,
+  CalendarHeart,
+  Brush,
+  Camera,
+  Crown,
+  Heart,
+  Sparkles,
+  Scissors,
+  Flower2,
+  Gem,
+  Wand2,
+  ChevronDown,
+  MapPin,
+  MessageCircle,
+  Quote,
+  UserRound,
+  AtSign,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { RetryingNextImage } from "@/components/RetryingImage";
+import { serviceAreaLabel, siteConfig, whatsappUrl } from "@/lib/site-config";
+import { testimonials } from "@/lib/testimonials";
+import { getMuaFaqs } from "@/lib/faqs";
+import type { MuaProfile } from "@/lib/api/types";
 
-const portfolioImages = [
-  { src: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800&auto=format&fit=crop", alt: "Natural Beauty Makeup" },
-  { src: "https://images.unsplash.com/photo-1512496015851-a1dc8b41cdce?q=80&w=800&auto=format&fit=crop", alt: "Soft Glam Look" },
-  { src: "https://images.unsplash.com/photo-1596704017254-9b121068fb31?q=80&w=800&auto=format&fit=crop", alt: "Bold Eye Makeup" },
-  { src: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=800&auto=format&fit=crop", alt: "Wedding Elegance" },
-  { src: "https://images.unsplash.com/photo-1526413232644-8a407dd56156?q=80&w=800&auto=format&fit=crop", alt: "Flawless Skin Finish" },
-  { src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=800&auto=format&fit=crop", alt: "Editorial Makeup" },
-];
+type PortfolioItem = {
+  id: string;
+  title: string;
+  category: string;
+  imageUrl: string;
+  altText: string;
+};
 
-const productBrands = Array.from({ length: 13 }).map((_, i) => ({
+type ServiceItem = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  iconName: string;
+};
+
+const defaultProductBrands = Array.from({ length: 13 }).map((_, i) => ({
   name: `Brand ${i + 1}`,
-  logo: `/brand-images/brand-${i + 1}.webp`
+  logo: `/brand-images/brand-${i + 1}.webp`,
 }));
 
 const ICON_MAP: Record<string, React.ElementType> = {
-  Sparkles, Crown, Heart, Camera, Brush, Star, Scissors, Flower2, Gem, Wand2, CalendarHeart
+  Sparkles,
+  Crown,
+  Heart,
+  Camera,
+  Brush,
+  Star,
+  Scissors,
+  Flower2,
+  Gem,
+  Wand2,
+  CalendarHeart,
 };
 
-export default function HomeClient({ portfolios = [], services = [] }: { portfolios?: any[], services?: any[] }) {
+export default function HomeClient({
+  portfolios = [],
+  services = [],
+  profile,
+}: {
+  portfolios?: PortfolioItem[];
+  services?: ServiceItem[];
+  profile?: MuaProfile | null;
+}) {
+  const brandName = profile?.brandName?.trim() || siteConfig.name;
+  const city = profile
+    ? profile.serviceArea?.[0] ?? ""
+    : siteConfig.city;
+  const serviceAreas =
+    profile?.serviceArea?.join(", ") ||
+    (profile ? "Sesuai kesepakatan" : serviceAreaLabel);
+  const address =
+    (profile ? profile.address?.trim() : siteConfig.streetAddress) ||
+    "Alamat detail tersedia saat konsultasi.";
+  const tagline =
+    profile?.tagline?.trim() ||
+    `Professional Makeup Artist${city ? ` di ${city}` : ""}`;
+  const heroTitle =
+    profile?.heroTitle?.trim() ||
+    `${brandName}, Jasa MUA Profesional${city ? ` di ${city}` : ""}`;
+  const heroDescription =
+    profile?.heroDescription?.trim() ||
+    "Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Tampil percaya diri dengan sentuhan elegan.";
+  const profileImage = profile?.profileImageUrl?.trim() || "";
+  const coverImage = profile?.coverImageUrl?.trim() || "";
+  const supportedBrands = (profile?.supportedBrands ?? [])
+    .map((url, index) => ({ name: `Brand pendukung ${index + 1}`, logo: url.trim() }))
+    .filter((brand) => brand.logo);
+  const productBrands =
+    supportedBrands.length > 0 ? supportedBrands : defaultProductBrands;
+  const muaFaqs = getMuaFaqs(profile);
+  const bookingHref = profile?.username ? `/${profile.username}/booking` : "/";
+  const hasWhatsapp = Boolean(
+    profile?.whatsappNumber || (!profile && siteConfig.phone),
+  );
+  const contactHref = profile
+    ? profile.whatsappNumber
+      ? `https://wa.me/${profile.whatsappNumber.replace(/\D/g, "")}`
+      : bookingHref
+    : whatsappUrl("Halo, saya ingin berkonsultasi tentang layanan makeup.");
+  const instagramHref = profile?.instagramUsername
+    ? `https://instagram.com/${profile.instagramUsername.replace(/^@/, "")}`
+    : "";
+
   return (
     <main className="flex-grow">
       {/* Hero Section */}
-      <section className="relative h-dvh min-h-[600px] flex items-center justify-center overflow-hidden container-custom">
+      <section className="relative isolate h-dvh min-h-[600px] flex items-center justify-center overflow-hidden container-custom">
         <div className="absolute inset-0 -z-10">
+          {coverImage && (
+            <>
+              <RetryingNextImage
+                src={coverImage}
+                alt={`Cover ${brandName}`}
+                fill
+                priority
+                className="object-cover"
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-background-dark/80" />
+            </>
+          )}
           {/* Subtle gradient blob for background */}
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-dark/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
           <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-accent-dark/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
@@ -41,19 +143,18 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
             transition={{ duration: 0.8 }}
           >
             <span className="text-sm tracking-widest uppercase text-muted-foreground-dark mb-4 block font-semibold">
-              Professional Makeup Artist
+              {tagline}
             </span>
-            <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl tracking-tight leading-tight mb-6">
-              Enhance Your <br className="hidden md:block" />
-              <span className="italic text-primary-dark">Natural Beauty</span>
+            <h1 className="text-balance break-words font-serif text-4xl leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl mb-6">
+              {heroTitle}
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground-dark mb-10 max-w-xl mx-auto font-light leading-relaxed">
-              Layanan makeup eksklusif untuk pertunangan, wisuda, dan momen spesial Anda. Tampil percaya diri dengan sentuhan elegan.
+              {heroDescription}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/booking"
+                href={bookingHref}
                 className="group relative inline-flex items-center justify-center px-8 py-4 bg-foreground-dark text-background-dark font-medium rounded-full overflow-hidden transition-all hover:bg-foreground-dark/90 w-full sm:w-auto"
               >
                 <span className="relative z-10 flex items-center gap-2">
@@ -84,7 +185,9 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                 href="#services"
                 onClick={(e) => {
                   e.preventDefault();
-                  document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
+                  document
+                    .getElementById("services")
+                    ?.scrollIntoView({ behavior: "smooth" });
                   window.history.pushState(null, "", "#services");
                   window.dispatchEvent(new Event("hashchange"));
                 }}
@@ -98,12 +201,85 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
         </div>
       </section>
 
+      <section
+        id="about"
+        className="border-y border-foreground-dark/5 bg-background-dark py-24"
+      >
+        <div className="container-custom grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="overflow-hidden rounded-3xl border border-foreground-dark/10 bg-muted-dark/30">
+            <div className="relative aspect-[4/3] bg-muted-dark/60">
+              {profileImage ? (
+                <RetryingNextImage
+                  src={profileImage}
+                  alt={`Foto profil ${brandName}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  fallback={
+                    <div className="flex h-full items-center justify-center">
+                      <UserRound className="h-20 w-20 text-primary-dark/70" />
+                    </div>
+                  }
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <UserRound className="h-20 w-20 text-primary-dark/70" />
+                </div>
+              )}
+            </div>
+            <div className="p-8 md:p-10">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+                Tentang MUA
+              </p>
+              <h2 className="mt-3 font-serif text-3xl md:text-5xl">
+                {brandName}
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground-dark">
+                {tagline}
+              </p>
+            </div>
+          </div>
+          <div>
+            <p className="text-lg leading-8 text-muted-foreground-dark">
+              {brandName} menghadirkan layanan makeup yang disesuaikan untuk
+              setiap klien. {" "}
+              Kami membantu setiap klien menemukan tampilan yang nyaman, elegan,
+              dan sesuai dengan karakter wajah, busana, serta kebutuhan
+              acaranya.
+            </p>
+            <p className="mt-5 leading-7 text-muted-foreground-dark">
+              Sebelum hari acara, kami membuka ruang konsultasi untuk membahas
+              referensi, kondisi kulit, lokasi, dan jadwal. Pendekatan ini
+              membantu proses makeup berjalan lebih tenang dan hasilnya sesuai
+              harapan.
+            </p>
+            <div className="mt-8 flex items-start gap-3 rounded-2xl border border-foreground-dark/10 p-5">
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary-dark" />
+              <div>
+                <p className="font-medium">Wilayah Pelayanan</p>
+                <p className="mt-1 text-sm text-muted-foreground-dark">
+                  {serviceAreas}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground-dark">
+                  {address}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Services Section */}
       <section id="services" className="py-24 bg-muted-dark/30">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl mb-4">Layanan Kami</h2>
-            <p className="text-muted-foreground-dark max-w-2xl mx-auto">Kami menyediakan berbagai layanan makeup untuk memenuhi kebutuhan di hari spesial Anda.</p>
+            <h2 className="font-serif text-3xl md:text-5xl mb-4">
+              Layanan Kami
+            </h2>
+            <p className="text-muted-foreground-dark max-w-2xl mx-auto">
+              Kami menyediakan berbagai layanan makeup untuk memenuhi kebutuhan
+              di hari spesial Anda.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -111,20 +287,31 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
               services.map((service) => {
                 const IconComponent = ICON_MAP[service.iconName] || Sparkles;
                 return (
-                  <div key={service.id} className="bg-background-dark p-8 rounded-2xl shadow-sm border border-foreground-dark/5 hover:shadow-md transition-shadow">
+                  <div
+                    key={service.id}
+                    className="bg-background-dark p-8 rounded-2xl shadow-sm border border-foreground-dark/5 hover:shadow-md transition-shadow"
+                  >
                     <IconComponent className="w-8 h-8 text-primary-dark mb-6" />
                     <h3 className="font-serif text-2xl mb-3">{service.name}</h3>
-                    <p className="text-muted-foreground-dark mb-6 line-clamp-3">{service.description || "Layanan makeup profesional untuk kebutuhan momen spesial Anda."}</p>
-                    <div className="font-medium">Mulai dari Rp {service.price.toLocaleString('id-ID')}</div>
+                    <p className="text-muted-foreground-dark mb-6 line-clamp-3">
+                      {service.description ||
+                        "Layanan makeup profesional untuk kebutuhan momen spesial Anda."}
+                    </p>
+                    <div className="font-medium">
+                      Mulai dari Rp {service.price.toLocaleString("id-ID")}
+                    </div>
                   </div>
-                )
+                );
               })
             ) : (
               <div className="col-span-full text-center py-12 border-2 border-dashed border-border rounded-xl">
-                <p className="text-muted-foreground-dark">Layanan sedang diperbarui.</p>
+                <p className="text-muted-foreground-dark">
+                  Layanan sedang diperbarui.
+                </p>
               </div>
             )}
           </div>
+
         </div>
       </section>
 
@@ -132,22 +319,26 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
       <section className="py-24 bg-muted-dark/30 border-t border-foreground-dark/5">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-5xl mb-4">Produk Pilihan Kami</h2>
+            <h2 className="font-serif text-3xl md:text-5xl mb-4">
+              Produk Pilihan Kami
+            </h2>
             <p className="text-muted-foreground-dark max-w-2xl mx-auto">
-              Kami memastikan hasil makeup yang tahan lama, flawless, dan aman bagi kulit Anda dengan menggunakan produk kosmetik dari brand terpercaya dan berkualitas tinggi.
+              Kami memastikan hasil makeup yang tahan lama, flawless, dan aman
+              bagi kulit Anda dengan menggunakan produk kosmetik dari brand
+              terpercaya dan berkualitas tinggi.
             </p>
           </div>
 
           <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 pt-8 pb-4 max-w-5xl mx-auto">
             {productBrands.map((brand, i) => (
               <motion.div
-                key={i}
+                key={`${brand.logo}-${i}`}
                 animate={{ y: [0, -10, 0] }}
                 transition={{
                   duration: 4,
                   repeat: Infinity,
                   ease: "easeInOut",
-                  delay: i * 0.2
+                  delay: i * 0.2,
                 }}
                 className="relative group cursor-pointer"
               >
@@ -172,7 +363,8 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">Portofolio</h2>
             <p className="text-muted-foreground-dark max-w-2xl mx-auto">
-              Beberapa hasil karya terbaik kami. Temukan inspirasi gaya makeup yang sesuai dengan karakter Anda.
+              Beberapa hasil karya terbaik kami. Temukan inspirasi gaya makeup
+              yang sesuai dengan karakter Anda.
             </p>
           </div>
 
@@ -198,20 +390,24 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                     <span className="inline-block px-2 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-medium rounded-md mb-2 w-max">
                       {portfolio.category}
                     </span>
-                    <h3 className="text-white font-medium text-lg truncate">{portfolio.title}</h3>
+                    <h3 className="text-white font-medium text-lg truncate">
+                      {portfolio.title}
+                    </h3>
                   </div>
                 </motion.div>
               ))
             ) : (
               <div className="col-span-full text-center py-12 border-2 border-dashed border-border rounded-xl">
-                <p className="text-muted-foreground-dark">Portofolio sedang dalam proses update.</p>
+                <p className="text-muted-foreground-dark">
+                  Portofolio sedang dalam proses update.
+                </p>
               </div>
             )}
           </div>
 
           <div className="text-center mt-12">
             <Link
-              href="/booking"
+              href={bookingHref}
               className="inline-flex items-center justify-center px-8 py-4 bg-foreground-dark text-background-dark font-medium rounded-full overflow-hidden transition-all hover:bg-foreground-dark/90"
             >
               <span className="relative z-10 flex items-center gap-2">
@@ -219,6 +415,113 @@ export default function HomeClient({ portfolios = [], services = [] }: { portfol
                 <ArrowRight className="w-4 h-4" />
               </span>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {testimonials.length > 0 && (
+        <section id="testimonials" className="bg-muted-dark/30 py-24">
+          <div className="container-custom">
+            <div className="text-center">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+                Cerita Klien
+              </p>
+              <h2 className="mt-3 font-serif text-3xl md:text-5xl">
+                Testimoni
+              </h2>
+            </div>
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {testimonials.map((testimonial) => (
+                <figure
+                  key={`${testimonial.name}-${testimonial.service}`}
+                  className="rounded-3xl border border-foreground-dark/10 bg-background-dark p-7"
+                >
+                  <Quote className="h-7 w-7 text-primary-dark" />
+                  <blockquote className="mt-5 leading-7 text-muted-foreground-dark">
+                    “{testimonial.quote}”
+                  </blockquote>
+                  <figcaption className="mt-6">
+                    <p className="font-medium">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground-dark">
+                      {testimonial.service}
+                    </p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section id="faq" className="bg-background-dark py-24">
+        <div className="container-custom grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+              Informasi Booking
+            </p>
+            <h2 className="mt-3 font-serif text-3xl md:text-5xl">
+              Pertanyaan yang Sering Diajukan
+            </h2>
+            <p className="mt-5 leading-7 text-muted-foreground-dark">
+              Masih memiliki pertanyaan lain? Hubungi kami agar kebutuhan acara
+              Anda dapat dibahas lebih rinci.
+            </p>
+          </div>
+          <div className="space-y-4">
+            {muaFaqs.map((faq) => (
+              <details
+                key={faq.question}
+                className="group rounded-2xl border border-foreground-dark/10 bg-muted-dark/20 p-6"
+              >
+                <summary className="cursor-pointer list-none font-medium">
+                  {faq.question}
+                </summary>
+                <p className="mt-4 text-sm leading-6 text-muted-foreground-dark">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-foreground-dark/5 bg-muted-dark/30 py-20">
+        <div className="container-custom text-center">
+          <h2 className="font-serif text-3xl md:text-5xl">
+            Siap Menyiapkan Tampilan untuk Momen Anda?
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl leading-7 text-muted-foreground-dark">
+            Konsultasikan layanan, jadwal, dan lokasi acara bersama{" "}
+            {brandName}.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+            <Link
+              href={bookingHref}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground-dark px-7 py-3.5 font-medium text-background-dark hover:bg-foreground-dark/90"
+            >
+              Pesan Jadwal
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <a
+              href={contactHref}
+              target={hasWhatsapp ? "_blank" : undefined}
+              rel={hasWhatsapp ? "noreferrer" : undefined}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground-dark/20 px-7 py-3.5 font-medium hover:border-foreground-dark/40"
+            >
+              <MessageCircle className="h-4 w-4" />
+              {hasWhatsapp ? "Konsultasi WhatsApp" : "Konsultasi saat Booking"}
+            </a>
+            {instagramHref && (
+              <a
+                href={instagramHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground-dark/20 px-7 py-3.5 font-medium hover:border-foreground-dark/40"
+              >
+                <AtSign className="h-4 w-4" />
+                Lihat Instagram
+              </a>
+            )}
           </div>
         </div>
       </section>

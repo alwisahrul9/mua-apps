@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"
+import { getService } from "@/lib/api/dashboard"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { notFound } from "next/navigation"
@@ -7,9 +7,7 @@ import ServiceForm from "../../components/ServiceForm"
 export default async function EditServicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   
-  const service = await prisma.service.findUnique({
-    where: { id },
-  })
+  const service = await getService(id).catch(() => null)
 
   if (!service) {
     notFound()

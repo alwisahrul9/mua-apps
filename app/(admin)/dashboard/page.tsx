@@ -1,284 +1,64 @@
-import { Prisma } from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
+import { listBookings } from "@/lib/api/dashboard"
 import DashboardStatsChart from "./components/DashboardStatsChart"
 import DashboardBarChart from "./components/DashboardBarChart"
 import MonthRangeFilter from "./components/MonthRangeFilter"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-export const dynamic = "force-dynamic"
-
-import { Suspense } from "react"
-import DashboardSkeleton from "./components/DashboardSkeleton"
-
-// Helper function to format display suffix
-function getDisplayTitleSuffix(start: string | undefined, end: string | undefined, currentYear: number) {
-  if (!start && !end) return `(Tahun ${currentYear})`
-
-  const formatMonthYear = (str: string) => {
-    const [y, m] = str.split('-')
-    const date = new Date(Number(y), Number(m) - 1, 1)
-    return date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })
-  }
-
-  if (start && end) {
-    if (start === end) return `(${formatMonthYear(start)})`
-    return `(${formatMonthYear(start)} - ${formatMonthYear(end)})`
-  } else if (start) {
-    return `(Mulai ${formatMonthYear(start)})`
-  } else if (end) {
-    return `(Hingga ${formatMonthYear(end)})`
-  }
-  return ''
+const statusClass: Record<string, string> = {
+  PENDING: "bg-amber-500/10 text-amber-600",
+  DP_PAID: "bg-blue-500/10 text-blue-600",
+  COMPLETED: "bg-green-500/10 text-green-600",
+  CANCELED: "bg-red-500/10 text-red-600",
 }
 
-async function DashboardData({ searchParams }: { searchParams: any }) {
-  const currentYear = new Date().getFullYear()
-
-  // Parsing query parameters safely
+export default async function DashboardOverview({ searchParams }: { searchParams: Promise<{ start?: string; end?: string }> }) {
   const params = await searchParams
-  const startMonthParam = params?.start as string | undefined
-  const endMonthParam = params?.end as string | undefined
+  const result = await listBookings({ per_page: 500 })
+  const start = params.start ? new Date(`${params.start}-01T00:00:00+07:00`) : null
+  const end = params.end ? new Date(`${params.end}-01T00:00:00+07:00`) : null
+  if (end) end.setMonth(end.getMonth() + 1)
 
-  let startObj: Date | null = null
-  let endObj: Date | null = null
-
-  if (startMonthParam) {
-    const [y, m] = startMonthParam.split('-').map(Number)
-    startObj = new Date(Date.UTC(y, m - 1, 1))
-  }
-
-  if (endMonthParam) {
-    const [y, m] = endMonthParam.split('-').map(Number)
-    endObj = new Date(Date.UTC(y, m, 1)) // 1st day of next month
-  }
-
-  // Build raw query conditions safely using Prisma.sql
-  const conditions = []
-
-  if (startObj) {
-    conditions.push(Prisma.sql`"createdAt" >= ${startObj}`)
-  }
-
-  if (endObj) {
-    conditions.push(Prisma.sql`"createdAt" < ${endObj}`)
-  }
-
-  if (!startObj && !endObj) {
-    conditions.push(Prisma.sql`EXTRACT(YEAR FROM "createdAt") = ${currentYear}`)
-  }
-
-  const whereClause = Prisma.join(conditions, ' AND ')
-
-  // 1. Total bookings
-  const totalBookingsQuery = await prisma.$queryRaw<{ count: bigint }[]>`
-    SELECT COUNT(id) as count 
-    FROM bookings 
-    WHERE ${whereClause}
-  `
-  const totalBookings = Number(totalBookingsQuery[0]?.count || 0)
-
-  // 2. Total income for COMPLETED bookings
-  const totalIncomeQuery = await prisma.$queryRaw<{ sum: bigint }[]>`
-    SELECT SUM("totalPrice") as sum 
-    FROM bookings 
-    WHERE status::text = 'COMPLETED'
-    AND ${whereClause}
-  `
-  const totalIncome = Number(totalIncomeQuery[0]?.sum || 0)
-
-  // 3. Status distribution
-  const statusCountsQuery = await prisma.$queryRaw<{ status: string, count: bigint }[]>`
-    SELECT status::text as status, COUNT(id) as count 
-    FROM bookings 
-    WHERE ${whereClause}
-    GROUP BY status
-  `
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
-
-  // Prepare Pie Chart data
-  const pieChartData = statusCountsQuery.map(row => ({
-    name: row.status,
-    value: Number(row.count)
-  }))
-
-  // 4. Bar Chart Query (Always run)
-  const monthlyStatsQuery = await prisma.$queryRaw<{ year: number, month: number, count: bigint, sum: bigint }[]>`
-    SELECT 
-      EXTRACT(YEAR FROM "createdAt") as year,
-      EXTRACT(MONTH FROM "createdAt") as month, 
-      COUNT(id) as count,
-      SUM(CASE WHEN status::text = 'COMPLETED' THEN "totalPrice" ELSE 0 END) as sum
-    FROM bookings
-    WHERE ${whereClause}
-    GROUP BY EXTRACT(YEAR FROM "createdAt"), EXTRACT(MONTH FROM "createdAt")
-    ORDER BY year ASC, month ASC
-  `
-  let barChartData = monthlyStatsQuery.map(row => ({
-    year: Number(row.year),
-    month: Number(row.month),
-    bookingCount: Number(row.count),
-    income: Number(row.sum || 0)
-  }))
-
-  // 5. 5 Booking terbaru (syncing Prisma ORM query with raw query filters)
-  let prismaWhere: any = {}
-
-  if (startObj || endObj) {
-    prismaWhere.createdAt = {}
-    if (startObj) prismaWhere.createdAt.gte = startObj
-    if (endObj) prismaWhere.createdAt.lt = endObj
-  } else {
-    prismaWhere.createdAt = {
-      gte: new Date(Date.UTC(currentYear, 0, 1)),
-      lt: new Date(Date.UTC(currentYear + 1, 0, 1))
-    }
-  }
-
-  const latestBookings = await prisma.booking.findMany({
-    where: prismaWhere,
-    orderBy: { createdAt: 'desc' },
-    take: 5,
-    select: {
-      id: true,
-      clientName: true,
-      customCode: true,
-      status: true,
-    }
+  const bookings = result.data.filter((booking) => {
+    const createdAt = new Date(booking.createdAt)
+    return (!start || createdAt >= start) && (!end || createdAt < end)
   })
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20 rounded-full text-xs font-medium px-2 py-1">Pending</Badge>
-      case 'DP_PAID':
-        return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20 hover:bg-blue-500/20 rounded-full text-xs font-medium px-2 py-1">DP Paid</Badge>
-      case 'COMPLETED':
-        return <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/20 rounded-full text-xs font-medium px-2 py-1">Completed</Badge>
-      case 'CANCELED':
-        return <Badge variant="outline" className="bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500/20 rounded-full text-xs font-medium px-2 py-1">Canceled</Badge>
-      default:
-        return <Badge variant="outline" className="bg-slate-500/10 text-slate-500 border-slate-500/20 hover:bg-slate-500/20 rounded-full text-xs font-medium px-2 py-1">{status}</Badge>
-    }
+  const totalIncome = bookings.filter((booking) => booking.status === "COMPLETED").reduce((sum, booking) => sum + booking.totalPrice, 0)
+  const statuses = ["PENDING", "DP_PAID", "COMPLETED", "CANCELED"].map((name) => ({
+    name,
+    value: bookings.filter((booking) => booking.status === name).length,
+  }))
+  const monthly = new Map<string, { year: number; month: number; bookingCount: number; income: number }>()
+  for (const booking of bookings) {
+    const date = new Date(booking.createdAt)
+    const key = `${date.getFullYear()}-${date.getMonth() + 1}`
+    const item = monthly.get(key) ?? { year: date.getFullYear(), month: date.getMonth() + 1, bookingCount: 0, income: 0 }
+    item.bookingCount += 1
+    if (booking.status === "COMPLETED") item.income += booking.totalPrice
+    monthly.set(key, item)
   }
-
-  const displayTitleSuffix = getDisplayTitleSuffix(startMonthParam, endMonthParam, currentYear)
-  const barChartWidth = Math.max(600, barChartData.length * 60)
+  const latestBookings = [...bookings].sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)).slice(0, 5)
 
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <Card className="rounded-2xl border-foreground/10 dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center bg-background dark:bg-background-dark">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark">Total Booking {displayTitleSuffix}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{totalBookings}</p>
-          </CardContent>
-        </Card>
-        <Card className="rounded-2xl border-foreground/10 dark:border-foreground-dark/10 shadow-sm flex flex-col justify-center bg-background dark:bg-background-dark">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark">Total Pendapatan (COMPLETED) {displayTitleSuffix}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
-          </CardContent>
-        </Card>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-serif">Selamat Datang di Dashboard</h1>
+        <p className="mt-1 text-muted-foreground">Ringkasan performa dan pesanan bisnis MUA Anda.</p>
       </div>
-
-      <div className="mt-8 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <div className="flex flex-col lg:col-span-3">
-            <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-4">Persentase Status Booking {displayTitleSuffix}</h3>
-            <div className="h-[300px] flex-grow">
-              <DashboardStatsChart data={pieChartData} />
-            </div>
-          </div>
-
-          <div className="flex flex-col lg:col-span-2">
-            <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark mb-4">5 Booking Terbaru {displayTitleSuffix}</h3>
-            <div className="overflow-x-auto rounded-lg border border-foreground/10 dark:border-foreground-dark/10">
-              <Table>
-                <TableHeader className="bg-muted/50 dark:bg-muted-dark/50 hover:bg-muted/50 dark:hover:bg-muted-dark/50">
-                  <TableRow className="border-b border-foreground/10 dark:border-foreground-dark/10">
-                    <TableHead className="font-medium h-10">Kode</TableHead>
-                    <TableHead className="font-medium h-10">Klien</TableHead>
-                    <TableHead className="text-right font-medium h-10">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {latestBookings.length === 0 ? (
-                    <TableRow className="border-b border-foreground/10 dark:border-foreground-dark/10">
-                      <TableCell colSpan={3} className="h-24 text-center text-muted-foreground dark:text-muted-foreground-dark">
-                        Belum ada booking
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    latestBookings.map((b) => (
-                      <TableRow key={b.id} className="hover:bg-muted/30 dark:hover:bg-muted-dark/30 transition-colors border-b border-foreground/10 dark:border-foreground-dark/10">
-                        <TableCell className="font-medium whitespace-nowrap py-3">{b.customCode}</TableCell>
-                        <TableCell className="truncate max-w-[120px] py-3" title={b.clientName}>{b.clientName}</TableCell>
-                        <TableCell className="text-right whitespace-nowrap py-3">{getStatusBadge(b.status)}</TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {barChartData.length > 0 && (
-        <div className="mt-8 bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark rounded-2xl p-6 border border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 shadow-sm">
-          <h3 className="text-sm font-medium text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark mb-4">Statistik Per Bulan {displayTitleSuffix}</h3>
-          <div className="overflow-x-auto">
-            <div className="h-[400px]" style={{ minWidth: `${barChartWidth}px` }}>
-              <DashboardBarChart data={barChartData} />
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
-
-export default async function DashboardOverview({
-  searchParams,
-}: {
-  searchParams: any
-}) {
-  const params = await searchParams
-  const key = `${params?.start || ''}-${params?.end || ''}`
-
-  return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-serif">Selamat Datang di Dashboard</h1>
-      <p className="text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
-        Ini adalah statistik pesanan Anda.
-      </p>
-
-      {/* Filter Section */}
       <MonthRangeFilter />
 
-      <Suspense key={key} fallback={<DashboardSkeleton />}>
-        <DashboardData searchParams={searchParams} />
-      </Suspense>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="rounded-2xl"><CardHeader><CardTitle className="text-sm text-muted-foreground">Total Booking</CardTitle></CardHeader><CardContent><p className="text-3xl font-bold">{bookings.length}</p></CardContent></Card>
+        <Card className="rounded-2xl"><CardHeader><CardTitle className="text-sm text-muted-foreground">Pendapatan Selesai</CardTitle></CardHeader><CardContent><p className="text-3xl font-bold text-green-600">{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(totalIncome)}</p></CardContent></Card>
+      </div>
+
+      <div className="grid gap-8 rounded-2xl border bg-background p-6 lg:grid-cols-5 dark:bg-background-dark">
+        <div className="lg:col-span-3"><h2 className="mb-4 text-sm font-medium text-muted-foreground">Status Booking</h2><div className="h-[300px]"><DashboardStatsChart data={statuses} /></div></div>
+        <div className="lg:col-span-2"><h2 className="mb-4 text-sm font-medium text-muted-foreground">5 Booking Terbaru</h2><Table><TableHeader><TableRow><TableHead>Kode</TableHead><TableHead>Klien</TableHead><TableHead>Status</TableHead></TableRow></TableHeader><TableBody>{latestBookings.map((booking) => <TableRow key={booking.id}><TableCell>{booking.customCode}</TableCell><TableCell>{booking.clientName}</TableCell><TableCell><Badge className={statusClass[booking.status]}>{booking.status.replace("_", " ")}</Badge></TableCell></TableRow>)}</TableBody></Table></div>
+      </div>
+
+      {monthly.size > 0 && <div className="min-w-0 rounded-2xl border bg-background p-4 sm:p-6 dark:bg-background-dark"><h2 className="mb-4 text-sm font-medium text-muted-foreground">Statistik Per Bulan</h2><div className="h-[400px] min-w-0"><DashboardBarChart data={[...monthly.values()]} /></div></div>}
     </div>
   )
 }

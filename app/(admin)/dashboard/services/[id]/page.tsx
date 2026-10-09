@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"
+import { getService } from "@/lib/api/dashboard"
 import { notFound } from "next/navigation"
 import { deleteService } from "../actions"
 import Link from "next/link"
@@ -10,9 +10,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 export default async function ServiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  const service = await prisma.service.findUnique({
-    where: { id: id, deletedAt: null },
-  })
+  const service = await getService(id).catch(() => null)
 
   if (!service) {
     notFound()

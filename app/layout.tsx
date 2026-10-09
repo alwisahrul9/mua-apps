@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SerwistProvider } from "@serwist/next/react";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/lib/site-config";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -18,8 +19,31 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "MUA Booking | Minimalist & Modern",
-  description: "Book your professional makeup artist.",
+  metadataBase: new URL(siteConfig.url),
+  applicationName: siteConfig.name,
+  title: {
+    default: `${siteConfig.name} - Platform Bisnis MUA`,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description:
+    "Platform website, portofolio, layanan, dan booking online untuk makeup artist Indonesia.",
+  category: "business",
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  manifest: "/manifest.webmanifest",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "JadiCantik",
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || undefined,
+  },
 };
 
 export default function RootLayout({
@@ -28,9 +52,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // INI BRANCH DEV
     <html
-      lang="en"
+      lang="id"
       suppressHydrationWarning
       className={cn(
         "h-full",

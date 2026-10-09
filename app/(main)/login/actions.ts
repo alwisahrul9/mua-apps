@@ -1,23 +1,72 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/utils/supabase/server'
+import { AuthError } from 'next-auth'
+import { z } from 'zod'
+import { signIn } from '@/auth'
 
-export async function login(prevState: any, formData: FormData) {
-  const supabase = await createClient()
+export type LoginFields = {
+  email: string
+  password: string
+}
 
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+export type LoginState = {
+  error?: string
+  errors?: Partial<Record<keyof LoginFields, string[]>>
+}
+
+const loginSchema = z.object({
+  email: z.string().trim().min(1, 'Email wajib diisi').email('Format email tidak valid'),
+  password: z.string().min(1, 'Password wajib diisi'),
+})
+
+export async function login(
+  _previousState: LoginState | undefined,
+  formData: FormData,
+): Promise<LoginState> {
+  const fields: LoginFields = {
+    email: String(formData.get('email') ?? '').trim(),
+    password: String(formData.get('password') ?? ''),
+  }
+  const parsed = loginSchema.safeParse(fields)
+
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors }
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  try {
+    const result = await signIn('credentials', {
+      email: parsed.data.email,
+      password: parsed.data.password,
+      redirect: false,
+      redirectTo: '/onboarding',
+    })
 
-  if (error) {
-    return { error: error.message }
+    const resultUrl = new URL(result, 'http://localhost')
+    const authError = resultUrl.searchParams.get('error')
+
+    if (authError === 'CredentialsSignin') {
+      return {
+        error: 'Email atau password salah.',
+        errors: { email: ['Periksa kembali email dan password Anda.'] },
+      }
+    }
+
+    if (authError) {
+      return {
+        error: 'Login tidak dapat diproses. Periksa konfigurasi autentikasi atau coba kembali.',
+      }
+    }
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { error: 'Email atau password salah.' }
+    }
+    return { error: 'Backend tidak dapat dihubungi. Silakan coba kembali.' }
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  redirect('/onboarding')
+}
+
+export async function loginWithGoogle() {
+  await signIn('google', { redirectTo: '/onboarding' })
 }

@@ -2,10 +2,11 @@
 
 import { useActionState, useState } from "react"
 import FormActions from "./FormActions"
-import { createService, updateService } from "../actions"
+import { createService, updateService, type ServiceField } from "../actions"
 import { Brush, Camera, Crown, Heart, Sparkles, Star, Scissors, Flower2, Gem, Wand2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useActionToast } from "@/hooks/use-action-toast"
 
 type Service = {
   id?: string;
@@ -34,9 +35,11 @@ export default function ServiceForm({ service, actionType }: { service?: Service
 
   const [state, formAction, isPending] = useActionState(action, undefined)
   const [selectedIcon, setSelectedIcon] = useState(service?.iconName || "Sparkles")
+  useActionToast(state)
+  const fieldError = (field: ServiceField) => state?.errors?.[field]?.[0]
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form action={formAction} noValidate className="space-y-6">
       {state?.error && (
         <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm font-medium">
           {state.error}
@@ -56,6 +59,7 @@ export default function ServiceForm({ service, actionType }: { service?: Service
               key={name}
               type="button"
               onClick={() => setSelectedIcon(name)}
+              aria-pressed={selectedIcon === name}
               className={`flex items-center justify-center p-3 rounded-xl border transition-all ${selectedIcon === name
                 ? "bg-primary/10 dark:bg-primary-dark/10 dark:bg-primary dark:bg-primary-dark/10 border-primary dark:border-primary-dark dark:border-primary dark:border-primary-dark text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark shadow-sm"
                 : "bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border-border text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
@@ -66,6 +70,9 @@ export default function ServiceForm({ service, actionType }: { service?: Service
             </button>
           ))}
         </div>
+        {fieldError("iconName") && (
+          <p className="text-xs text-red-500">{fieldError("iconName")}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -79,8 +86,15 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           defaultValue={service?.name}
           required
           placeholder="Contoh: Wedding Makeup"
-          className="h-11 rounded-xl bg-transparant"
+          aria-invalid={Boolean(fieldError("name"))}
+          aria-describedby={fieldError("name") ? "name-error" : undefined}
+          className={`h-11 rounded-xl bg-transparant ${fieldError("name") ? "border-red-500 focus-visible:ring-red-500/30" : ""}`}
         />
+        {fieldError("name") && (
+          <p id="name-error" className="text-xs text-red-500">
+            {fieldError("name")}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -95,8 +109,15 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           required
           min="0"
           placeholder="Contoh: 1500000"
-          className="h-11 rounded-xl bg-transparant"
+          aria-invalid={Boolean(fieldError("price"))}
+          aria-describedby={fieldError("price") ? "price-error" : undefined}
+          className={`h-11 rounded-xl bg-transparant ${fieldError("price") ? "border-red-500 focus-visible:ring-red-500/30" : ""}`}
         />
+        {fieldError("price") && (
+          <p id="price-error" className="text-xs text-red-500">
+            {fieldError("price")}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -109,8 +130,15 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           defaultValue={service?.description || ""}
           rows={4}
           placeholder="Tuliskan deskripsi singkat mengenai layanan ini..."
-          className="flex min-h-[80px] w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          aria-invalid={Boolean(fieldError("description"))}
+          aria-describedby={fieldError("description") ? "description-error" : undefined}
+          className={`flex min-h-[80px] w-full rounded-xl border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${fieldError("description") ? "border-red-500 focus-visible:ring-red-500/30" : "border-input focus-visible:ring-ring"}`}
         ></textarea>
+        {fieldError("description") && (
+          <p id="description-error" className="text-xs text-red-500">
+            {fieldError("description")}
+          </p>
+        )}
       </div>
 
       <FormActions

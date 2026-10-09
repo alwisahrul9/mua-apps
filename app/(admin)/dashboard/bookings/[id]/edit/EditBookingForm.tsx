@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateBookingStatusAndSchedule } from "../../actions";
+import { updateBooking } from "../../actions";
 import {
   ArrowLeft,
   Save,
@@ -13,7 +13,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import { StatusBooking } from "@/generated/prisma/client";
+import type { Booking, BookingStatus } from "@/lib/api/types";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -26,8 +26,10 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { cn } from "cn";
+import { toast } from "@/components/ui/toast";
+import { timeInputValue } from "@/lib/date-time";
 
-export default function EditBookingForm({ booking }: { booking: any }) {
+export default function EditBookingForm({ booking }: { booking: Booking }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -46,7 +48,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
     }
   };
 
-  const mapDisplayToStatus = (display: string): StatusBooking => {
+  const mapDisplayToStatus = (display: string): BookingStatus => {
     switch (display) {
       case "Pending":
         return "PENDING";
@@ -66,15 +68,11 @@ export default function EditBookingForm({ booking }: { booking: any }) {
   );
   const [copied, setCopied] = useState(false);
 
-  // Format dates for input type="date" and type="time" enforcing WIB timezone
+  // Format date for input type="date". Waktu dari API sudah berbentuk HH:MM:SS.
   const initialDate = new Date(booking.eventDate).toLocaleDateString("sv-SE", {
     timeZone: "Asia/Jakarta",
   }); // "YYYY-MM-DD"
-  const initialTime = new Date(booking.eventTime).toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Asia/Jakarta",
-  }); // "HH:mm"
+  const initialTime = timeInputValue(booking.eventTime); // "HH:mm"
 
   const [date, setDate] = useState(initialDate);
   const [time, setTime] = useState(initialTime);
@@ -83,21 +81,28 @@ export default function EditBookingForm({ booking }: { booking: any }) {
     e.preventDefault();
     setLoading(true);
 
-    // Combine date and time (enforcing WIB timezone)
-    const eventDateObj = new Date(`${date}T00:00:00+07:00`);
-    const eventTimeObj = new Date(`${date}T${time}:00+07:00`);
-
-    const res = await updateBookingStatusAndSchedule(booking.id, {
+    const res = await updateBooking(booking.id, {
       status: mapDisplayToStatus(displayStatus),
-      eventDate: eventDateObj,
-      eventTime: eventTimeObj,
+      eventDate: date,
+      eventTime: time,
     });
 
     setLoading(false);
     if (!res.error) {
+      toast.add({
+        title: "Berhasil",
+        description: "Booking berhasil diperbarui.",
+        type: "success",
+        timeout: 5000,
+      });
       router.push("/dashboard/bookings");
     } else {
-      alert(res.error);
+      toast.add({
+        title: "Gagal memperbarui booking",
+        description: res.error,
+        type: "error",
+        timeout: 6000,
+      });
     }
   };
 
@@ -182,7 +187,7 @@ export default function EditBookingForm({ booking }: { booking: any }) {
               <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
                 Layanan
               </p>
-              <p className="font-medium">{booking.service.name}</p>
+              <p className="font-medium">{booking.service?.name ?? "-"}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">

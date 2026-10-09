@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { ArrowLeft, SearchX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
@@ -9,7 +8,7 @@ export default function NotFound() {
   const router = useRouter();
 
   return (
-    <>
+    <div className="dark flex min-h-screen flex-col bg-background-dark text-foreground-dark">
       <Navbar />
       <main className="flex-1 flex items-center justify-center min-h-[80vh] px-4 py-16 bg-background dark:bg-background-dark text-foreground dark:text-foreground-dark">
         <div className="max-w-md w-full text-center space-y-8">
@@ -43,6 +42,6 @@ export default function NotFound() {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 }

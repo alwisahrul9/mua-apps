@@ -1,27 +1,31 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next"
+import { listPublicMuas } from "@/lib/api/public"
+import { siteConfig } from "@/lib/site-config"
 
-export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = "https://aldenas.vercel.app";
+export const revalidate = 3600
 
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const profiles = await listPublicMuas().catch(() => [])
+  const tenants: MetadataRoute.Sitemap = profiles.flatMap((profile) => {
+    if (!profile.username || profile.homepageIsActive !== true) return []
+    const username = encodeURIComponent(profile.username)
     return [
-        {
-            url: `${baseUrl}`,
-            lastModified: new Date(),
-            changeFrequency: "weekly",
-            priority: 1,
-        },
-        {
-            url: `${baseUrl}/booking`,
-            lastModified: new Date(),
-            changeFrequency: "monthly",
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.5,
-            images: ['https://nmntjgnmnzaekithicay.supabase.co/storage/v1/object/public/portfolios/images/icon.png'],
-        },
-    ];
+      {
+        url: `${siteConfig.url}/${username}`,
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+        images: profile.coverImageUrl ? [profile.coverImageUrl] : undefined,
+      },
+    ]
+  })
+
+  return [
+    {
+      url: siteConfig.url,
+      changeFrequency: "weekly",
+      priority: 1,
+      images: [`${siteConfig.url}/icon.png`],
+    },
+    ...tenants,
+  ]
 }

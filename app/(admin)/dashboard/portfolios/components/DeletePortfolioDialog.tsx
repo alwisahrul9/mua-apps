@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { toast } from "@/components/ui/toast"
 export default function DeletePortfolioDialog({ id }: { id: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -24,7 +25,7 @@ export default function DeletePortfolioDialog({ id }: { id: string }) {
     startTransition(async () => {
       const result = await deletePortfolio(id)
       if (result?.error) {
-        alert(result.error)
+        toast.add({ title: "Gagal menghapus portofolio", description: result.error, type: "error", timeout: 6000 })
         setIsOpen(false)
       } else {
         // Redirect is handled by the server action on success, but just in case:

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"
+import { listPortfolios } from "@/lib/api/dashboard"
 import Link from "next/link"
 import { ArrowLeft, AlertTriangle } from "lucide-react"
 import PortfolioForm from "../components/PortfolioForm"
@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
 export default async function CreatePortfolioPage() {
-  const count = await prisma.portfolio.count()
+  const count = (await listPortfolios()).length
   const isLimitReached = count >= 9
 
   return (

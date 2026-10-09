@@ -1,61 +1,43 @@
-"use server";
+"use server"
 
-import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache"
+import { apiErrorMessage } from "@/lib/api/client"
+import { listNotifications } from "@/lib/api/dashboard"
+import { serverApi } from "@/lib/api/server"
 
 export async function getNotifications() {
   try {
-    const notifications = await prisma.notification.findMany({
-      take: 20,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return { data: notifications, error: null };
-  } catch (error: any) {
-    console.error("Error fetching notifications:", error);
-    return { data: [], error: error.message };
+    return { data: await listNotifications(), error: null }
+  } catch (error) {
+    return { data: [], error: apiErrorMessage(error) }
   }
 }
 
 export async function getUnreadNotificationsCount() {
   try {
-    const count = await prisma.notification.count({
-      where: {
-        isRead: false,
-      },
-    });
-    return { count, error: null };
-  } catch (error: any) {
-    console.error("Error fetching unread count:", error);
-    return { count: 0, error: error.message };
+    const notifications = await listNotifications()
+    return { count: notifications.filter((item) => !item.isRead).length, error: null }
+  } catch (error) {
+    return { count: 0, error: apiErrorMessage(error) }
   }
 }
 
 export async function markNotificationAsRead(id: string) {
   try {
-    await prisma.notification.update({
-      where: { id },
-      data: { isRead: true },
-    });
-    revalidatePath("/dashboard/notifications");
-    return { success: true };
-  } catch (error: any) {
-    console.error("Error marking notification as read:", error);
-    return { success: false, error: error.message };
+    await (await serverApi()).put(`/dashboard/notifications/${encodeURIComponent(id)}/read`)
+    revalidatePath("/dashboard/notifications")
+    return { success: true }
+  } catch (error) {
+    return { success: false, error: apiErrorMessage(error) }
   }
 }
 
 export async function markAllNotificationsAsRead() {
   try {
-    await prisma.notification.updateMany({
-      where: { isRead: false },
-      data: { isRead: true },
-    });
-    revalidatePath("/dashboard/notifications");
-    return { success: true };
-  } catch (error: any) {
-    console.error("Error marking all notifications as read:", error);
-    return { success: false, error: error.message };
+    await (await serverApi()).put("/dashboard/notifications/read-all")
+    revalidatePath("/dashboard/notifications")
+    return { success: true }
+  } catch (error) {
+    return { success: false, error: apiErrorMessage(error) }
   }
 }

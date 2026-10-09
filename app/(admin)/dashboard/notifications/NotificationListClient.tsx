@@ -6,6 +6,7 @@ import { Bell, CheckCircle, Clock, AlertTriangle, Info } from 'lucide-react';
 import { markNotificationAsRead, markAllNotificationsAsRead } from './actions';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/toast';
 
 type Notification = {
   id: string;
@@ -14,7 +15,7 @@ type Notification = {
   type: string;
   isRead: boolean;
   bookingId: string | null;
-  createdAt: Date;
+  createdAt: string;
 };
 
 const getIconForType = (type: string) => {
@@ -36,27 +37,41 @@ export default function NotificationListClient({ initialData }: { initialData: N
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>(initialData);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
+  const [openingId, setOpeningId] = useState<string | null>(null);
 
   const handleNotificationClick = async (notification: Notification) => {
-    // Optimistic update
-    setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n));
+    if (openingId) return;
+    setOpeningId(notification.id);
 
     if (!notification.isRead) {
+      const result = await markNotificationAsRead(notification.id);
+      if (!result.success) {
+        toast.add({ title: 'Gagal menandai notifikasi', description: result.error, type: 'error', timeout: 6000 });
+        setOpeningId(null);
+        return;
+      }
+      setNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n));
       window.dispatchEvent(new CustomEvent('notificationsRead', { detail: { all: false } }));
-      await markNotificationAsRead(notification.id);
     }
 
     if (notification.bookingId) {
       router.push(`/dashboard/bookings/${notification.bookingId}/edit`);
+      setOpeningId(null);
+      return;
     }
+    setOpeningId(null);
   };
 
   const handleMarkAllRead = async () => {
     setIsMarkingAll(true);
-    // Optimistic update
-    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-    window.dispatchEvent(new CustomEvent('notificationsRead', { detail: { all: true } }));
-    await markAllNotificationsAsRead();
+    const result = await markAllNotificationsAsRead();
+    if (result.success) {
+      setNotifications(prev => prev.map(n => n.isRead ? n : { ...n, isRead: true }));
+      window.dispatchEvent(new CustomEvent('notificationsRead', { detail: { all: true } }));
+      toast.add({ title: 'Berhasil', description: 'Semua notifikasi ditandai sudah dibaca.', type: 'success', timeout: 5000 });
+    } else {
+      toast.add({ title: 'Gagal memperbarui notifikasi', description: result.error, type: 'error', timeout: 6000 });
+    }
     setIsMarkingAll(false);
   };
 
@@ -85,7 +100,8 @@ export default function NotificationListClient({ initialData }: { initialData: N
                 <div
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification)}
-                  className={`p-5 flex gap-4 transition-colors hover:bg-muted/50 dark:hover:bg-muted-dark/50 cursor-pointer ${!notification.isRead ? 'bg-primary/10 dark:bg-primary-dark/5' : ''}`}
+                  aria-disabled={openingId === notification.id}
+                  className={`p-5 flex gap-4 transition-colors hover:bg-muted/50 dark:hover:bg-muted-dark/50 cursor-pointer ${openingId === notification.id ? 'pointer-events-none opacity-60' : ''} ${!notification.isRead ? 'bg-primary/10 dark:bg-primary-dark/5' : ''}`}
                 >
                   <div className="mt-1 shrink-0">
                     <div className="w-10 h-10 rounded-full bg-background dark:bg-background-dark border border-foreground/10 dark:border-foreground-dark/10 flex items-center justify-center shadow-sm">
