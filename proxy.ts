@@ -20,6 +20,11 @@ export const proxy = auth(async (request) => {
     return NextResponse.next()
   }
 
+  // DashboardLayout mengambil profil terbaru untuk navbar sekaligus memblokir
+  // profil yang belum lengkap. Hindari request backend kedua di Proxy pada
+  // setiap navigasi dashboard.
+  if (isDashboardRoute) return NextResponse.next()
+
   const response = await fetch(`${apiBaseUrl}/user/profile`, {
     headers: {
       Accept: "application/json",
@@ -42,10 +47,6 @@ export const proxy = auth(async (request) => {
 
   if (isOnboardingRoute && profileComplete) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
-  }
-
-  if (isDashboardRoute && !profileComplete) {
-    return NextResponse.redirect(new URL("/onboarding", request.url))
   }
 
   return NextResponse.next()
