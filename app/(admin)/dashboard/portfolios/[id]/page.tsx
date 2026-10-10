@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { publicMediaUrl } from "@/lib/media-url"
 
 export default async function PortfolioDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -51,7 +52,7 @@ export default async function PortfolioDetailPage({ params }: { params: Promise<
         <Card className="md:col-span-7 bg-background dark:bg-background-dark border-foreground/10 dark:border-foreground-dark/10 rounded-3xl p-2 shadow-sm overflow-hidden flex items-center justify-center h-fit">
           <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden bg-muted dark:bg-muted-dark">
             <Image
-              src={portfolio.imageUrl}
+              src={publicMediaUrl(portfolio.imageUrl)}
               alt={portfolio.altText}
               fill
               className="object-cover"

@@ -10,6 +10,7 @@ import {
 } from "@/lib/api/public"
 import { getMuaFaqs } from "@/lib/faqs"
 import { siteConfig } from "@/lib/site-config"
+import { publicMediaUrl } from "@/lib/media-url"
 
 type PageProps = { params: Promise<{ username: string }> }
 
@@ -42,10 +43,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const url = profileUrl(username)
     const title = `${profile.brandName} | Jasa MUA${city ? ` di ${city}` : ""}`
     const description = profileDescription(profile)
-    const socialImage =
+    const socialImage = publicMediaUrl(
       profile.coverImageUrl ||
       profile.profileImageUrl ||
-      `${siteConfig.url}/icon.png`
+      `${siteConfig.url}/icon.png`,
+    )
 
     return {
       title: { absolute: title },
@@ -119,9 +121,9 @@ export default async function MuaPage({ params }: PageProps) {
   const bookingUrl = `${url}/booking`
   const city = profile.serviceArea?.[0]
   const description = profileDescription(profile)
-  const images = [profile.coverImageUrl, profile.profileImageUrl].filter(
-    (image): image is string => Boolean(image),
-  )
+  const images = [profile.coverImageUrl, profile.profileImageUrl]
+    .filter((image): image is string => Boolean(image))
+    .map(publicMediaUrl)
   const instagramUrl = profile.instagramUsername
     ? `https://instagram.com/${profile.instagramUsername.replace(/^@/, "")}`
     : undefined
@@ -166,7 +168,9 @@ export default async function MuaPage({ params }: PageProps) {
         name: profile.brandName,
         url,
         image: images.length > 0 ? images : [`${siteConfig.url}/icon.png`],
-        logo: profile.profileImageUrl || undefined,
+        logo: profile.profileImageUrl
+          ? publicMediaUrl(profile.profileImageUrl)
+          : undefined,
         description,
         telephone: profile.whatsappNumber
           ? `+${profile.whatsappNumber}`

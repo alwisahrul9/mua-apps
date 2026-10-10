@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next"
 import { listPublicMuas } from "@/lib/api/public"
 import { siteConfig } from "@/lib/site-config"
+import { publicMediaUrl } from "@/lib/media-url"
 
 export const revalidate = 3600
 
@@ -14,7 +15,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${siteConfig.url}/${username}`,
         changeFrequency: "weekly" as const,
         priority: 0.8,
-        images: profile.coverImageUrl ? [profile.coverImageUrl] : undefined,
+        images: profile.coverImageUrl
+          ? [publicMediaUrl(profile.coverImageUrl)]
+          : undefined,
       },
     ]
   })

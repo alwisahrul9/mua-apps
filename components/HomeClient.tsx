@@ -27,6 +27,7 @@ import { RetryingNextImage } from "@/components/RetryingImage";
 import { serviceAreaLabel, siteConfig, whatsappUrl } from "@/lib/site-config";
 import { testimonials } from "@/lib/testimonials";
 import { getMuaFaqs } from "@/lib/faqs";
+import { publicMediaUrl } from "@/lib/media-url";
 import type { MuaProfile } from "@/lib/api/types";
 
 type PortfolioItem = {
@@ -344,7 +345,7 @@ export default function HomeClient({
               >
                 <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border border-foreground/10 dark:border-foreground-dark/10 bg-white shadow-sm transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-4 sm:p-5">
                   <Image
-                    src={brand.logo}
+                    src={publicMediaUrl(brand.logo)}
                     alt={brand.name}
                     width={100}
                     height={100}
@@ -380,7 +381,7 @@ export default function HomeClient({
                   className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted-dark"
                 >
                   <Image
-                    src={portfolio.imageUrl}
+                    src={publicMediaUrl(portfolio.imageUrl)}
                     alt={portfolio.altText}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"

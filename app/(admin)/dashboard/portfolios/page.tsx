@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { publicMediaUrl } from "@/lib/media-url"
 
 export default async function PortfoliosPage() {
   const portfolios = (await listPortfolios()).slice(0, 9)
@@ -35,12 +36,11 @@ export default async function PortfoliosPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {portfolios.map((portfolio: any) => (
+          {portfolios.map((portfolio) => (
             <Link href={`/dashboard/portfolios/${portfolio.id}`} key={portfolio.id} className="group relative block cursor-pointer">
               <Card className="relative overflow-hidden rounded-2xl border-foreground/10 dark:border-foreground-dark/10 bg-background dark:bg-background-dark shadow-sm transition-all hover:shadow-md h-full aspect-[3/4]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <Image
-                  src={portfolio.imageUrl}
+                  src={publicMediaUrl(portfolio.imageUrl)}
                   alt={portfolio.altText}
                   width={500}
                   height={500}

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image, { type ImageProps } from "next/image"
+import { publicMediaUrl } from "@/lib/media-url"
 
 function retrySource(source: string, attempt: number) {
   if (attempt === 0 || source.startsWith("blob:") || source.startsWith("data:")) {
@@ -13,9 +14,16 @@ function retrySource(source: string, attempt: number) {
 }
 
 function useImageRetry(source: string, maxRetries: number) {
-  const [state, setState] = useState({ source, attempt: 0, failed: false })
+  const normalizedSource = publicMediaUrl(source)
+  const [state, setState] = useState({
+    source: normalizedSource,
+    attempt: 0,
+    failed: false,
+  })
   const current =
-    state.source === source ? state : { source, attempt: 0, failed: false }
+    state.source === normalizedSource
+      ? state
+      : { source: normalizedSource, attempt: 0, failed: false }
 
   function retry() {
     if (current.attempt < maxRetries) {
@@ -29,7 +37,7 @@ function useImageRetry(source: string, maxRetries: number) {
   return {
     failed: current.failed,
     retry,
-    source: retrySource(source, current.attempt),
+    source: retrySource(normalizedSource, current.attempt),
   }
 }
 

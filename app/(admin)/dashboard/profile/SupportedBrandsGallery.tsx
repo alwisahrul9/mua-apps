@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/toast"
+import { publicMediaUrl } from "@/lib/media-url"
 import { deleteBrandImage } from "./actions"
 
 const MAX_BRANDS = 10
@@ -131,7 +132,7 @@ export default function SupportedBrandsGallery({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={`${url}-mobile-${index}`}
-                  src={url}
+                  src={publicMediaUrl(url)}
                   alt={`Brand pendukung terbaru ${index + 1}`}
                   className="aspect-square w-full rounded-lg border border-foreground/10 bg-white object-contain p-1 dark:border-foreground-dark/10"
                 />
@@ -147,7 +148,7 @@ export default function SupportedBrandsGallery({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   key={`${url}-desktop-${index}`}
-                  src={url}
+                  src={publicMediaUrl(url)}
                   alt={`Brand pendukung ${index + 1}`}
                   className="aspect-square w-full rounded-lg border border-foreground/10 bg-white object-contain p-1 dark:border-foreground-dark/10"
                 />
@@ -183,7 +184,7 @@ export default function SupportedBrandsGallery({
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={url}
+                      src={publicMediaUrl(url)}
                       alt={`Brand pendukung ${index + 1}`}
                       className="h-full w-full object-contain p-3"
                     />
