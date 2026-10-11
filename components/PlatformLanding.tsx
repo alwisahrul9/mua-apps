@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  ArrowRight,
   BarChart3,
   CalendarCheck,
   Check,
@@ -12,6 +11,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
+import HomeAuthActions from "@/components/HomeAuthActions";
 
 const features = [
   {
@@ -96,20 +96,7 @@ export default function PlatformLanding() {
               FAQ
             </a>
           </nav>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="rounded-full px-4 py-2.5 text-sm font-medium hover:bg-muted-dark"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-full bg-foreground-dark px-5 py-2.5 text-sm font-medium text-background-dark transition hover:opacity-90"
-            >
-              Daftar Gratis
-            </Link>
-          </div>
+          <HomeAuthActions variant="header" />
         </div>
       </header>
 
@@ -131,20 +118,8 @@ export default function PlatformLanding() {
               Bangun kehadiran online yang profesional, tampilkan karya terbaik,
               dan kelola booking klien dari satu dashboard yang mudah digunakan.
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground-dark px-7 py-4 font-medium text-background-dark transition hover:opacity-90"
-              >
-                Buat Halaman MUA Gratis
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-full border border-foreground-dark/20 px-7 py-4 font-medium transition hover:bg-muted-dark"
-              >
-                Sudah punya akun? Login
-              </Link>
+            <div className="mt-9">
+              <HomeAuthActions variant="hero" />
             </div>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground-dark">
               {["Tanpa coding", "Username unik", "Klien tidak perlu login"].map(
@@ -326,12 +301,9 @@ export default function PlatformLanding() {
             Mulai dari halaman publik yang mudah dibagikan hingga dashboard
             booking yang membantu pekerjaan sehari-hari.
           </p>
-          <Link
-            href="/register"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-foreground-dark px-7 py-4 font-medium text-background-dark"
-          >
-            Bergabung Sekarang <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="mt-8">
+            <HomeAuthActions variant="banner" />
+          </div>
         </div>
       </section>
 
@@ -374,12 +346,7 @@ export default function PlatformLanding() {
             </p>
           </div>
           <div className="flex flex-wrap gap-5 text-sm text-muted-foreground-dark">
-            <Link href="/login" className="hover:text-foreground-dark">
-              Login
-            </Link>
-            <Link href="/register" className="hover:text-foreground-dark">
-              Daftar
-            </Link>
+            <HomeAuthActions variant="footer" />
             <a
               href="mailto:halo@jadicantik.id"
               className="inline-flex items-center gap-2 hover:text-foreground-dark"
