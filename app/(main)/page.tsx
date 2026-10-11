@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PlatformLanding from "@/components/PlatformLanding";
 import { siteConfig } from "@/lib/site-config";
+import { auth } from "@/auth";
 
 const title = "JadiCantik — Platform Booking dan Website untuk MUA";
 const description =
@@ -51,7 +52,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+  const authenticated = Boolean(session?.user && session.accessToken);
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -121,7 +124,7 @@ export default function Home() {
           __html: JSON.stringify(structuredData).replace(/</g, "\u003c"),
         }}
       />
-      <PlatformLanding />
+      <PlatformLanding authenticated={authenticated} />
     </>
   );
 }

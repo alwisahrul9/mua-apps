@@ -71,7 +71,11 @@ const faqs = [
   ],
 ];
 
-export default function PlatformLanding() {
+export default function PlatformLanding({
+  authenticated,
+}: {
+  authenticated: boolean;
+}) {
   return (
     <main className="min-h-dvh overflow-hidden bg-background-dark text-foreground-dark">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-foreground-dark/10 bg-background-dark/85 backdrop-blur-xl">
@@ -96,7 +100,7 @@ export default function PlatformLanding() {
               FAQ
             </a>
           </nav>
-          <HomeAuthActions variant="header" />
+          <HomeAuthActions variant="header" authenticated={authenticated} />
         </div>
       </header>
 
@@ -119,7 +123,7 @@ export default function PlatformLanding() {
               dan kelola booking klien dari satu dashboard yang mudah digunakan.
             </p>
             <div className="mt-9">
-              <HomeAuthActions variant="hero" />
+              <HomeAuthActions variant="hero" authenticated={authenticated} />
             </div>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground-dark">
               {["Tanpa coding", "Username unik", "Klien tidak perlu login"].map(
@@ -302,7 +306,7 @@ export default function PlatformLanding() {
             booking yang membantu pekerjaan sehari-hari.
           </p>
           <div className="mt-8">
-            <HomeAuthActions variant="banner" />
+            <HomeAuthActions variant="banner" authenticated={authenticated} />
           </div>
         </div>
       </section>
@@ -346,7 +350,7 @@ export default function PlatformLanding() {
             </p>
           </div>
           <div className="flex flex-wrap gap-5 text-sm text-muted-foreground-dark">
-            <HomeAuthActions variant="footer" />
+            <HomeAuthActions variant="footer" authenticated={authenticated} />
             <a
               href="mailto:halo@jadicantik.id"
               className="inline-flex items-center gap-2 hover:text-foreground-dark"

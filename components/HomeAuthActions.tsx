@@ -1,74 +1,15 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 type Variant = "header" | "hero" | "banner" | "footer";
 
-let sessionRequest: Promise<boolean> | null = null;
-
-function hasAuthenticatedSession() {
-  sessionRequest ??= fetch("/api/auth/session", {
-    credentials: "same-origin",
-    cache: "no-store",
-  })
-    .then(async (response) => {
-      if (!response.ok) return false;
-      const session = (await response.json()) as { accessToken?: string };
-      return Boolean(session.accessToken);
-    })
-    .catch(() => false);
-
-  return sessionRequest;
-}
-
-function LoadingActions({ variant }: { variant: Variant }) {
-  if (variant === "footer") {
-    return (
-      <span
-        className="h-5 w-24 animate-pulse rounded bg-foreground-dark/10"
-        aria-hidden="true"
-      />
-    );
-  }
-
-  return (
-    <div
-      className={
-        variant === "hero"
-          ? "flex w-full flex-col gap-3 sm:flex-row"
-          : "flex items-center gap-2"
-      }
-      aria-hidden="true"
-    >
-      <span
-        className={`${variant === "hero" ? "h-14 w-full sm:w-56" : "h-10 w-20"} animate-pulse rounded-full bg-foreground-dark/10`}
-      />
-      {variant !== "banner" && (
-        <span
-          className={`${variant === "hero" ? "h-14 w-full sm:w-48" : "h-10 w-28"} animate-pulse rounded-full bg-foreground-dark/10`}
-        />
-      )}
-    </div>
-  );
-}
-
-export default function HomeAuthActions({ variant }: { variant: Variant }) {
-  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    void hasAuthenticatedSession().then((result) => {
-      if (active) setAuthenticated(result);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  if (authenticated === null) return <LoadingActions variant={variant} />;
-
+export default function HomeAuthActions({
+  variant,
+  authenticated,
+}: {
+  variant: Variant;
+  authenticated: boolean;
+}) {
   if (authenticated) {
     if (variant === "footer") {
       return (

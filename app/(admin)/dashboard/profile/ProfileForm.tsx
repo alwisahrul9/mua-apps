@@ -217,7 +217,7 @@ export default function ProfileForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="p-3 space-y-6">
+    <form onSubmit={handleSubmit} noValidate className="space-y-6 p-0 sm:p-3">
       {state?.error && (
         <p className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-500">
           {state.error}
@@ -679,11 +679,11 @@ export default function ProfileForm({
         <CardHeader>
           <CardTitle>Metode pembayaran</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 px-4 sm:px-6">
           {paymentMethods.map((method, index) => (
             <div
               key={index}
-              className="grid gap-3 rounded-2xl border border-foreground/10 p-4 dark:border-foreground-dark/10 md:grid-cols-[1fr_1fr_1fr_auto] md:items-end"
+              className="grid min-w-0 gap-3 rounded-2xl border border-foreground/10 p-3 dark:border-foreground-dark/10 sm:p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end"
             >
               <Field label="Nama pembayaran">
                 <Input
@@ -756,10 +756,10 @@ export default function ProfileForm({
                   )
                 }
                 disabled={busy}
-                className="h-11 w-11 rounded-xl"
+                className="h-11 w-full rounded-xl md:w-11"
               >
                 <Trash2 />
-                <span className="sr-only">Hapus metode pembayaran</span>
+                <span className="md:sr-only">Hapus metode</span>
               </Button>
             </div>
           ))}
@@ -773,7 +773,7 @@ export default function ProfileForm({
               ])
             }
             disabled={pending || paymentMethods.length >= 20}
-            className="h-11 rounded-xl"
+            className="h-11 w-full rounded-xl sm:w-auto"
           >
             <Plus /> Tambah Metode
           </Button>
@@ -792,7 +792,7 @@ export default function ProfileForm({
             coverImageUploading ||
             brandImageUploading
           }
-          className="h-11 rounded-xl px-6"
+          className="h-11 w-full rounded-xl px-4 sm:w-auto sm:px-6"
         >
           {pending ? <Loader2 className="animate-spin" /> : <Save />}
           {pending ? "Menyimpan..." : "Simpan Semua Perubahan"}
