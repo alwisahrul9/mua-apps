@@ -783,7 +783,7 @@ export default function ProfileForm({
         </CardContent>
       </Card>
 
-      <div className="sticky bottom-20 z-20 flex justify-end rounded-2xl border border-foreground/10 bg-background/90 p-3 shadow-lg backdrop-blur dark:border-foreground-dark/10 dark:bg-background-dark/90 md:bottom-4">
+      <div className="relative z-20 flex justify-end rounded-2xl border border-foreground/10 bg-background/90 p-3 shadow-lg backdrop-blur dark:border-foreground-dark/10 dark:bg-background-dark/90 md:sticky md:bottom-4">
         <Button
           type="submit"
           disabled={
