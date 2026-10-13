@@ -2,6 +2,7 @@
 
 import { startTransition, useActionState, useEffect, useState } from "react";
 import Link from "next/link";
+import { siteConfig } from "@/lib/site-config";
 import {
   ArrowRight,
   AtSign,
@@ -190,7 +191,7 @@ export default function OnboardingForm({
       <div className="mx-auto w-full max-w-4xl">
         <div className="mb-8 flex items-center justify-between gap-4">
           <Link href="/" className="font-serif text-2xl">
-            JadiCantik <span className="italic text-primary-dark">.</span>
+            {siteConfig.name} <span className="italic text-primary-dark">.</span>
           </Link>
           <div className="flex items-center gap-2">
             <span className="hidden rounded-full border border-foreground-dark/10 px-4 py-2 text-xs text-muted-foreground-dark sm:inline-flex">

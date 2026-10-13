@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import HomeAuthActions from "@/components/HomeAuthActions";
+import { siteConfig } from "@/lib/site-config";
 
 const features = [
   {
@@ -54,7 +55,7 @@ const features = [
 
 const faqs = [
   [
-    "Apakah JadiCantik bisa digunakan gratis?",
+    `Apakah ${siteConfig.name} bisa digunakan gratis?`,
     "Ya. Anda dapat membuat akun dan menyiapkan halaman MUA untuk mulai menerima booking.",
   ],
   [
@@ -81,7 +82,7 @@ export default function PlatformLanding({
       <header className="fixed inset-x-0 top-0 z-50 border-b border-foreground-dark/10 bg-background-dark/85 backdrop-blur-xl">
         <div className="container-custom flex h-20 items-center justify-between">
           <Link href="/" className="font-serif text-2xl font-medium">
-            JadiCantik <span className="italic text-primary-dark">.</span>
+            {siteConfig.name} <span className="italic text-primary-dark">.</span>
           </Link>
           <nav
             className="hidden items-center gap-7 text-sm text-muted-foreground-dark md:flex"
@@ -210,7 +211,7 @@ export default function PlatformLanding({
               Kelola bisnis tanpa aplikasi yang rumit
             </h2>
             <p className="mt-5 leading-7 text-muted-foreground-dark">
-              Fokus pada klien dan hasil makeup. JadiCantik membantu merapikan
+              Fokus pada klien dan hasil makeup. {siteConfig.name} membantu merapikan
               sisi digital bisnis Anda.
             </p>
           </div>
@@ -343,7 +344,7 @@ export default function PlatformLanding({
         <div className="container-custom flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-serif text-xl">
-              JadiCantik <span className="text-primary-dark">.</span>
+              {siteConfig.name} <span className="text-primary-dark">.</span>
             </p>
             <p className="mt-2 text-sm text-muted-foreground-dark">
               Platform digital untuk Makeup Artist Indonesia.

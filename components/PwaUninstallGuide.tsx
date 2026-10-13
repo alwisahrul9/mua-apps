@@ -1,4 +1,5 @@
 import { ExternalLink, Monitor, Smartphone } from "lucide-react";
+import { siteConfig } from "@/lib/site-config";
 
 const uninstallGuides = [
   {
@@ -8,7 +9,7 @@ const uninstallGuides = [
       {
         name: "iPhone atau iPad (Safari)",
         steps: [
-          "Cari ikon JadiCantik di Layar Utama atau App Library.",
+          `Cari ikon ${siteConfig.name} di Layar Utama atau App Library.`,
           "Tekan dan tahan ikon sampai menu tindakan muncul.",
           "Pilih Hapus App atau Hapus Penanda, sesuai versi iOS/iPadOS.",
           "Ketuk Hapus untuk mengonfirmasi.",
@@ -17,7 +18,7 @@ const uninstallGuides = [
       {
         name: "Android (Chrome atau Edge)",
         steps: [
-          "Cari ikon JadiCantik di layar utama atau daftar aplikasi.",
+          `Cari ikon ${siteConfig.name} di layar utama atau daftar aplikasi.`,
           "Tekan dan tahan ikon, lalu pilih Info aplikasi atau Copot pemasangan.",
           "Jika halaman Info aplikasi terbuka, ketuk Copot pemasangan.",
           "Ketuk OK untuk mengonfirmasi penghapusan.",
@@ -32,9 +33,9 @@ const uninstallGuides = [
       {
         name: "Google Chrome",
         steps: [
-          "Buka aplikasi JadiCantik yang sudah terpasang.",
+          `Buka aplikasi ${siteConfig.name} yang sudah terpasang.`,
           "Klik menu tiga titik pada bagian atas aplikasi.",
-          "Pilih Uninstall JadiCantik atau Copot pemasangan JadiCantik.",
+          `Pilih Uninstall ${siteConfig.name} atau Copot pemasangan ${siteConfig.name}.`,
           "Pilih apakah data aplikasi juga ingin dihapus, lalu klik Hapus.",
         ],
       },
@@ -42,7 +43,7 @@ const uninstallGuides = [
         name: "Microsoft Edge",
         steps: [
           "Buka Edge, ketik edge://apps pada kolom alamat, lalu tekan Enter.",
-          "Temukan JadiCantik, lalu klik Detail atau menu tiga titik pada aplikasi.",
+          `Temukan ${siteConfig.name}, lalu klik Detail atau menu tiga titik pada aplikasi.`,
           "Pilih Uninstall atau Copot pemasangan.",
           "Konfirmasi penghapusan pada dialog yang muncul.",
         ],
@@ -50,9 +51,9 @@ const uninstallGuides = [
       {
         name: "Safari di macOS",
         steps: [
-          "Tutup aplikasi JadiCantik jika masih terbuka.",
+          `Tutup aplikasi ${siteConfig.name} jika masih terbuka.`,
           "Buka Finder, lalu pilih Applications (Aplikasi) pada sidebar.",
-          "Temukan JadiCantik, lalu pindahkan ke Trash (Tong Sampah).",
+          `Temukan ${siteConfig.name}, lalu pindahkan ke Trash (Tong Sampah).`,
           "Kosongkan Trash jika ingin menghapusnya secara permanen.",
         ],
       },
@@ -105,7 +106,7 @@ export default function PwaUninstallGuide() {
       <p className="flex items-start gap-2 text-xs leading-5 text-muted-foreground dark:text-muted-foreground-dark">
         <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0" />
         Nama dan posisi menu dapat sedikit berbeda, tergantung versi sistem
-        operasi dan browser. Menghapus aplikasi tidak menghapus akun JadiCantik
+        operasi dan browser. Menghapus aplikasi tidak menghapus akun {siteConfig.name}
         atau data yang tersimpan di server.
       </p>
     </div>

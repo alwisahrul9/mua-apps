@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { siteConfig } from "@/lib/site-config";
 
 export function Navbar({
   username,
-  brandName = "JadiCantik",
+  brandName = siteConfig.name,
 }: {
   username?: string;
   brandName?: string;

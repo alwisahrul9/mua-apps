@@ -1,4 +1,5 @@
 import { Monitor, Smartphone } from "lucide-react";
+import { siteConfig } from "@/lib/site-config";
 
 type PwaInstallGuideProps = {
   compact?: boolean;
@@ -12,7 +13,7 @@ const guides = [
       {
         name: "iPhone atau iPad (Safari)",
         steps: [
-          "Buka dashboard JadiCantik menggunakan Safari.",
+          `Buka dashboard ${siteConfig.name} menggunakan Safari.`,
           "Ketuk ikon Bagikan (kotak dengan panah ke atas) pada toolbar Safari.",
           "Geser pilihan ke bawah, lalu ketuk Tambahkan ke Layar Utama.",
           "Periksa nama aplikasi, ketuk Tambah, lalu buka dari Layar Utama.",
@@ -21,7 +22,7 @@ const guides = [
       {
         name: "Android (Chrome)",
         steps: [
-          "Buka dashboard JadiCantik menggunakan Chrome.",
+          `Buka dashboard ${siteConfig.name} menggunakan Chrome.`,
           "Ketuk menu tiga titik di pojok kanan atas.",
           "Pilih Instal aplikasi atau Tambahkan ke layar utama.",
           "Ketuk Instal, lalu buka dari layar utama atau daftar aplikasi.",
@@ -36,8 +37,8 @@ const guides = [
       {
         name: "Chrome atau Microsoft Edge",
         steps: [
-          "Buka dashboard JadiCantik di Chrome atau Microsoft Edge.",
-          "Klik ikon instal di sisi kanan kolom alamat. Jika tidak muncul, buka menu tiga titik dan pilih Instal JadiCantik.",
+          `Buka dashboard ${siteConfig.name} di Chrome atau Microsoft Edge.`,
+          `Klik ikon instal di sisi kanan kolom alamat. Jika tidak muncul, buka menu tiga titik dan pilih Instal ${siteConfig.name}.`,
           "Klik Instal pada dialog konfirmasi.",
           "Buka aplikasi dari desktop, Dock, Start, atau folder Applications.",
         ],
@@ -45,10 +46,10 @@ const guides = [
       {
         name: "Safari di macOS",
         steps: [
-          "Buka dashboard JadiCantik menggunakan Safari.",
+          `Buka dashboard ${siteConfig.name} menggunakan Safari.`,
           "Pada bar menu, pilih File lalu Add to Dock (Tambahkan ke Dock).",
           "Periksa nama aplikasi, kemudian klik Add.",
-          "Buka JadiCantik dari Dock atau folder Applications.",
+          `Buka ${siteConfig.name} dari Dock atau folder Applications.`,
         ],
       },
     ],

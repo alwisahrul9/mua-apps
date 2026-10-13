@@ -22,6 +22,7 @@ import {
 import { subscribeUser } from "../notifications/push-actions";
 import { toast } from "@/components/ui/toast";
 import PwaInstallGuide from "@/components/PwaInstallGuide";
+import { siteConfig } from "@/lib/site-config";
 import {
   type BeforeInstallPromptEvent,
   isIosOrIpadOs,
@@ -249,7 +250,7 @@ export default function AppSetupDialog() {
           Akses dashboard lebih cepat
         </DialogTitle>
         <DialogDescription className="leading-6">
-          Pasang JadiCantik sebagai aplikasi agar dashboard dapat dibuka
+          Pasang {siteConfig.name} sebagai aplikasi agar dashboard dapat dibuka
           langsung dari Home Screen, Dock, atau daftar aplikasi.
         </DialogDescription>
       </div>
@@ -277,7 +278,7 @@ export default function AppSetupDialog() {
     <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && closeDialog()}>
       <DialogContent className="max-h-[calc(100dvh-1.5rem)] w-[calc(100%-1.5rem)] max-w-lg gap-5 overflow-y-auto rounded-3xl p-5 sm:p-7">
         <DialogHeader className="sr-only">
-          <DialogTitle>Siapkan aplikasi JadiCantik</DialogTitle>
+          <DialogTitle>Siapkan aplikasi {siteConfig.name}</DialogTitle>
           <DialogDescription>
             Panduan notifikasi dan pemasangan aplikasi.
           </DialogDescription>

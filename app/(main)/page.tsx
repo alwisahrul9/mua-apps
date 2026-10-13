@@ -3,7 +3,7 @@ import PlatformLanding from "@/components/PlatformLanding";
 import { siteConfig } from "@/lib/site-config";
 import { auth } from "@/auth";
 
-const title = "JadiCantik — Platform Booking dan Website untuk MUA";
+const title = `${siteConfig.name} — Platform Booking dan Website untuk MUA`;
 const description =
   "Buat website MUA profesional, tampilkan portofolio, kelola layanan, dan terima booking klien dalam satu platform yang mudah digunakan.";
 
@@ -34,13 +34,13 @@ export const metadata: Metadata = {
     title,
     description,
     url: siteConfig.url,
-    siteName: "JadiCantik",
+    siteName: siteConfig.name,
     locale: "id_ID",
     type: "website",
     images: [
       {
         url: "/icon.png",
-        alt: "JadiCantik untuk Makeup Artist",
+        alt: `${siteConfig.name} untuk Makeup Artist`,
       },
     ],
   },
@@ -61,7 +61,7 @@ export default async function Home() {
       {
         "@type": "WebSite",
         "@id": `${siteConfig.url}/#website`,
-        name: "JadiCantik",
+        name: siteConfig.name,
         url: siteConfig.url,
         description,
         inLanguage: "id-ID",
@@ -84,7 +84,7 @@ export default async function Home() {
       {
         "@type": "SoftwareApplication",
         "@id": `${siteConfig.url}/#software`,
-        name: "JadiCantik",
+        name: siteConfig.name,
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web",
         url: siteConfig.url,
@@ -95,7 +95,7 @@ export default async function Home() {
         "@type": "FAQPage",
         mainEntity: [
           [
-            "Apakah JadiCantik bisa digunakan gratis?",
+            `Apakah ${siteConfig.name} bisa digunakan gratis?`,
             "Ya. MUA dapat membuat akun dan menyiapkan halaman untuk mulai menerima booking.",
           ],
           [

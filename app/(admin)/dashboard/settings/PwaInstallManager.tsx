@@ -10,6 +10,7 @@ import {
   type BeforeInstallPromptEvent,
   isPwaInstalled,
 } from "@/lib/pwa-install";
+import { siteConfig } from "@/lib/site-config";
 
 export default function PwaInstallManager() {
   const [installed, setInstalled] = useState(false);
@@ -83,7 +84,7 @@ export default function PwaInstallManager() {
         setInstalled(true);
         toast.add({
           title: "Aplikasi dipasang",
-          description: "JadiCantik berhasil ditambahkan ke perangkat.",
+          description: `${siteConfig.name} berhasil ditambahkan ke perangkat.`,
           type: "success",
           timeout: 5000,
         });
@@ -105,7 +106,7 @@ export default function PwaInstallManager() {
             )}
           </div>
           <div>
-            <p className="font-medium">Aplikasi JadiCantik</p>
+            <p className="font-medium">Aplikasi {siteConfig.name}</p>
             <p className="mt-1 text-sm text-muted-foreground">
               {installed
                 ? "Aplikasi terdeteksi sudah terpasang pada perangkat ini."

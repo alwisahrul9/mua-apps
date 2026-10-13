@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
+const appName =
+  process.env.APP_ENV?.trim().toLowerCase() === "development"
+    ? "JadiCantik Dev"
+    : "JadiCantik";
+
 const nextConfig: NextConfig = {
+  env: {
+    NEXT_PUBLIC_APP_NAME: appName,
+  },
   images: {
     remotePatterns: [
       {

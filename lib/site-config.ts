@@ -1,4 +1,5 @@
 const defaultSiteUrl = "https://jadicantik.vercel.app";
+const appName = process.env.NEXT_PUBLIC_APP_NAME || "JadiCantik";
 
 function cleanUrl(value: string | undefined) {
   return value?.trim().replace(/\/$/, "") || "";
@@ -14,9 +15,9 @@ function splitList(value: string | undefined) {
 }
 
 export const siteConfig = {
-  name: "JadiCantik",
+  name: appName,
   legalName:
-    process.env.NEXT_PUBLIC_BUSINESS_LEGAL_NAME?.trim() || "JadiCantik",
+    process.env.NEXT_PUBLIC_BUSINESS_LEGAL_NAME?.trim() || appName,
   url: cleanUrl(process.env.NEXT_PUBLIC_SITE_URL) || defaultSiteUrl,
   city: process.env.NEXT_PUBLIC_BUSINESS_CITY?.trim() || "",
   region: process.env.NEXT_PUBLIC_BUSINESS_REGION?.trim() || "",

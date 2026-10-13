@@ -3,8 +3,8 @@ import { siteConfig } from "@/lib/site-config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "JadiCantik",
-    short_name: "JadiCantik",
+    name: siteConfig.name,
+    short_name: siteConfig.name,
     description:
       "Platform website dan booking online untuk makeup artist Indonesia.",
     start_url: "/dashboard",
