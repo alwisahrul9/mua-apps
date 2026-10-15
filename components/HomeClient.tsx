@@ -46,11 +46,6 @@ type ServiceItem = {
   iconName: string;
 };
 
-const defaultProductBrands = Array.from({ length: 13 }).map((_, i) => ({
-  name: `Brand ${i + 1}`,
-  logo: `/brand-images/brand-${i + 1}.webp`,
-}));
-
 const ICON_MAP: Record<string, React.ElementType> = {
   Sparkles,
   Crown,
@@ -98,8 +93,6 @@ export default function HomeClient({
   const supportedBrands = (profile?.supportedBrands ?? [])
     .map((url, index) => ({ name: `Brand pendukung ${index + 1}`, logo: url.trim() }))
     .filter((brand) => brand.logo);
-  const productBrands =
-    supportedBrands.length > 0 ? supportedBrands : defaultProductBrands;
   const muaFaqs = getMuaFaqs(profile);
   const bookingHref = profile?.username ? `/${profile.username}/booking` : "/";
   const hasWhatsapp = Boolean(
@@ -206,16 +199,16 @@ export default function HomeClient({
         id="about"
         className="border-y border-foreground-dark/5 bg-background-dark py-24"
       >
-        <div className="container-custom grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="overflow-hidden rounded-3xl border border-foreground-dark/10 bg-muted-dark/30">
-            <div className="relative aspect-[4/3] bg-muted-dark/60">
+        <div className="container-custom grid items-center gap-12 lg:grid-cols-[minmax(16rem,0.75fr)_minmax(0,1.25fr)] lg:gap-16">
+          <div className="flex justify-center lg:justify-start">
+            <div className="relative aspect-square w-48 overflow-hidden rounded-full border border-foreground-dark/10 bg-muted-dark sm:w-64 lg:w-full lg:max-w-80">
               {profileImage ? (
                 <RetryingNextImage
                   src={profileImage}
                   alt={`Foto profil ${brandName}`}
                   fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  className="rounded-full object-cover"
+                  sizes="(max-width: 640px) 12rem, (max-width: 1024px) 16rem, 20rem"
                   fallback={
                     <div className="flex h-full items-center justify-center">
                       <UserRound className="h-20 w-20 text-primary-dark/70" />
@@ -228,20 +221,18 @@ export default function HomeClient({
                 </div>
               )}
             </div>
-            <div className="p-8 md:p-10">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
-                Tentang MUA
-              </p>
-              <h2 className="mt-3 font-serif text-3xl md:text-5xl">
-                {brandName}
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground-dark">
-                {tagline}
-              </p>
-            </div>
           </div>
           <div>
-            <p className="text-lg leading-8 text-muted-foreground-dark">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+              Tentang MUA
+            </p>
+            <h2 className="mt-3 font-serif text-3xl md:text-5xl">
+              {brandName}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground-dark">
+              {tagline}
+            </p>
+            <p className="mt-8 text-lg leading-8 text-muted-foreground-dark">
               {brandName} menghadirkan layanan makeup yang disesuaikan untuk
               setiap klien. {" "}
               Kami membantu setiap klien menemukan tampilan yang nyaman, elegan,
@@ -330,31 +321,37 @@ export default function HomeClient({
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 pt-8 pb-4 max-w-5xl mx-auto">
-            {productBrands.map((brand, i) => (
-              <motion.div
-                key={`${brand.logo}-${i}`}
-                animate={{ y: [0, -10, 0] }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.2,
-                }}
-                className="relative group cursor-pointer"
-              >
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border border-foreground/10 dark:border-foreground-dark/10 bg-white shadow-sm transition-transform duration-300 group-hover:scale-110 flex items-center justify-center p-4 sm:p-5">
-                  <Image
-                    src={publicMediaUrl(brand.logo)}
-                    alt={brand.name}
-                    width={100}
-                    height={100}
-                    className="object-contain w-full h-full"
-                  />
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {supportedBrands.length > 0 ? (
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-4 pb-4 pt-8 sm:gap-6 md:gap-8">
+              {supportedBrands.map((brand, i) => (
+                <motion.div
+                  key={`${brand.logo}-${i}`}
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: i * 0.2,
+                  }}
+                  className="group relative cursor-pointer"
+                >
+                  <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-foreground/10 bg-white p-4 shadow-sm transition-transform duration-300 group-hover:scale-110 dark:border-foreground-dark/10 sm:h-24 sm:w-24 sm:p-5 md:h-28 md:w-28">
+                    <Image
+                      src={publicMediaUrl(brand.logo)}
+                      alt={brand.name}
+                      width={100}
+                      height={100}
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground-dark">
+              Brand masih belum diatur.
+            </p>
+          )}
         </div>
       </section>
 
