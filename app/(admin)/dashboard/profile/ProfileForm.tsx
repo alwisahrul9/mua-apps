@@ -2,6 +2,7 @@
 
 import { startTransition, useActionState, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ChevronDown,
   ExternalLink,
@@ -36,6 +37,7 @@ export default function ProfileForm({
   profile: MuaProfile;
   provinces: IndonesiaRegion[];
 }) {
+  const router = useRouter();
   const [state, action, pending] = useActionState(updateProfile, undefined);
   useActionToast(state);
   const [values, setValues] = useState({
@@ -80,6 +82,11 @@ export default function ProfileForm({
     clientErrors[field]?.[0] ?? state?.errors?.[field]?.[0];
   const clearError = (field: keyof ProfileValues) =>
     setClientErrors((current) => ({ ...current, [field]: undefined }));
+
+  useEffect(() => {
+    if (state?.success) router.refresh();
+  }, [router, state]);
+
   useEffect(() => {
     if (!provinceCode) return;
     const controller = new AbortController();

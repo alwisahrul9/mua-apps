@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { serverApi } from "@/lib/api/server";
-import { extractMuaProfile, isProfileComplete } from "@/lib/profile";
+import { isProfileComplete } from "@/lib/profile";
+import { getCachedMuaProfile } from "@/lib/profile-cache";
 import TopNav from "./TopNav";
 import DashboardNavigation from "./DashboardNavigation";
 import ScrollToTop from "./ScrollToTop";
@@ -21,12 +21,10 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const response = await (await serverApi())
-    .get("/user/profile")
-    .catch(() => null);
-  const profile = response
-    ? extractMuaProfile(response.data)
-    : session.user.profile;
+  const profile = await getCachedMuaProfile(
+    session.user.id,
+    session.accessToken,
+  ).catch(() => session.user.profile);
   if (!isProfileComplete(profile)) {
     redirect("/onboarding");
   }
@@ -49,6 +47,8 @@ export default async function DashboardLayout({
           <TopNav
             name={session.user.name ?? undefined}
             profileImageUrl={profile.profileImageUrl}
+            username={profile.username ?? ""}
+            homepageIsActive={profile.homepageIsActive === true}
           />
 
           <div className="space-y-6 p-4 md:p-8">

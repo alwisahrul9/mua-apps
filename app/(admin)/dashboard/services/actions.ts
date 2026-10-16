@@ -7,6 +7,7 @@ import { z } from "zod"
 import { apiErrorMessage } from "@/lib/api/client"
 import { serverApi } from "@/lib/api/server"
 import { listServices } from "@/lib/api/dashboard"
+import { invalidateCurrentServicesCache } from "@/lib/content-cache"
 
 const serviceSchema = z.object({
   name: z.string().trim().min(1, "Nama layanan wajib diisi").max(255, "Nama layanan maksimal 255 karakter"),
@@ -94,6 +95,7 @@ export async function createService(
     return actionError(error, "Gagal menambahkan layanan.")
   }
 
+  await invalidateCurrentServicesCache()
   revalidatePath("/dashboard/services")
   redirect("/dashboard/services?toast=Layanan%20berhasil%20ditambahkan")
 }
@@ -117,6 +119,7 @@ export async function updateService(
     return actionError(error, "Gagal memperbarui layanan.")
   }
 
+  await invalidateCurrentServicesCache()
   revalidatePath("/dashboard/services")
   redirect("/dashboard/services?toast=Layanan%20berhasil%20diperbarui")
 }
@@ -127,6 +130,7 @@ export async function deleteService(id: string) {
   } catch (error) {
     return { error: apiErrorMessage(error, "Gagal menghapus layanan.") }
   }
+  await invalidateCurrentServicesCache()
   revalidatePath("/dashboard/services")
   redirect("/dashboard/services?toast=Layanan%20berhasil%20dihapus")
 }

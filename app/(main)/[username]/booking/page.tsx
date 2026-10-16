@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { SiteFooter } from "@/components/SiteFooter";
-import { getPublicMua } from "@/lib/api/public";
+import { getPublicMua, getPublicServices } from "@/lib/api/public";
 import { siteConfig } from "@/lib/site-config";
 
 type PageProps = { params: Promise<{ username: string }> };
@@ -26,8 +26,11 @@ export async function generateMetadata({
 
 export default async function TenantBookingPage({ params }: PageProps) {
   const { username } = await params;
-  const profile = await getPublicMua(username).catch(() => null);
-  if (!profile) notFound();
+  const [profile, services] = await Promise.all([
+    getPublicMua(username).catch(() => null),
+    getPublicServices(username).catch(() => []),
+  ]);
+  if (!profile || services.length < 1) notFound();
   return (
     <>
       <Navbar username={username} brandName={profile.brandName} />

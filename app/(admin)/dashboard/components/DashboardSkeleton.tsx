@@ -25,6 +25,32 @@ export default function DashboardSkeleton() {
         <Skeleton className="h-4 w-full max-w-md" />
       </div>
 
+      <Card className="rounded-2xl">
+        <CardHeader className="space-y-2">
+          <Skeleton className="h-6 w-44" />
+          <Skeleton className="h-4 w-full max-w-md" />
+        </CardHeader>
+        <CardContent className="grid gap-4 lg:grid-cols-2">
+          {[1, 2].map((item) => (
+            <div key={item} className="space-y-4 rounded-2xl border p-5">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-10 w-10 rounded-xl" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-full max-w-64" />
+                </div>
+              </div>
+              <Skeleton className="h-10 w-full rounded-xl" />
+              <div className="grid grid-cols-3 gap-2">
+                <Skeleton className="h-8 w-full rounded-full" />
+                <Skeleton className="h-8 w-full rounded-full" />
+                <Skeleton className="h-8 w-full rounded-full" />
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="w-full space-y-2 sm:max-w-48">
           <Skeleton className="h-4 w-24" />

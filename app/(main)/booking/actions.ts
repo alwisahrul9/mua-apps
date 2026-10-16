@@ -3,6 +3,8 @@
 import axios, { AxiosError } from "axios"
 import { z } from "zod"
 import { createPublicBooking, getPublicServices } from "@/lib/api/public"
+import { updateTag } from "next/cache"
+import { notificationUsernameCacheTag } from "@/lib/notification-cache"
 
 type BookingFields = {
   muaSlug: string
@@ -123,6 +125,8 @@ export async function createBooking(
   if (!bookingCode) {
     return { message: "Kode booking tidak diterima. Silakan coba lagi." }
   }
+
+  updateTag(notificationUsernameCacheTag(data.muaSlug))
 
   return {
     redirectTo: `/${encodeURIComponent(data.muaSlug)}/booking/success/${encodeURIComponent(bookingCode)}`,

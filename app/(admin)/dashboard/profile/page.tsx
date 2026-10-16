@@ -1,16 +1,11 @@
 import { notFound } from "next/navigation";
-import { serverApi } from "@/lib/api/server";
-import { extractMuaProfile } from "@/lib/profile";
+import { getCurrentMuaProfile } from "@/lib/profile-cache";
 import { getProvinces } from "@/lib/indonesia-regions";
 import ProfileForm from "./ProfileForm";
 import { Card } from "@/components/ui/card";
 
 export default async function ProfilePage() {
-  const response = await (await serverApi())
-    .get("/user/profile")
-    .catch(() => null);
-  if (!response) notFound();
-  const profile = extractMuaProfile(response.data);
+  const profile = await getCurrentMuaProfile();
   if (!profile) notFound();
   const provinces = await getProvinces().catch(() => []);
 
@@ -23,7 +18,11 @@ export default async function ProfilePage() {
         </p>
       </div>
       <Card className="rounded-2xl bg-transparent p-0 shadow-none ring-0">
-        <ProfileForm profile={profile} provinces={provinces} />
+        <ProfileForm
+          key={`${profile.updatedAt ?? ""}:${JSON.stringify(profile.paymentMethod ?? [])}`}
+          profile={profile}
+          provinces={provinces}
+        />
       </Card>
     </div>
   );

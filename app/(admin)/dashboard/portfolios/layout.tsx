@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Globe2, LockKeyhole } from "lucide-react";
-import { serverApi } from "@/lib/api/server";
-import { extractMuaProfile } from "@/lib/profile";
+import { getCurrentMuaProfile } from "@/lib/profile-cache";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 
@@ -10,10 +9,7 @@ export default async function PortfoliosLayout({
 }: {
   children: ReactNode;
 }) {
-  const response = await (await serverApi())
-    .get("/user/profile")
-    .catch(() => null);
-  const profile = response ? extractMuaProfile(response.data) : null;
+  const profile = await getCurrentMuaProfile();
 
   if (profile?.homepageIsActive === false) {
     return (

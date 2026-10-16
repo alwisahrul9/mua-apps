@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bell, CheckCircle, Clock, AlertTriangle, Info } from 'lucide-react';
-import { markNotificationAsRead, markAllNotificationsAsRead } from './actions';
+import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from './actions';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
@@ -38,6 +38,32 @@ export default function NotificationListClient({ initialData }: { initialData: N
   const [notifications, setNotifications] = useState<Notification[]>(initialData);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
   const [openingId, setOpeningId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const refreshNotifications = async (forceRefresh = false) => {
+      const result = await getNotifications(forceRefresh);
+      if (active && !result.error) setNotifications(result.data);
+    };
+
+    const interval = window.setInterval(
+      () => void refreshNotifications(),
+      30_000,
+    );
+    const handleBookingNotification = () => void refreshNotifications(true);
+    const handleFocus = () => void refreshNotifications();
+
+    window.addEventListener('booking-notification', handleBookingNotification);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      window.removeEventListener('booking-notification', handleBookingNotification);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
 
   const handleNotificationClick = async (notification: Notification) => {
     if (openingId) return;

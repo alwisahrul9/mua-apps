@@ -1,53 +1,53 @@
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import HomeClient from "@/components/HomeClient"
-import { Navbar } from "@/components/Navbar"
-import { SiteFooter } from "@/components/SiteFooter"
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import HomeClient from "@/components/HomeClient";
+import { Navbar } from "@/components/Navbar";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   getPublicMua,
   getPublicPortfolios,
   getPublicServices,
-} from "@/lib/api/public"
-import { getMuaFaqs } from "@/lib/faqs"
-import { siteConfig } from "@/lib/site-config"
-import { publicMediaUrl } from "@/lib/media-url"
+} from "@/lib/api/public";
+import { getMuaFaqs } from "@/lib/faqs";
+import { siteConfig } from "@/lib/site-config";
+import { publicMediaUrl } from "@/lib/media-url";
 
-type PageProps = { params: Promise<{ username: string }> }
+type PageProps = { params: Promise<{ username: string }> };
 
 function profileUrl(username: string) {
-  return `${siteConfig.url}/${encodeURIComponent(username)}`
+  return `${siteConfig.url}/${encodeURIComponent(username)}`;
 }
 
-function profileDescription(
-  profile: Awaited<ReturnType<typeof getPublicMua>>,
-) {
-  const city = profile.serviceArea?.[0]
+function profileDescription(profile: Awaited<ReturnType<typeof getPublicMua>>) {
+  const city = profile.serviceArea?.[0];
   return (
     profile.heroDescription?.trim() ||
     `${profile.brandName} menyediakan jasa makeup profesional${city ? ` di ${city}` : ""}. Lihat layanan, portofolio, wilayah pelayanan, dan pesan jadwal secara online.`
-  )
+  );
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { username } = await params
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { username } = await params;
   try {
-    const profile = await getPublicMua(username)
+    const profile = await getPublicMua(username);
     if (profile.homepageIsActive !== true) {
       return {
         title: "Homepage MUA Tidak Aktif",
         robots: { index: false, follow: false },
-      }
+      };
     }
 
-    const city = profile.serviceArea?.[0]
-    const url = profileUrl(username)
-    const title = `${profile.brandName} | Jasa MUA${city ? ` di ${city}` : ""}`
-    const description = profileDescription(profile)
+    const city = profile.serviceArea?.[0];
+    const url = profileUrl(username);
+    const title = `${profile.brandName} | Jasa MUA${city ? ` di ${city}` : ""}`;
+    const description = profileDescription(profile);
     const socialImage = publicMediaUrl(
       profile.coverImageUrl ||
-      profile.profileImageUrl ||
-      `${siteConfig.url}/icon.png`,
-    )
+        profile.profileImageUrl ||
+        `${siteConfig.url}/icon.png`,
+    );
 
     return {
       title: { absolute: title },
@@ -94,42 +94,44 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description,
         images: [socialImage],
       },
-    }
+    };
   } catch {
     return {
       title: "Profil MUA Tidak Ditemukan",
       robots: { index: false, follow: false },
-    }
+    };
   }
 }
 
 export default async function MuaPage({ params }: PageProps) {
-  const { username } = await params
-  const profile = await getPublicMua(username).catch(() => null)
+  const { username } = await params;
+  const profile = await getPublicMua(username).catch(() => null);
 
-  if (!profile || profile.homepageIsActive !== true) notFound()
+  if (!profile || profile.homepageIsActive !== true) notFound();
 
   const [portfolioResult, serviceResult] = await Promise.allSettled([
     getPublicPortfolios(username),
     getPublicServices(username),
-  ])
+  ]);
   const portfolios =
-    portfolioResult.status === "fulfilled" ? portfolioResult.value : []
+    portfolioResult.status === "fulfilled" ? portfolioResult.value : [];
   const services =
-    serviceResult.status === "fulfilled" ? serviceResult.value : []
-  const url = profileUrl(username)
-  const bookingUrl = `${url}/booking`
-  const city = profile.serviceArea?.[0]
-  const description = profileDescription(profile)
+    serviceResult.status === "fulfilled" ? serviceResult.value : [];
+  const url = profileUrl(username);
+  const bookingUrl = `${url}/booking`;
+  const city = profile.serviceArea?.[0];
+  const description = profileDescription(profile);
   const images = [profile.coverImageUrl, profile.profileImageUrl]
     .filter((image): image is string => Boolean(image))
-    .map(publicMediaUrl)
+    .map(publicMediaUrl);
   const instagramUrl = profile.instagramUsername
     ? `https://instagram.com/${profile.instagramUsername.replace(/^@/, "")}`
-    : undefined
-  const prices = services.map((service) => service.price).filter(Number.isFinite)
-  const muaFaqs = getMuaFaqs(profile)
-  const hasPhysicalAddress = Boolean(profile.address?.trim())
+    : undefined;
+  const prices = services
+    .map((service) => service.price)
+    .filter(Number.isFinite);
+  const muaFaqs = getMuaFaqs(profile);
+  const hasPhysicalAddress = Boolean(profile.address?.trim());
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -229,7 +231,7 @@ export default async function MuaPage({ params }: PageProps) {
         })),
       },
     ],
-  }
+  };
 
   return (
     <>
@@ -241,8 +243,12 @@ export default async function MuaPage({ params }: PageProps) {
         }}
       />
       <Navbar username={username} brandName={profile.brandName} />
-      <HomeClient profile={profile} portfolios={portfolios} services={services} />
+      <HomeClient
+        profile={profile}
+        portfolios={portfolios}
+        services={services}
+      />
       <SiteFooter profile={profile} />
     </>
-  )
+  );
 }

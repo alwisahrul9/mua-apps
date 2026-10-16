@@ -3,6 +3,7 @@
 import axios, { AxiosError } from "axios"
 import { revalidatePath } from "next/cache"
 import { serverApi } from "@/lib/api/server"
+import { invalidateCurrentMuaProfileCache } from "@/lib/profile-cache"
 import { toTitleCase } from "@/lib/text"
 import { profileSchema, type ProfileValues } from "./schema"
 
@@ -108,6 +109,7 @@ export async function updateProfile(
     }
   }
 
+  await invalidateCurrentMuaProfileCache(values.username)
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/profile")
   revalidatePath("/dashboard/portfolios")
@@ -135,6 +137,7 @@ export async function deleteProfileImage(
     return { error: message ?? "Gambar gagal dihapus. Silakan coba lagi." }
   }
 
+  await invalidateCurrentMuaProfileCache(username)
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/profile")
   if (username) revalidatePath(`/${username}`)
@@ -162,6 +165,7 @@ export async function deleteBrandImage(
       return { error: "Daftar brand terbaru tidak ditemukan dari backend." }
     }
 
+    await invalidateCurrentMuaProfileCache(username)
     revalidatePath("/dashboard/profile")
     if (/^[a-z0-9_]{3,30}$/.test(username)) revalidatePath(`/${username}`)
     return {

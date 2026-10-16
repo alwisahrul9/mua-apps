@@ -6,6 +6,7 @@ import { z } from "zod"
 import { apiErrorMessage } from "@/lib/api/client"
 import { listPortfolios } from "@/lib/api/dashboard"
 import { serverApi } from "@/lib/api/server"
+import { invalidateCurrentPortfoliosCache } from "@/lib/content-cache"
 
 const portfolioSchema = z.object({
   title: z.string().min(1, "Judul wajib diisi"),
@@ -44,6 +45,7 @@ export async function createPortfolio(_previousState: unknown, formData: FormDat
     return { error: apiErrorMessage(error, "Gagal menyimpan portofolio.") }
   }
 
+  await invalidateCurrentPortfoliosCache()
   revalidatePath("/dashboard/portfolios")
   redirect("/dashboard/portfolios?toast=Portofolio%20berhasil%20ditambahkan")
 }
@@ -75,6 +77,7 @@ export async function deletePortfolio(id: string) {
   } catch (error) {
     return { error: apiErrorMessage(error, "Gagal menghapus portofolio.") }
   }
+  await invalidateCurrentPortfoliosCache()
   revalidatePath("/dashboard/portfolios")
   redirect("/dashboard/portfolios?toast=Portofolio%20berhasil%20dihapus")
 }

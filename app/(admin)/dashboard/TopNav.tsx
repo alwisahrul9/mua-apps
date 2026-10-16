@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, Loader2, LogOut, Settings, User, X } from "lucide-react";
+import {
+  Bell,
+  CalendarCheck2,
+  Globe2,
+  Loader2,
+  LogOut,
+  Settings,
+  User,
+  X,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { unsubscribeUser } from "./notifications/push-actions";
@@ -27,9 +36,13 @@ import { RetryingHtmlImage } from "@/components/RetryingImage";
 export default function TopNav({
   name,
   profileImageUrl,
+  username,
+  homepageIsActive,
 }: {
   name: string | undefined;
   profileImageUrl?: string | null;
+  username: string;
+  homepageIsActive: boolean;
 }) {
   const router = useRouter();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -79,10 +92,27 @@ export default function TopNav({
   }, []);
 
   useEffect(() => {
+    if (!isNotificationsOpen) return;
+
+    const closeNotificationsOnScroll = () => {
+      setIsNotificationsOpen(false);
+    };
+
+    window.addEventListener("scroll", closeNotificationsOnScroll, {
+      passive: true,
+    });
+    return () =>
+      window.removeEventListener("scroll", closeNotificationsOnScroll);
+  }, [isNotificationsOpen]);
+
+  useEffect(() => {
     let active = true;
-    const loadNotifications = async (showLoading = false) => {
+    const loadNotifications = async (
+      showLoading = false,
+      forceRefresh = false,
+    ) => {
       if (showLoading) setNotificationsLoading(true);
-      const result = await getNotifications();
+      const result = await getNotifications(forceRefresh);
       if (active && !result.error) {
         setNotifications(result.data);
         setUnreadNotifications(
@@ -103,7 +133,7 @@ export default function TopNav({
       );
       window.setTimeout(() => void loadNotifications(), 500);
     };
-    const receiveBooking = () => void loadNotifications();
+    const receiveBooking = () => void loadNotifications(false, true);
     window.addEventListener("booking-notification", receiveBooking);
     window.addEventListener("notificationsRead", handleNotificationsRead);
     return () => {
@@ -175,7 +205,7 @@ export default function TopNav({
               setIsProfileOpen(false);
               setIsNotificationsOpen((current) => !current);
               setNotificationsLoading(true);
-              void getNotifications().then((result) => {
+              void getNotifications(true).then((result) => {
                 if (!result.error) {
                   setNotifications(result.data);
                   setUnreadNotifications(
@@ -219,7 +249,7 @@ export default function TopNav({
                   initial={{ opacity: 0, y: 10, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.96 }}
-                  className="fixed inset-x-4 top-[4.5rem] z-[60] max-h-[calc(100dvh-6rem)] overflow-hidden rounded-2xl border border-foreground/10 bg-background shadow-xl dark:border-foreground-dark/10 dark:bg-background-dark md:absolute md:inset-x-auto md:right-12 md:top-14 md:w-[min(22rem,calc(100vw-2rem))]"
+                  className="absolute right-0 top-14 z-[60] w-[min(22rem,calc(100vw-2rem))] max-h-[calc(100dvh-6rem)] overflow-hidden rounded-2xl border border-foreground/10 bg-background shadow-xl dark:border-foreground-dark/10 dark:bg-background-dark md:right-12"
                 >
                   <div className="flex items-center justify-between border-b border-foreground/10 px-4 py-3 dark:border-foreground-dark/10">
                     <div>
@@ -313,6 +343,28 @@ export default function TopNav({
                   </div>
 
                   <div className="p-2">
+                    {homepageIsActive && (
+                      <Link
+                        href={`/${encodeURIComponent(username)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="mb-1 flex items-center gap-3 rounded-xl px-2 py-2 text-sm font-medium hover:bg-muted dark:hover:bg-muted-dark"
+                      >
+                        <Globe2 className="h-4 w-4" />
+                        Lihat Homepage
+                      </Link>
+                    )}
+                    <Link
+                      href={`/${encodeURIComponent(username)}/booking`}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="mb-1 flex items-center gap-3 rounded-xl px-2 py-2 text-sm font-medium hover:bg-muted dark:hover:bg-muted-dark"
+                    >
+                      <CalendarCheck2 className="h-4 w-4" />
+                      Buka Form Booking
+                    </Link>
                     <Link
                       href="/dashboard/profile"
                       onClick={() => setIsProfileOpen(false)}

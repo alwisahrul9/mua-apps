@@ -7,6 +7,7 @@ import { serverApi } from "@/lib/api/server"
 import { extractMuaProfile, isProfileComplete } from "@/lib/profile"
 import { normalizeWhatsappNumber } from "@/lib/phone"
 import { toTitleCase } from "@/lib/text"
+import { invalidateCurrentMuaProfileCache } from "@/lib/profile-cache"
 
 export type OnboardingField =
   | "username"
@@ -104,7 +105,11 @@ export async function completeOnboarding(
     }
   }
 
+  await invalidateCurrentMuaProfileCache(username)
+  revalidatePath("/onboarding")
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/profile")
-  redirect("/dashboard")
+  redirect(
+    "/dashboard?toast=Profil%20dan%20metode%20pembayaran%20berhasil%20disimpan",
+  )
 }

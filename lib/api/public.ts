@@ -1,6 +1,13 @@
 import { cache } from "react"
+import { unstable_cache } from "next/cache"
 import { publicApi, unwrapData, unwrapList } from "@/lib/api/client"
 import type { Booking, MuaProfile, Portfolio, Service } from "@/lib/api/types"
+import { profileCacheSeconds, publicProfileCacheTag } from "@/lib/profile-cache"
+import {
+  contentCacheSeconds,
+  publicPortfoliosCacheTag,
+  publicServicesCacheTag,
+} from "@/lib/content-cache"
 
 function unwrapBooking(payload: unknown): Booking {
   let current = payload
@@ -28,8 +35,21 @@ function unwrapBooking(payload: unknown): Booking {
 }
 
 export const getPublicMua = cache(async (slug: string) => {
-  const response = await publicApi.get(`/mua/${encodeURIComponent(slug)}`)
-  return unwrapData<MuaProfile>(response.data)
+  const normalizedSlug = slug.trim().toLowerCase()
+
+  return unstable_cache(
+    async () => {
+      const response = await publicApi.get(
+        `/mua/${encodeURIComponent(normalizedSlug)}`,
+      )
+      return unwrapData<MuaProfile>(response.data)
+    },
+    ["public-mua-profile", normalizedSlug],
+    {
+      revalidate: profileCacheSeconds,
+      tags: [publicProfileCacheTag(normalizedSlug)],
+    },
+  )()
 })
 
 export async function listPublicMuas() {
@@ -50,15 +70,39 @@ export async function listPublicMuas() {
   return profiles
 }
 
-export async function getPublicServices(slug: string) {
-  const response = await publicApi.get(`/mua/${encodeURIComponent(slug)}/services`)
-  return unwrapList<Service>(response.data).data
-}
+export const getPublicServices = cache(async (slug: string) => {
+  const normalizedSlug = slug.trim().toLowerCase()
+  return unstable_cache(
+    async () => {
+      const response = await publicApi.get(
+        `/mua/${encodeURIComponent(normalizedSlug)}/services`,
+      )
+      return unwrapList<Service>(response.data).data
+    },
+    ["public-mua-services", normalizedSlug],
+    {
+      revalidate: contentCacheSeconds,
+      tags: [publicServicesCacheTag(normalizedSlug)],
+    },
+  )()
+})
 
-export async function getPublicPortfolios(slug: string) {
-  const response = await publicApi.get(`/mua/${encodeURIComponent(slug)}/portfolios`)
-  return unwrapList<Portfolio>(response.data).data
-}
+export const getPublicPortfolios = cache(async (slug: string) => {
+  const normalizedSlug = slug.trim().toLowerCase()
+  return unstable_cache(
+    async () => {
+      const response = await publicApi.get(
+        `/mua/${encodeURIComponent(normalizedSlug)}/portfolios`,
+      )
+      return unwrapList<Portfolio>(response.data).data
+    },
+    ["public-mua-portfolios", normalizedSlug],
+    {
+      revalidate: contentCacheSeconds,
+      tags: [publicPortfoliosCacheTag(normalizedSlug)],
+    },
+  )()
+})
 
 export async function createPublicBooking(data: Record<string, unknown>) {
   const response = await publicApi.post("/bookings", data)
