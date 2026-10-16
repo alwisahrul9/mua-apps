@@ -200,7 +200,7 @@ export default function BookingSuccessClient({
               className="w-full py-3.5 sm:py-4 bg-transparent text-foreground-dark border border-foreground-dark/20 rounded-full font-medium transition-all hover:bg-muted-dark flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               {homePageIsActive
-                ? "Kembali ke Homepage MUA"
+                ? "Kembali ke Halaman Utama MUA"
                 : "Kembali ke Halaman Booking"}
             </Link>
           </div>

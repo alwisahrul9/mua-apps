@@ -33,8 +33,21 @@ export const getPublicMua = cache(async (slug: string) => {
 })
 
 export async function listPublicMuas() {
-  const response = await publicApi.get("/mua")
-  return unwrapList<MuaProfile>(response.data).data
+  const profiles: MuaProfile[] = []
+  let page = 1
+  let lastPage = 1
+
+  do {
+    const response = await publicApi.get("/mua", {
+      params: { page, per_page: 100 },
+    })
+    const result = unwrapList<MuaProfile>(response.data)
+    profiles.push(...result.data)
+    lastPage = Math.max(1, result.lastPage ?? 1)
+    page += 1
+  } while (page <= lastPage)
+
+  return profiles
 }
 
 export async function getPublicServices(slug: string) {

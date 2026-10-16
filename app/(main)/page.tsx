@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import PlatformLanding from "@/components/PlatformLanding";
+import PlatformLanding, {
+  platformFaqs,
+} from "@/components/PlatformLanding";
 import { siteConfig } from "@/lib/site-config";
 import { auth } from "@/auth";
 
@@ -93,20 +95,7 @@ export default async function Home() {
       },
       {
         "@type": "FAQPage",
-        mainEntity: [
-          [
-            `Apakah ${siteConfig.name} bisa digunakan gratis?`,
-            "Ya. MUA dapat membuat akun dan menyiapkan halaman untuk mulai menerima booking.",
-          ],
-          [
-            "Apakah saya perlu bisa membuat website?",
-            "Tidak. Halaman publik terbentuk otomatis dari data yang Anda kelola melalui dashboard.",
-          ],
-          [
-            "Apakah klien harus login untuk booking?",
-            "Tidak. Klien dapat melihat layanan dan mengisi booking langsung dari halaman MUA.",
-          ],
-        ].map(([name, text]) => ({
+        mainEntity: platformFaqs.map(([name, text]) => ({
           "@type": "Question",
           name,
           acceptedAnswer: { "@type": "Answer", text },

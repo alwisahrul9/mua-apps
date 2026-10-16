@@ -27,7 +27,6 @@ export default async function DashboardLayout({
   const profile = response
     ? extractMuaProfile(response.data)
     : session.user.profile;
-
   if (!isProfileComplete(profile)) {
     redirect("/onboarding");
   }
@@ -52,7 +51,9 @@ export default async function DashboardLayout({
             profileImageUrl={profile.profileImageUrl}
           />
 
-          <div className="p-4 md:p-8">{children}</div>
+          <div className="space-y-6 p-4 md:p-8">
+            {children}
+          </div>
         </main>
       </div>
     </Toaster>

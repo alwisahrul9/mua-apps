@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 const fields = [
   {
     name: "name",
-    label: "Nama lengkap",
+    label: "Nama Lengkap",
     type: "text",
     placeholder: "Nama lengkap Anda",
     autoComplete: "name",
@@ -36,7 +36,7 @@ const fields = [
   },
   {
     name: "passwordConfirmation",
-    label: "Konfirmasi password",
+    label: "Konfirmasi Password",
     type: "password",
     placeholder: "••••••••",
     autoComplete: "new-password",
@@ -79,40 +79,68 @@ export default function RegisterPage() {
           )}
 
           <form action={action} className="space-y-6">
-            {fields.map(({ name, label, type, placeholder, autoComplete, icon: Icon }) => {
-              const fieldError = state?.errors?.[name as keyof typeof state.errors];
+            {fields.map(
+              ({
+                name,
+                label,
+                type,
+                placeholder,
+                autoComplete,
+                icon: Icon,
+              }) => {
+                const fieldError =
+                  state?.errors?.[name as keyof typeof state.errors];
+                const describedBy =
+                  [
+                    name === "password" ? "password-help" : null,
+                    fieldError ? `${name}-error` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || undefined;
 
-              return (
-                <div key={name} className="space-y-2">
-                  <Label htmlFor={name} className="text-sm font-medium">
-                    {label}
-                  </Label>
-                  <div className="relative">
-                    <Icon className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground-dark" />
-                    <Input
-                      id={name}
-                      name={name}
-                      type={type}
-                      placeholder={placeholder}
-                      autoComplete={autoComplete}
-                      value={values[name]}
-                      onChange={(event) => updateField(name, event.target.value)}
-                      required
-                      disabled={pending}
-                      aria-invalid={Boolean(fieldError)}
-                      aria-describedby={fieldError ? `${name}-error` : undefined}
-                      suppressHydrationWarning
-                      className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 pl-10 pr-4 transition-all focus-visible:ring-primary-dark/50"
-                    />
+                return (
+                  <div key={name} className="space-y-2">
+                    <Label htmlFor={name} className="text-sm font-medium">
+                      {label}
+                    </Label>
+                    <div className="relative">
+                      <Icon className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground-dark" />
+                      <Input
+                        id={name}
+                        name={name}
+                        type={type}
+                        placeholder={placeholder}
+                        autoComplete={autoComplete}
+                        value={values[name]}
+                        onChange={(event) =>
+                          updateField(name, event.target.value)
+                        }
+                        required
+                        disabled={pending}
+                        aria-invalid={Boolean(fieldError)}
+                        aria-describedby={describedBy}
+                        suppressHydrationWarning
+                        className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 pl-10 pr-4 transition-all focus-visible:ring-primary-dark/50"
+                      />
+                    </div>
+                    {name === "password" && (
+                      <p
+                        id="password-help"
+                        className="text-xs leading-5 text-muted-foreground-dark"
+                      >
+                        Minimal 8 karakter dengan huruf besar, huruf kecil,
+                        angka, dan salah satu simbol @$!%*?&amp;
+                      </p>
+                    )}
+                    {fieldError && (
+                      <p id={`${name}-error`} className="text-xs text-red-500">
+                        {fieldError[0]}
+                      </p>
+                    )}
                   </div>
-                  {fieldError && (
-                    <p id={`${name}-error`} className="text-xs text-red-500">
-                      {fieldError[0]}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
+                );
+              },
+            )}
 
             <Button
               type="submit"

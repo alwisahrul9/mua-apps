@@ -24,6 +24,8 @@ export type MuaProfile = {
   instagramUsername: string | null;
   whatsappNumber: string | null;
   address: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Service = {
@@ -87,6 +89,8 @@ export type AuthUser = {
   name: string;
   email: string;
   emailVerifiedAt?: string | null;
+  verificationEmailResendAvailableAt?: string | null;
+  verificationEmailRetryAfter?: number;
   roles?: string[];
   permissions?: string[];
   profile?: MuaProfile | null;

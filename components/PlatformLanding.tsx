@@ -53,7 +53,7 @@ const features = [
   },
 ];
 
-const faqs = [
+export const platformFaqs = [
   [
     `Apakah ${siteConfig.name} bisa digunakan gratis?`,
     "Ya. Anda dapat membuat akun dan menyiapkan halaman MUA untuk mulai menerima booking.",
@@ -323,7 +323,7 @@ export default function PlatformLanding({
             </h2>
           </div>
           <div className="space-y-3">
-            {faqs.map(([question, answer]) => (
+            {platformFaqs.map(([question, answer]) => (
               <details
                 key={question}
                 className="rounded-2xl border border-foreground-dark/10 p-6"

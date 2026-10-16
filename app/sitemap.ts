@@ -13,11 +13,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
       {
         url: `${siteConfig.url}/${username}`,
+        lastModified: profile.updatedAt ?? profile.createdAt,
         changeFrequency: "weekly" as const,
         priority: 0.8,
-        images: profile.coverImageUrl
-          ? [publicMediaUrl(profile.coverImageUrl)]
-          : undefined,
+        images: [profile.coverImageUrl, profile.profileImageUrl]
+          .filter((image): image is string => Boolean(image))
+          .map(publicMediaUrl),
       },
     ]
   })

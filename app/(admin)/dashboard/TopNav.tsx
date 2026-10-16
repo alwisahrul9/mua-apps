@@ -305,7 +305,7 @@ export default function TopNav({
                       {avatar}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs text-muted-foreground">Hi,</p>
+                      <p className="text-xs text-muted-foreground">Hai,</p>
                       <p className="text-sm font-medium truncate" title={name}>
                         {name}
                       </p>

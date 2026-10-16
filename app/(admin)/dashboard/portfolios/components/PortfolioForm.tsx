@@ -139,7 +139,7 @@ export default function PortfolioForm() {
 
       <div className="space-y-2">
         <Label htmlFor="altText">
-          Alt Text (SEO) <span className="text-destructive">*</span>
+          Teks Alternatif (SEO) <span className="text-destructive">*</span>
         </Label>
         <div className="relative">
           <ImageIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />

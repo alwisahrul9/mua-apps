@@ -10,7 +10,7 @@ import { RetryingHtmlImage } from "@/components/RetryingImage";
 
 const desktopNavItems = [
   { name: "Overview", href: "/dashboard", icon: Home, exact: true },
-  { name: "Bookings", href: "/dashboard/bookings", icon: List, exact: false },
+  { name: "Booking", href: "/dashboard/bookings", icon: List, exact: false },
   { name: "Layanan", href: "/dashboard/services", icon: Briefcase, exact: false },
   { name: "Portofolio", href: "/dashboard/portfolios", icon: Globe, exact: false },
 ];

@@ -1,4 +1,4 @@
-const defaultSiteUrl = "https://jadicantik.vercel.app";
+const defaultSiteUrl = "https://www.jadicantik.com";
 const appName = process.env.NEXT_PUBLIC_APP_NAME || "JadiCantik";
 
 function cleanUrl(value: string | undefined) {

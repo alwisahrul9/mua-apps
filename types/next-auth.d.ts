@@ -7,6 +7,8 @@ declare module "next-auth" {
     roles: string[]
     permissions: string[]
     isEmailVerified: boolean
+    verificationEmailResendAvailableAt?: string | null
+    verificationEmailRetryAfter?: number
     profile: MuaProfile | null
   }
 
@@ -17,6 +19,8 @@ declare module "next-auth" {
       roles: string[]
       permissions: string[]
       isEmailVerified: boolean
+      verificationEmailResendAvailableAt: string | null
+      verificationEmailRetryAfter: number
       profile: MuaProfile | null
     }
   }
@@ -28,6 +32,8 @@ declare module "next-auth/jwt" {
     roles?: string[]
     permissions?: string[]
     isEmailVerified?: boolean
+    verificationEmailResendAvailableAt?: string | null
+    verificationEmailRetryAfter?: number
     profile?: MuaProfile | null
   }
 }

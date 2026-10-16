@@ -3,12 +3,15 @@ import { auth } from "@/auth"
 import { apiBaseUrl } from "@/lib/api/client"
 import { extractMuaProfile, isProfileComplete } from "@/lib/profile"
 
-const authRoutes = new Set(["/login", "/register"])
+const authRoutes = new Set(["/login", "/register", "/forgot-password"])
 
 export const proxy = auth(async (request) => {
   const { pathname } = request.nextUrl
   const session = request.auth
-  const isAuthRoute = authRoutes.has(pathname)
+  const isAuthRoute =
+    authRoutes.has(pathname) ||
+    pathname === "/reset-password" ||
+    pathname.startsWith("/reset-password/")
   const isDashboardRoute = pathname.startsWith("/dashboard")
   const isOnboardingRoute = pathname.startsWith("/onboarding")
 
@@ -56,6 +59,8 @@ export const config = {
   matcher: [
     "/login",
     "/register",
+    "/forgot-password",
+    "/reset-password/:path*",
     "/dashboard/:path*",
     "/onboarding/:path*",
   ],

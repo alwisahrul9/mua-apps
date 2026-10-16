@@ -234,7 +234,7 @@ export default function OnboardingForm({
             className="space-y-7 p-7 md:p-9"
           >
             <div>
-              <h2 className="font-serif text-2xl">Profil awal MUA</h2>
+              <h2 className="font-serif text-2xl">Profil Awal MUA</h2>
               <p className="mt-1 text-sm text-muted-foreground-dark">
                 Informasi lainnya dapat Anda tambahkan nanti melalui dashboard.
               </p>
@@ -287,7 +287,7 @@ export default function OnboardingForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="brandName">Nama brand</Label>
+              <Label htmlFor="brandName">Nama Brand</Label>
               <div className="relative">
                 <Building2 className="absolute left-3 top-3 h-5 w-5 text-muted-foreground-dark" />
                 <Input
@@ -319,7 +319,7 @@ export default function OnboardingForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="province">Wilayah layanan</Label>
+              <Label htmlFor="province">Wilayah Layanan</Label>
               <div className="relative">
                 <select
                   id="province"
@@ -488,7 +488,7 @@ export default function OnboardingForm({
 
             <div className="space-y-3">
               <div>
-                <Label>Metode pembayaran</Label>
+                <Label>Metode Pembayaran</Label>
                 <p className="mt-1 text-xs text-muted-foreground-dark">
                   Tambahkan rekening bank atau dompet digital yang digunakan
                   untuk menerima pembayaran klien.
@@ -499,7 +499,7 @@ export default function OnboardingForm({
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="paymentName" className="text-xs">
-                      Nama pembayaran
+                      Nama Pembayaran
                     </Label>
                     <Input
                       id="paymentName"
@@ -528,7 +528,7 @@ export default function OnboardingForm({
 
                   <div className="space-y-1.5">
                     <Label htmlFor="accountNumber" className="text-xs">
-                      Nomor akun
+                      Nomor Akun
                     </Label>
                     <Input
                       id="accountNumber"
@@ -560,7 +560,7 @@ export default function OnboardingForm({
 
                 <div className="space-y-1.5">
                   <Label htmlFor="accountName" className="text-xs">
-                    Nama pemilik akun
+                    Nama Pemilik Akun
                   </Label>
                   <Input
                     id="accountName"

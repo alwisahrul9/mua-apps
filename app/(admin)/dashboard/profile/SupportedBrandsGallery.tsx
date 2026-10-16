@@ -103,7 +103,7 @@ export default function SupportedBrandsGallery({
 
   return (
     <div className="space-y-2 md:col-span-2">
-      <Label>Brand pendukung</Label>
+      <Label>Brand Pendukung</Label>
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -222,7 +222,7 @@ export default function SupportedBrandsGallery({
               <ResumableImageUpload
                 id="supportedBrandImage"
                 name="supportedBrandImageUrl"
-                label="Tambah gambar brand"
+                label="Tambah Gambar Brand"
                 purpose="brand"
                 value=""
                 onChange={addBrand}

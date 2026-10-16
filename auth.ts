@@ -53,6 +53,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           roles: payload.user.roles ?? [],
           permissions: payload.user.permissions ?? [],
           isEmailVerified: Boolean(payload.user.emailVerifiedAt),
+          verificationEmailResendAvailableAt:
+            payload.user.verificationEmailResendAvailableAt ?? null,
+          verificationEmailRetryAfter:
+            payload.user.verificationEmailRetryAfter ?? 0,
           profile: payload.user.profile ?? null,
         }
       },
@@ -76,6 +80,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.roles = user.roles
         token.permissions = user.permissions
         token.isEmailVerified = user.isEmailVerified
+        token.verificationEmailResendAvailableAt =
+          user.verificationEmailResendAvailableAt
+        token.verificationEmailRetryAfter = user.verificationEmailRetryAfter
         token.profile = user.profile
       }
 
@@ -90,6 +97,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.roles = payload.user.roles ?? []
         token.permissions = payload.user.permissions ?? []
         token.isEmailVerified = Boolean(payload.user.emailVerifiedAt)
+        token.verificationEmailResendAvailableAt =
+          payload.user.verificationEmailResendAvailableAt ?? null
+        token.verificationEmailRetryAfter =
+          payload.user.verificationEmailRetryAfter ?? 0
         token.profile = payload.user.profile ?? null
       }
 
@@ -101,6 +112,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.roles = Array.isArray(token.roles) ? token.roles.filter((role): role is string => typeof role === "string") : []
       session.user.permissions = Array.isArray(token.permissions) ? token.permissions.filter((permission): permission is string => typeof permission === "string") : []
       session.user.isEmailVerified = Boolean(token.isEmailVerified)
+      session.user.verificationEmailResendAvailableAt =
+        typeof token.verificationEmailResendAvailableAt === "string"
+          ? token.verificationEmailResendAvailableAt
+          : null
+      session.user.verificationEmailRetryAfter =
+        typeof token.verificationEmailRetryAfter === "number"
+          ? token.verificationEmailRetryAfter
+          : 0
       session.user.profile = token.profile && typeof token.profile === "object" ? token.profile as import("@/lib/api/types").MuaProfile : null
       return session
     },

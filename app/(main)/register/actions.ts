@@ -2,8 +2,11 @@
 
 import axios, { AxiosError } from "axios";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { z } from "zod";
-import { publicApi } from "@/lib/api/client";
+import { publicApi, unwrapData } from "@/lib/api/client";
+import type { AuthResponse } from "@/lib/api/types";
+import { extractEmailVerificationState } from "@/lib/email-verification";
 import { toTitleCase } from "@/lib/text";
 
 export type RegisterFields = {
@@ -66,13 +69,46 @@ export async function register(
   const parsed = schema.safeParse(fields);
   if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors };
 
+  let loginUrl = "/login?registered=1";
+
   try {
-    await publicApi.post("/auth/register", {
+    const response = await publicApi.post("/auth/register", {
       name: parsed.data.name,
       email: parsed.data.email,
       password: parsed.data.password,
       password_confirmation: parsed.data.passwordConfirmation,
     });
+
+    const payload = unwrapData<AuthResponse & { accessToken?: string }>(
+      response.data,
+    );
+    const verificationToken = payload.token ?? payload.accessToken;
+    if (verificationToken) {
+      (await cookies()).set("verification_resend_token", verificationToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: 15 * 60,
+      });
+    }
+
+    const verification = extractEmailVerificationState(response.data);
+    const backendDeadline = verification.resendAvailableAt
+      ? Date.parse(verification.resendAvailableAt)
+      : 0;
+    const resendDeadline = Number.isFinite(backendDeadline) && backendDeadline > 0
+      ? backendDeadline
+      : verification.retryAfter > 0
+        ? Date.now() + verification.retryAfter * 1000
+        : 0;
+
+    const searchParams = new URLSearchParams({ registered: "1" });
+    if (resendDeadline > 0) {
+      searchParams.set("resend_at", new Date(resendDeadline).toISOString());
+    }
+
+    loginUrl = `/login?${searchParams.toString()}`;
   } catch (error) {
     console.error("Register error:", error);
     if (!axios.isAxiosError(error)) {
@@ -102,5 +138,5 @@ export async function register(
     };
   }
 
-  redirect("/login?registered=1");
+  redirect(loginUrl);
 }

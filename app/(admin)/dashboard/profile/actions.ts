@@ -115,16 +115,6 @@ export async function updateProfile(
   return { success: "Profil berhasil diperbarui." }
 }
 
-export async function resendVerification() {
-  try {
-    await (await serverApi()).post("/auth/email/verification-notification")
-    return { success: true }
-  } catch {
-    return { success: false, error: "Gagal mengirim ulang verifikasi." }
-  }
-}
-
-
 export async function deleteProfileImage(
   purpose: "profile" | "cover",
 ): Promise<{ success?: string; error?: string }> {

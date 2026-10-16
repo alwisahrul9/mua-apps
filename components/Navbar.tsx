@@ -40,7 +40,7 @@ export function Navbar({
     : [
         { href: "/", label: "Beranda" },
         { href: "/#fitur", label: "Fitur" },
-        { href: "/#cara-kerja", label: "Cara kerja" },
+        { href: "/#cara-kerja", label: "Cara Kerja" },
         { href: "/#faq", label: "FAQ" },
       ];
 

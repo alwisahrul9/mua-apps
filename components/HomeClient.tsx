@@ -116,7 +116,7 @@ export default function HomeClient({
             <>
               <RetryingNextImage
                 src={coverImage}
-                alt={`Cover ${brandName}`}
+                alt={`Sampul ${brandName}`}
                 fill
                 priority
                 className="object-cover"

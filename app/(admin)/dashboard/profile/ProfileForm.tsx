@@ -252,7 +252,7 @@ export default function ProfileForm({
             />
           </Field>
           <Field
-            label="Slug internal"
+            label="Slug Internal"
             error={fieldError("slug")}
             hint="Huruf kecil, angka, dan tanda hubung."
           >
@@ -273,7 +273,7 @@ export default function ProfileForm({
               className="h-11 rounded-xl"
             />
           </Field>
-          <Field label="Nama brand" error={fieldError("brandName")}>
+          <Field label="Nama Brand" error={fieldError("brandName")}>
             <Input
               name="brandName"
               placeholder="Contoh: Aldena Makeup"
@@ -352,10 +352,10 @@ export default function ProfileForm({
 
       <Card className="rounded-2xl">
         <CardHeader>
-          <CardTitle>Konten homepage</CardTitle>
+          <CardTitle>Konten Homepage</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-5 md:grid-cols-2">
-          <Field label="Judul hero" error={fieldError("heroTitle")}>
+          <Field label="Judul Hero" error={fieldError("heroTitle")}>
             <Input
               name="heroTitle"
               placeholder="Contoh: Jasa Makeup Profesional di Pemalang"
@@ -383,7 +383,7 @@ export default function ProfileForm({
             <ResumableImageUpload
               id="profileImage"
               name="profileImageUrl"
-              label="Foto profil"
+              label="Foto Profil"
               purpose="profile"
               shape="circle"
               value={values.profileImageUrl}
@@ -404,7 +404,7 @@ export default function ProfileForm({
             <ResumableImageUpload
               id="coverImage"
               name="coverImageUrl"
-              label="Gambar cover"
+              label="Gambar Sampul"
               purpose="cover"
               value={values.coverImageUrl}
               onChange={(url) => {
@@ -423,7 +423,7 @@ export default function ProfileForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="heroDescription">Deskripsi hero</Label>
+            <Label htmlFor="heroDescription">Deskripsi Hero</Label>
             <textarea
               id="heroDescription"
               name="heroDescription"
@@ -490,7 +490,7 @@ export default function ProfileForm({
           <div className="space-y-4 rounded-2xl border border-foreground/10 bg-muted/30 p-4 dark:border-foreground-dark/10 dark:bg-muted-dark/30 md:col-span-2 md:p-5">
             <div>
               <h3 className="text-sm font-semibold text-foreground dark:text-foreground-dark">
-                Wilayah layanan
+                Wilayah Layanan
               </h3>
               <p className="mt-1 text-xs text-muted-foreground dark:text-muted-foreground-dark">
                 Pilih provinsi terlebih dahulu, kemudian pilih kota atau
@@ -677,7 +677,7 @@ export default function ProfileForm({
 
       <Card className="rounded-2xl">
         <CardHeader>
-          <CardTitle>Metode pembayaran</CardTitle>
+          <CardTitle>Metode Pembayaran</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 px-4 sm:px-6">
           {paymentMethods.map((method, index) => (
@@ -685,7 +685,7 @@ export default function ProfileForm({
               key={index}
               className="grid min-w-0 gap-3 rounded-2xl border border-foreground/10 p-3 dark:border-foreground-dark/10 sm:p-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] md:items-end"
             >
-              <Field label="Nama pembayaran">
+              <Field label="Nama Pembayaran">
                 <Input
                   value={method.paymentName}
                   onChange={(event) => {
@@ -703,7 +703,7 @@ export default function ProfileForm({
                   className="h-11 rounded-xl"
                 />
               </Field>
-              <Field label="Nomor akun">
+              <Field label="Nomor Akun">
                 <Input
                   value={method.accountNumber}
                   inputMode="numeric"
@@ -728,7 +728,7 @@ export default function ProfileForm({
                   className="h-11 rounded-xl"
                 />
               </Field>
-              <Field label="Nama pemilik">
+              <Field label="Nama Pemilik">
                 <Input
                   value={method.accountName}
                   placeholder="Contoh: Aldena Putri"

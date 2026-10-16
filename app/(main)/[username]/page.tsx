@@ -129,6 +129,7 @@ export default async function MuaPage({ params }: PageProps) {
     : undefined
   const prices = services.map((service) => service.price).filter(Number.isFinite)
   const muaFaqs = getMuaFaqs(profile)
+  const hasPhysicalAddress = Boolean(profile.address?.trim())
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -163,7 +164,9 @@ export default async function MuaPage({ params }: PageProps) {
         ],
       },
       {
-        "@type": "LocalBusiness",
+        "@type": hasPhysicalAddress
+          ? ["LocalBusiness", "BeautySalon"]
+          : "Organization",
         "@id": `${url}#business`,
         name: profile.brandName,
         url,
@@ -180,12 +183,14 @@ export default async function MuaPage({ params }: PageProps) {
           "@type": "City",
           name: area,
         })),
-        address: {
-          "@type": "PostalAddress",
-          streetAddress: profile.address || undefined,
-          addressLocality: city || undefined,
-          addressCountry: "ID",
-        },
+        address: hasPhysicalAddress
+          ? {
+              "@type": "PostalAddress",
+              streetAddress: profile.address,
+              addressLocality: city || undefined,
+              addressCountry: "ID",
+            }
+          : undefined,
         priceRange:
           prices.length > 0
             ? `Rp${Math.min(...prices).toLocaleString("id-ID")}–Rp${Math.max(...prices).toLocaleString("id-ID")}`

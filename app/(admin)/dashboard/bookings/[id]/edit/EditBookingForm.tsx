@@ -132,7 +132,7 @@ export default function EditBookingForm({ booking }: { booking: Booking }) {
             </div>
             <div>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
-                No. WhatsApp
+                Nomor WhatsApp
               </p>
               <div className="flex items-center gap-2">
                 <p className="font-medium">{booking.whatsapp}</p>
