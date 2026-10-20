@@ -6,6 +6,20 @@ const appName =
     : "JadiCantik";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/kota/:path*",
+        destination: "/area/:path*",
+        permanent: true,
+      },
+      {
+        source: "/layanan/:path*",
+        destination: "/service/:path*",
+        permanent: true,
+      },
+    ];
+  },
   env: {
     NEXT_PUBLIC_APP_NAME: appName,
   },

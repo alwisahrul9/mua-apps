@@ -97,6 +97,9 @@ export async function createService(
 
   await invalidateCurrentServicesCache()
   revalidatePath("/dashboard/services")
+  revalidatePath("/service", "layout")
+  revalidatePath("/area", "layout")
+  revalidatePath("/sitemap.xml")
   redirect("/dashboard/services?toast=Layanan%20berhasil%20ditambahkan")
 }
 
@@ -121,6 +124,9 @@ export async function updateService(
 
   await invalidateCurrentServicesCache()
   revalidatePath("/dashboard/services")
+  revalidatePath("/service", "layout")
+  revalidatePath("/area", "layout")
+  revalidatePath("/sitemap.xml")
   redirect("/dashboard/services?toast=Layanan%20berhasil%20diperbarui")
 }
 
@@ -132,5 +138,8 @@ export async function deleteService(id: string) {
   }
   await invalidateCurrentServicesCache()
   revalidatePath("/dashboard/services")
+  revalidatePath("/service", "layout")
+  revalidatePath("/area", "layout")
+  revalidatePath("/sitemap.xml")
   redirect("/dashboard/services?toast=Layanan%20berhasil%20dihapus")
 }

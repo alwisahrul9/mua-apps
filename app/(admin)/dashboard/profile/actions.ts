@@ -1,11 +1,12 @@
 "use server"
 
 import axios, { AxiosError } from "axios"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 import { serverApi } from "@/lib/api/server"
 import { invalidateCurrentMuaProfileCache } from "@/lib/profile-cache"
 import { toTitleCase } from "@/lib/text"
 import { profileSchema, type ProfileValues } from "./schema"
+import { seoSitemapCacheTag } from "@/lib/seo-cache"
 
 export type ProfileField = keyof ProfileValues
 export type ProfileState = {
@@ -110,10 +111,13 @@ export async function updateProfile(
   }
 
   await invalidateCurrentMuaProfileCache(values.username)
+  updateTag(seoSitemapCacheTag("profiles"))
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/profile")
   revalidatePath("/dashboard/portfolios")
   revalidatePath(`/${values.username}`)
+  revalidatePath("/area", "layout")
+  revalidatePath("/sitemap.xml")
   return { success: "Profil berhasil diperbarui." }
 }
 
@@ -138,9 +142,12 @@ export async function deleteProfileImage(
   }
 
   await invalidateCurrentMuaProfileCache(username)
+  updateTag(seoSitemapCacheTag("profiles"))
   revalidatePath("/dashboard")
   revalidatePath("/dashboard/profile")
   if (username) revalidatePath(`/${username}`)
+  revalidatePath("/area", "layout")
+  revalidatePath("/sitemap.xml")
   return { success: purpose === "profile" ? "Foto profil berhasil dihapus." : "Gambar cover berhasil dihapus." }
 }
 

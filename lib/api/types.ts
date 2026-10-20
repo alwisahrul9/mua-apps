@@ -84,6 +84,65 @@ export type Notification = {
   createdAt: string;
 };
 
+export type Review = {
+  id: string;
+  clientName: string;
+  rating: number;
+  reviewText: string;
+  serviceName?: string | null;
+  eventDate?: string | null;
+  createdAt: string;
+};
+
+export type ReviewInvitation = {
+  token?: string;
+  url?: string;
+  reviewUrl?: string;
+  expiresAt?: string | null;
+};
+
+export type ReviewCheck = {
+  valid: boolean;
+  token?: string;
+  clientName?: string;
+  serviceName?: string | null;
+  brandName?: string;
+  username?: string;
+  alreadyReviewed?: boolean;
+  expiresAt?: string | null;
+};
+
+export type SeoDirectoryOption = {
+  name: string;
+  slug: string;
+  count?: number;
+};
+
+export type SeoDirectory = {
+  cities: SeoDirectoryOption[];
+  categories: SeoDirectoryOption[];
+};
+
+export type SeoSitemapEntry = {
+  url: string;
+  lastModified?: string;
+  images?: string[];
+};
+
+export type Article = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  description?: string | null;
+  content: string;
+  imageUrl?: string | null;
+  isPublished?: boolean;
+  publishedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type AuthUser = {
   id: string;
   name: string;

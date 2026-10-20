@@ -25,10 +25,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { RetryingNextImage } from "@/components/RetryingImage";
 import { serviceAreaLabel, siteConfig, whatsappUrl } from "@/lib/site-config";
-import { testimonials } from "@/lib/testimonials";
 import { getMuaFaqs } from "@/lib/faqs";
 import { publicMediaUrl } from "@/lib/media-url";
-import type { MuaProfile } from "@/lib/api/types";
+import type { MuaProfile, Review } from "@/lib/api/types";
 
 type PortfolioItem = {
   id: string;
@@ -63,10 +62,12 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export default function HomeClient({
   portfolios = [],
   services = [],
+  reviews = [],
   profile,
 }: {
   portfolios?: PortfolioItem[];
   services?: ServiceItem[];
+  reviews?: Review[];
   profile?: MuaProfile | null;
 }) {
   const brandName = profile?.brandName?.trim() || siteConfig.name;
@@ -106,6 +107,14 @@ export default function HomeClient({
   const instagramHref = profile?.instagramUsername
     ? `https://instagram.com/${profile.instagramUsername.replace(/^@/, "")}`
     : "";
+  const portfolioAlt = (portfolio: PortfolioItem) => {
+    const customAlt = portfolio.altText?.trim();
+    if (customAlt) return customAlt;
+
+    const category = portfolio.category?.trim() || "profesional";
+    const title = portfolio.title?.trim();
+    return `Makeup ${category} oleh ${brandName}${city ? ` di ${city}` : ""}${title ? ` - ${title}` : ""}`;
+  };
 
   return (
     <main className="flex-grow">
@@ -379,8 +388,9 @@ export default function HomeClient({
                 >
                   <Image
                     src={publicMediaUrl(portfolio.imageUrl)}
-                    alt={portfolio.altText}
+                    alt={portfolioAlt(portfolio)}
                     fill
+                    loading="lazy"
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
@@ -417,7 +427,7 @@ export default function HomeClient({
         </div>
       </section>
 
-      {testimonials.length > 0 && (
+      {reviews.length > 0 && (
         <section id="testimonials" className="bg-muted-dark/30 py-24">
           <div className="container-custom">
             <div className="text-center">
@@ -429,19 +439,25 @@ export default function HomeClient({
               </h2>
             </div>
             <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {testimonials.map((testimonial) => (
+              {reviews.map((review) => (
                 <figure
-                  key={`${testimonial.name}-${testimonial.service}`}
+                  key={review.id}
                   className="rounded-3xl border border-foreground-dark/10 bg-background-dark p-7"
                 >
-                  <Quote className="h-7 w-7 text-primary-dark" />
+                  <div className="flex items-center justify-between gap-4">
+                    <Quote className="h-7 w-7 text-primary-dark" />
+                    <span className="flex items-center gap-1 text-sm" aria-label={`${review.rating} dari 5 bintang`}>
+                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                      {review.rating.toFixed(1)}
+                    </span>
+                  </div>
                   <blockquote className="mt-5 leading-7 text-muted-foreground-dark">
-                    “{testimonial.quote}”
+                    “{review.reviewText}”
                   </blockquote>
                   <figcaption className="mt-6">
-                    <p className="font-medium">{testimonial.name}</p>
+                    <p className="font-medium">{review.clientName}</p>
                     <p className="text-sm text-muted-foreground-dark">
-                      {testimonial.service}
+                      {review.serviceName || "Klien terverifikasi"}
                     </p>
                   </figcaption>
                 </figure>

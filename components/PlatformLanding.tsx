@@ -68,7 +68,7 @@ export const platformFaqs = [
   ],
   [
     "Apakah saya mendapatkan alamat sendiri?",
-    "Ya. Setiap MUA memilih username unik, misalnya jadicantik.id/nama_mua.",
+    "Ya. Setiap MUA memilih username unik, misalnya jadicantik.com/nama_mua.",
   ],
 ];
 
@@ -351,9 +351,18 @@ export default function PlatformLanding({
             </p>
           </div>
           <div className="flex flex-wrap gap-5 text-sm text-muted-foreground-dark">
+            <Link href="/area" className="hover:text-foreground-dark">
+              Cari MUA
+            </Link>
+            <Link href="/service" className="hover:text-foreground-dark">
+              Service MUA
+            </Link>
+            <Link href="/blog" className="hover:text-foreground-dark">
+              Panduan
+            </Link>
             <HomeAuthActions variant="footer" authenticated={authenticated} />
             <a
-              href="mailto:halo@jadicantik.id"
+              href="mailto:halo@jadicantik.com"
               className="inline-flex items-center gap-2 hover:text-foreground-dark"
             >
               <MessageCircle className="h-4 w-4" />

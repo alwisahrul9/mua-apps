@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import {
   getPublicMua,
   getPublicPortfolios,
+  getPublicReviews,
   getPublicServices,
 } from "@/lib/api/public";
 import { getMuaFaqs } from "@/lib/faqs";
@@ -109,14 +110,16 @@ export default async function MuaPage({ params }: PageProps) {
 
   if (!profile || profile.homepageIsActive !== true) notFound();
 
-  const [portfolioResult, serviceResult] = await Promise.allSettled([
+  const [portfolioResult, serviceResult, reviewResult] = await Promise.allSettled([
     getPublicPortfolios(username),
     getPublicServices(username),
+    getPublicReviews(username),
   ]);
   const portfolios =
     portfolioResult.status === "fulfilled" ? portfolioResult.value : [];
   const services =
     serviceResult.status === "fulfilled" ? serviceResult.value : [];
+  const reviews = reviewResult.status === "fulfilled" ? reviewResult.value : [];
   const url = profileUrl(username);
   const bookingUrl = `${url}/booking`;
   const city = profile.serviceArea?.[0];
@@ -132,6 +135,13 @@ export default async function MuaPage({ params }: PageProps) {
     .filter(Number.isFinite);
   const muaFaqs = getMuaFaqs(profile);
   const hasPhysicalAddress = Boolean(profile.address?.trim());
+  const validReviews = reviews.filter(
+    (review) => Number.isFinite(review.rating) && review.rating >= 1 && review.rating <= 5,
+  );
+  const averageRating = validReviews.length
+    ? validReviews.reduce((total, review) => total + review.rating, 0) /
+      validReviews.length
+    : null;
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -220,6 +230,29 @@ export default async function MuaPage({ params }: PageProps) {
           target: bookingUrl,
           name: `Booking ${profile.brandName}`,
         },
+        aggregateRating:
+          averageRating === null
+            ? undefined
+            : {
+                "@type": "AggregateRating",
+                ratingValue: averageRating.toFixed(1),
+                reviewCount: validReviews.length,
+                bestRating: 5,
+                worstRating: 1,
+              },
+        review: validReviews.slice(0, 10).map((review) => ({
+          "@type": "Review",
+          author: { "@type": "Person", name: review.clientName },
+          datePublished: review.createdAt,
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: review.rating,
+            bestRating: 5,
+            worstRating: 1,
+          },
+          reviewBody: review.reviewText,
+          itemReviewed: { "@id": `${url}#business` },
+        })),
       },
       {
         "@type": "FAQPage",
@@ -247,6 +280,7 @@ export default async function MuaPage({ params }: PageProps) {
         profile={profile}
         portfolios={portfolios}
         services={services}
+        reviews={reviews}
       />
       <SiteFooter profile={profile} />
     </>

@@ -15,6 +15,7 @@ import {
 import { getCurrentMuaProfile } from "@/lib/profile-cache";
 import { siteConfig } from "@/lib/site-config";
 import BusinessLinksCard from "./components/BusinessLinksCard";
+import GoogleBusinessGuideCard from "./components/GoogleBusinessGuideCard";
 import {
   CircleCheck,
   CircleDollarSign,
@@ -137,6 +138,13 @@ export default async function DashboardOverview({
           hasServices={services.data.length > 0}
         />
       )}
+      <GoogleBusinessGuideCard
+        publicProfileUrl={
+          profile?.username
+            ? `${siteConfig.url}/${encodeURIComponent(profile.username)}`
+            : undefined
+        }
+      />
       <MonthRangeFilter />
 
       <div className="grid gap-6 md:grid-cols-2">

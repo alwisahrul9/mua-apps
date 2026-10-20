@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatEventTime } from "@/lib/date-time";
 import type { Booking } from "@/lib/api/types";
+import ReviewLinkButton from "./ReviewLinkButton";
 
 export default function BookingDetail({ booking }: { booking: Booking }) {
   const [copied, setCopied] = useState(false);
@@ -316,6 +317,14 @@ export default function BookingDetail({ booking }: { booking: Booking }) {
         </div>
 
         {/* Footer */}
+        {booking.status === "COMPLETED" && (
+          <div className="border-t border-foreground/10 bg-muted/20 p-5 dark:border-foreground-dark/10 dark:bg-muted-dark/20 sm:p-6">
+            <p className="mb-3 text-sm text-muted-foreground dark:text-muted-foreground-dark">
+              Kirim tautan satu kali kepada klien untuk meminta ulasan setelah layanan selesai.
+            </p>
+            <ReviewLinkButton bookingId={booking.id} />
+          </div>
+        )}
         {booking.status !== "COMPLETED" && booking.status !== "CANCELED" && (
           <div className="flex justify-end border-t border-foreground/10 bg-muted/20 p-5 dark:border-foreground-dark/10 dark:bg-muted-dark/20 sm:p-6">
             <Link

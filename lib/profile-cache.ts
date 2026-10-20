@@ -18,6 +18,8 @@ export function publicProfileCacheTag(username: string) {
   return `public-mua-profile:${username.trim().toLowerCase()}`
 }
 
+export const publicMuaListCacheTag = "public-mua-list"
+
 export async function getCachedMuaProfile(
   userId: string,
   accessToken: string,
@@ -60,6 +62,7 @@ export async function invalidateCurrentMuaProfileCache(username?: string | null)
   if (username?.trim()) {
     updateTag(publicProfileCacheTag(username))
   }
+  updateTag(publicMuaListCacheTag)
 }
 
 export const profileCacheSeconds = PROFILE_CACHE_SECONDS
