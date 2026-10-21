@@ -276,7 +276,7 @@ export default function ProfileForm({
                 });
                 clearError("slug");
               }}
-              disabled
+              disabled={busy}
               className="h-11 rounded-xl"
             />
           </Field>

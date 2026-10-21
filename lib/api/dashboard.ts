@@ -50,6 +50,18 @@ export async function listBookings(
   return unwrapList<Booking>(response.data);
 }
 
+export async function listAllBookings(
+  params?: Record<string, string | number | undefined>,
+): Promise<Booking[]> {
+  const first = await listBookings({ ...params, per_page: 500, page: 1 });
+  const bookings = [...first.data];
+  for (let page = 2; page <= (first.lastPage ?? 1); page += 1) {
+    const result = await listBookings({ ...params, per_page: 500, page });
+    bookings.push(...result.data);
+  }
+  return bookings;
+}
+
 export async function getBooking(id: string) {
   const response = await (
     await serverApi()

@@ -1,4 +1,4 @@
-import { listBookings, listServices } from "@/lib/api/dashboard";
+import { listAllBookings, listServices } from "@/lib/api/dashboard";
 import DashboardStatsChart from "./components/DashboardStatsChart";
 import DashboardBarChart from "./components/DashboardBarChart";
 import MonthRangeFilter from "./components/MonthRangeFilter";
@@ -90,20 +90,30 @@ function BookingStatusBadge({ status }: { status: string }) {
 export default async function DashboardOverview({
   searchParams,
 }: {
-  searchParams: Promise<{ start?: string; end?: string }>;
+  searchParams: Promise<{ start?: string | string[]; end?: string | string[] }>;
 }) {
   const params = await searchParams;
-  const [result, profile, services] = await Promise.all([
-    listBookings({ per_page: 500 }),
+  const startMonth =
+    typeof params.start === "string" && monthValuePattern.test(params.start)
+      ? params.start
+      : null;
+  const endMonth =
+    typeof params.end === "string" && monthValuePattern.test(params.end)
+      ? params.end
+      : null;
+  const invalidRange = Boolean(startMonth && endMonth && startMonth > endMonth);
+  const [allBookings, profile, services] = await Promise.all([
+    invalidRange
+      ? Promise.resolve([])
+      : listAllBookings({
+          start: startMonth ?? undefined,
+          end: endMonth ?? undefined,
+        }),
     getCurrentMuaProfile(),
     listServices(1),
   ]);
-  const startMonth =
-    params.start && monthValuePattern.test(params.start) ? params.start : null;
-  const endMonth =
-    params.end && monthValuePattern.test(params.end) ? params.end : null;
 
-  const bookings = result.data.filter((booking) => {
+  const bookings = allBookings.filter((booking) => {
     const month = bookingMonthValue(booking.createdAt);
     if (!month) return false;
     return (
