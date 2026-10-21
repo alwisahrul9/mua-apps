@@ -119,7 +119,7 @@ export default function HomeClient({
   return (
     <main className="flex-grow">
       {/* Hero Section */}
-      <section className="relative isolate h-dvh min-h-[600px] flex items-center justify-center overflow-hidden container-custom">
+      <section className="relative isolate flex h-dvh min-h-[600px] w-full items-center justify-center overflow-hidden">
         <div className="absolute inset-0 -z-10">
           {coverImage && (
             <>
@@ -131,34 +131,35 @@ export default function HomeClient({
                 className="object-cover"
                 sizes="100vw"
               />
-              <div className="absolute inset-0 bg-background-dark/80" />
+              <div className="absolute inset-0 bg-background/80" />
             </>
           )}
           {/* Subtle gradient blob for background */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-dark/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-accent-dark/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-accent/30 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
         </div>
 
-        <div className="text-center max-w-3xl mx-auto z-10 px-4 mt-20">
+        <div className="container-custom z-10 mx-auto mt-20 w-full px-4 text-center">
           <motion.div
+            className="mx-auto max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="text-sm tracking-widest uppercase text-muted-foreground-dark mb-4 block font-semibold">
+            <span className="text-sm tracking-widest uppercase text-muted-foreground mb-4 block font-semibold">
               {tagline}
             </span>
             <h1 className="text-balance break-words font-serif text-4xl leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl mb-6">
               {heroTitle}
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground-dark mb-10 max-w-xl mx-auto font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto font-light leading-relaxed">
               {heroDescription}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href={bookingHref}
-                className="group relative inline-flex items-center justify-center px-8 py-4 bg-foreground-dark text-background-dark font-medium rounded-full overflow-hidden transition-all hover:bg-foreground-dark/90 w-full sm:w-auto"
+                className="group relative inline-flex items-center justify-center px-8 py-4 bg-foreground text-background font-medium rounded-full overflow-hidden transition-all hover:bg-foreground/90 w-full sm:w-auto"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Pesan Jadwal Sekarang
@@ -171,7 +172,7 @@ export default function HomeClient({
                   window.location.hash = "#portfolio";
                   window.dispatchEvent(new Event("hashchange"));
                 }}
-                className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-foreground-dark border border-foreground-dark/20 font-medium rounded-full transition-all hover:border-foreground-dark/40 w-full sm:w-auto"
+                className="inline-flex items-center justify-center px-8 py-4 bg-transparent text-foreground border border-foreground/20 font-medium rounded-full transition-all hover:border-foreground/40 w-full sm:w-auto"
               >
                 Lihat Portofolio
               </Link>
@@ -194,7 +195,7 @@ export default function HomeClient({
                   window.history.pushState(null, "", "#services");
                   window.dispatchEvent(new Event("hashchange"));
                 }}
-                className="p-3 rounded-full border border-foreground-dark/30 text-foreground-dark/80 flex items-center justify-center animate-bounce hover:bg-foreground-dark/10 hover:text-foreground-dark transition-colors"
+                className="p-3 rounded-full border border-foreground/30 text-foreground/80 flex items-center justify-center animate-bounce hover:bg-foreground/10 hover:text-foreground transition-colors"
                 aria-label="Lihat layanan"
               >
                 <ChevronDown className="w-6 h-6" />
@@ -206,11 +207,11 @@ export default function HomeClient({
 
       <section
         id="about"
-        className="border-y border-foreground-dark/5 bg-background-dark py-24"
+        className="border-y border-foreground/5 bg-background py-24"
       >
         <div className="container-custom grid items-center gap-12 lg:grid-cols-[minmax(16rem,0.75fr)_minmax(0,1.25fr)] lg:gap-16">
           <div className="flex justify-center lg:justify-start">
-            <div className="relative aspect-square w-48 overflow-hidden rounded-full border border-foreground-dark/10 bg-muted-dark sm:w-64 lg:w-full lg:max-w-80">
+            <div className="relative aspect-square w-48 overflow-hidden rounded-full border border-foreground/10 bg-muted sm:w-64 lg:w-full lg:max-w-80">
               {profileImage ? (
                 <RetryingNextImage
                   src={profileImage}
@@ -220,48 +221,48 @@ export default function HomeClient({
                   sizes="(max-width: 640px) 12rem, (max-width: 1024px) 16rem, 20rem"
                   fallback={
                     <div className="flex h-full items-center justify-center">
-                      <UserRound className="h-20 w-20 text-primary-dark/70" />
+                      <UserRound className="h-20 w-20 text-primary/70" />
                     </div>
                   }
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
-                  <UserRound className="h-20 w-20 text-primary-dark/70" />
+                  <UserRound className="h-20 w-20 text-primary/70" />
                 </div>
               )}
             </div>
           </div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               Tentang MUA
             </p>
             <h2 className="mt-3 font-serif text-3xl md:text-5xl">
               {brandName}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground-dark">
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
               {tagline}
             </p>
-            <p className="mt-8 text-lg leading-8 text-muted-foreground-dark">
+            <p className="mt-8 text-lg leading-8 text-muted-foreground">
               {brandName} menghadirkan layanan makeup yang disesuaikan untuk
               setiap klien. {" "}
               Kami membantu setiap klien menemukan tampilan yang nyaman, elegan,
               dan sesuai dengan karakter wajah, busana, serta kebutuhan
               acaranya.
             </p>
-            <p className="mt-5 leading-7 text-muted-foreground-dark">
+            <p className="mt-5 leading-7 text-muted-foreground">
               Sebelum hari acara, kami membuka ruang konsultasi untuk membahas
               referensi, kondisi kulit, lokasi, dan jadwal. Pendekatan ini
               membantu proses makeup berjalan lebih tenang dan hasilnya sesuai
               harapan.
             </p>
-            <div className="mt-8 flex items-start gap-3 rounded-2xl border border-foreground-dark/10 p-5">
-              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary-dark" />
+            <div className="mt-8 flex items-start gap-3 rounded-2xl border border-foreground/10 p-5">
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
                 <p className="font-medium">Wilayah Pelayanan</p>
-                <p className="mt-1 text-sm text-muted-foreground-dark">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {serviceAreas}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground-dark">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {address}
                 </p>
               </div>
@@ -271,13 +272,13 @@ export default function HomeClient({
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-24 bg-muted-dark/30">
+      <section id="services" className="py-24 bg-muted/30">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">
               Layanan Kami
             </h2>
-            <p className="text-muted-foreground-dark max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Kami menyediakan berbagai layanan makeup untuk memenuhi kebutuhan
               di hari spesial Anda.
             </p>
@@ -290,11 +291,11 @@ export default function HomeClient({
                 return (
                   <div
                     key={service.id}
-                    className="bg-background-dark p-8 rounded-2xl shadow-sm border border-foreground-dark/5 hover:shadow-md transition-shadow"
+                    className="bg-background p-8 rounded-2xl shadow-sm border border-foreground/5 hover:shadow-md transition-shadow"
                   >
-                    <IconComponent className="w-8 h-8 text-primary-dark mb-6" />
+                    <IconComponent className="w-8 h-8 text-primary mb-6" />
                     <h3 className="font-serif text-2xl mb-3">{service.name}</h3>
-                    <p className="text-muted-foreground-dark mb-6 line-clamp-3">
+                    <p className="text-muted-foreground mb-6 line-clamp-3">
                       {service.description ||
                         "Layanan makeup profesional untuk kebutuhan momen spesial Anda."}
                     </p>
@@ -306,7 +307,7 @@ export default function HomeClient({
               })
             ) : (
               <div className="col-span-full text-center py-12 border-2 border-dashed border-border rounded-xl">
-                <p className="text-muted-foreground-dark">
+                <p className="text-muted-foreground">
                   Layanan sedang diperbarui.
                 </p>
               </div>
@@ -317,13 +318,13 @@ export default function HomeClient({
       </section>
 
       {/* Products Section */}
-      <section className="py-24 bg-muted-dark/30 border-t border-foreground-dark/5">
+      <section className="py-24 bg-muted/30 border-t border-foreground/5">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">
               Produk Pilihan Kami
             </h2>
-            <p className="text-muted-foreground-dark max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Kami memastikan hasil makeup yang tahan lama, flawless, dan aman
               bagi kulit Anda dengan menggunakan produk kosmetik dari brand
               terpercaya dan berkualitas tinggi.
@@ -344,7 +345,7 @@ export default function HomeClient({
                   }}
                   className="group relative cursor-pointer"
                 >
-                  <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-foreground/10 bg-white p-4 shadow-sm transition-transform duration-300 group-hover:scale-110 dark:border-foreground-dark/10 sm:h-24 sm:w-24 sm:p-5 md:h-28 md:w-28">
+                  <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-foreground/10 bg-white p-4 shadow-sm transition-transform duration-300 group-hover:scale-110 sm:h-24 sm:w-24 sm:p-5 md:h-28 md:w-28">
                     <Image
                       src={publicMediaUrl(brand.logo)}
                       alt={brand.name}
@@ -357,7 +358,7 @@ export default function HomeClient({
               ))}
             </div>
           ) : (
-            <p className="text-center text-sm text-muted-foreground-dark">
+            <p className="text-center text-sm text-muted-foreground">
               Brand masih belum diatur.
             </p>
           )}
@@ -365,11 +366,11 @@ export default function HomeClient({
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-24 bg-background-dark">
+      <section id="portfolio" className="py-24 bg-background">
         <div className="container-custom">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl mb-4">Portofolio</h2>
-            <p className="text-muted-foreground-dark max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Beberapa hasil karya terbaik kami. Temukan inspirasi gaya makeup
               yang sesuai dengan karakter Anda.
             </p>
@@ -384,7 +385,7 @@ export default function HomeClient({
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted-dark"
+                  className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted"
                 >
                   <Image
                     src={publicMediaUrl(portfolio.imageUrl)}
@@ -406,7 +407,7 @@ export default function HomeClient({
               ))
             ) : (
               <div className="col-span-full text-center py-12 border-2 border-dashed border-border rounded-xl">
-                <p className="text-muted-foreground-dark">
+                <p className="text-muted-foreground">
                   Portofolio sedang dalam proses update.
                 </p>
               </div>
@@ -416,7 +417,7 @@ export default function HomeClient({
           <div className="text-center mt-12">
             <Link
               href={bookingHref}
-              className="inline-flex items-center justify-center px-8 py-4 bg-foreground-dark text-background-dark font-medium rounded-full overflow-hidden transition-all hover:bg-foreground-dark/90"
+              className="inline-flex items-center justify-center px-8 py-4 bg-foreground text-background font-medium rounded-full overflow-hidden transition-all hover:bg-foreground/90"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Tertarik? Pesan Sekarang
@@ -428,10 +429,10 @@ export default function HomeClient({
       </section>
 
       {reviews.length > 0 && (
-        <section id="testimonials" className="bg-muted-dark/30 py-24">
+        <section id="testimonials" className="bg-muted/30 py-24">
           <div className="container-custom">
             <div className="text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
                 Cerita Klien
               </p>
               <h2 className="mt-3 font-serif text-3xl md:text-5xl">
@@ -442,21 +443,21 @@ export default function HomeClient({
               {reviews.map((review) => (
                 <figure
                   key={review.id}
-                  className="rounded-3xl border border-foreground-dark/10 bg-background-dark p-7"
+                  className="rounded-3xl border border-foreground/10 bg-background p-7"
                 >
                   <div className="flex items-center justify-between gap-4">
-                    <Quote className="h-7 w-7 text-primary-dark" />
+                    <Quote className="h-7 w-7 text-primary" />
                     <span className="flex items-center gap-1 text-sm" aria-label={`${review.rating} dari 5 bintang`}>
                       <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                       {review.rating.toFixed(1)}
                     </span>
                   </div>
-                  <blockquote className="mt-5 leading-7 text-muted-foreground-dark">
+                  <blockquote className="mt-5 leading-7 text-muted-foreground">
                     “{review.reviewText}”
                   </blockquote>
                   <figcaption className="mt-6">
                     <p className="font-medium">{review.clientName}</p>
-                    <p className="text-sm text-muted-foreground-dark">
+                    <p className="text-sm text-muted-foreground">
                       {review.serviceName || "Klien terverifikasi"}
                     </p>
                   </figcaption>
@@ -467,16 +468,16 @@ export default function HomeClient({
         </section>
       )}
 
-      <section id="faq" className="bg-background-dark py-24">
+      <section id="faq" className="bg-background py-24">
         <div className="container-custom grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               Informasi Booking
             </p>
             <h2 className="mt-3 font-serif text-3xl md:text-5xl">
               Pertanyaan yang Sering Diajukan
             </h2>
-            <p className="mt-5 leading-7 text-muted-foreground-dark">
+            <p className="mt-5 leading-7 text-muted-foreground">
               Masih memiliki pertanyaan lain? Hubungi kami agar kebutuhan acara
               Anda dapat dibahas lebih rinci.
             </p>
@@ -485,12 +486,12 @@ export default function HomeClient({
             {muaFaqs.map((faq) => (
               <details
                 key={faq.question}
-                className="group rounded-2xl border border-foreground-dark/10 bg-muted-dark/20 p-6"
+                className="group rounded-2xl border border-foreground/10 bg-muted/20 p-6"
               >
                 <summary className="cursor-pointer list-none font-medium">
                   {faq.question}
                 </summary>
-                <p className="mt-4 text-sm leading-6 text-muted-foreground-dark">
+                <p className="mt-4 text-sm leading-6 text-muted-foreground">
                   {faq.answer}
                 </p>
               </details>
@@ -499,19 +500,19 @@ export default function HomeClient({
         </div>
       </section>
 
-      <section className="border-t border-foreground-dark/5 bg-muted-dark/30 py-20">
+      <section className="border-t border-foreground/5 bg-muted/30 py-20">
         <div className="container-custom text-center">
           <h2 className="font-serif text-3xl md:text-5xl">
             Siap Menyiapkan Tampilan untuk Momen Anda?
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl leading-7 text-muted-foreground-dark">
+          <p className="mx-auto mt-5 max-w-2xl leading-7 text-muted-foreground">
             Konsultasikan layanan, jadwal, dan lokasi acara bersama{" "}
             {brandName}.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href={bookingHref}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground-dark px-7 py-3.5 font-medium text-background-dark hover:bg-foreground-dark/90"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-7 py-3.5 font-medium text-background hover:bg-foreground/90"
             >
               Pesan Jadwal
               <ArrowRight className="h-4 w-4" />
@@ -520,7 +521,7 @@ export default function HomeClient({
               href={contactHref}
               target={hasWhatsapp ? "_blank" : undefined}
               rel={hasWhatsapp ? "noreferrer" : undefined}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground-dark/20 px-7 py-3.5 font-medium hover:border-foreground-dark/40"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/20 px-7 py-3.5 font-medium hover:border-foreground/40"
             >
               <MessageCircle className="h-4 w-4" />
               {hasWhatsapp ? "Konsultasi WhatsApp" : "Konsultasi saat Booking"}
@@ -530,7 +531,7 @@ export default function HomeClient({
                 href={instagramHref}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground-dark/20 px-7 py-3.5 font-medium hover:border-foreground-dark/40"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/20 px-7 py-3.5 font-medium hover:border-foreground/40"
               >
                 <AtSign className="h-4 w-4" />
                 Lihat Instagram

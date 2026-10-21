@@ -1,32 +1,32 @@
-import { NextResponse } from "next/server"
-import { auth } from "@/auth"
-import { apiBaseUrl } from "@/lib/api/client"
-import { extractMuaProfile, isProfileComplete } from "@/lib/profile"
+import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { apiBaseUrl } from "@/lib/api/client";
+import { extractMuaProfile, isProfileComplete } from "@/lib/profile";
 
-const authRoutes = new Set(["/login", "/register", "/forgot-password"])
+const authRoutes = new Set(["/login", "/register", "/forgot-password"]);
 
 export const proxy = auth(async (request) => {
-  const { pathname } = request.nextUrl
-  const session = request.auth
+  const { pathname } = request.nextUrl;
+  const session = request.auth;
   const isAuthRoute =
     authRoutes.has(pathname) ||
     pathname === "/reset-password" ||
-    pathname.startsWith("/reset-password/")
-  const isDashboardRoute = pathname.startsWith("/dashboard")
-  const isOnboardingRoute = pathname.startsWith("/onboarding")
+    pathname.startsWith("/reset-password/");
+  const isDashboardRoute = pathname.startsWith("/dashboard");
+  const isOnboardingRoute = pathname.startsWith("/onboarding");
 
   if (!session?.user || !session.accessToken) {
     if (isDashboardRoute || isOnboardingRoute) {
-      return NextResponse.redirect(new URL("/login", request.url))
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    return NextResponse.next()
+    return NextResponse.next();
   }
 
   // DashboardLayout mengambil profil terbaru untuk navbar sekaligus memblokir
   // profil yang belum lengkap. Hindari request backend kedua di Proxy pada
   // setiap navigasi dashboard.
-  if (isDashboardRoute) return NextResponse.next()
+  if (isDashboardRoute) return NextResponse.next();
 
   const response = await fetch(`${apiBaseUrl}/user/profile`, {
     headers: {
@@ -35,25 +35,31 @@ export const proxy = auth(async (request) => {
     },
     cache: "no-store",
     signal: AbortSignal.timeout(5_000),
-  }).catch(() => null)
+  }).catch(() => null);
 
-  const profile = response?.ok
+  const profileResponseSucceeded = response?.ok === true;
+  const profile = profileResponseSucceeded
     ? extractMuaProfile(await response.json().catch(() => null))
-    : session.user.profile
-  const profileComplete = isProfileComplete(profile)
+    : session.user.profile;
+  const profileComplete = isProfileComplete(profile);
 
   if (isAuthRoute) {
     return NextResponse.redirect(
-      new URL(profileComplete ? "/dashboard" : "/onboarding", request.url),
-    )
+      new URL(
+        profileResponseSucceeded && !profileComplete
+          ? "/onboarding"
+          : "/dashboard",
+        request.url,
+      ),
+    );
   }
 
   if (isOnboardingRoute && profileComplete) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  return NextResponse.next()
-})
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: [
@@ -64,4 +70,4 @@ export const config = {
     "/dashboard/:path*",
     "/onboarding/:path*",
   ],
-}
+};

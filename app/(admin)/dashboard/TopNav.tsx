@@ -5,6 +5,7 @@ import {
   Bell,
   CalendarCheck2,
   Globe2,
+  Lightbulb,
   Loader2,
   LogOut,
   Settings,
@@ -380,6 +381,14 @@ export default function TopNav({
                     >
                       <Settings className="h-4 w-4" />
                       Pengaturan
+                    </Link>
+                    <Link
+                      href="/dashboard/tips"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="mb-1 flex items-center gap-3 rounded-xl px-2 py-2 text-sm font-medium hover:bg-muted dark:hover:bg-muted-dark"
+                    >
+                      <Lightbulb className="h-4 w-4" />
+                      Tips
                     </Link>
                   </div>
 

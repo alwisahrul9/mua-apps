@@ -39,5 +39,10 @@ export async function getAuthenticatedUserState() {
           : session.user.verificationEmailRetryAfter,
       }
 
-  return { session, profile, emailVerification }
+  return {
+    session,
+    profile,
+    profileRequestSucceeded: response !== null,
+    emailVerification,
+  }
 }

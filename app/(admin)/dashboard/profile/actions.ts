@@ -1,31 +1,31 @@
-"use server"
+"use server";
 
-import axios, { AxiosError } from "axios"
-import { revalidatePath, updateTag } from "next/cache"
-import { serverApi } from "@/lib/api/server"
-import { invalidateCurrentMuaProfileCache } from "@/lib/profile-cache"
-import { toTitleCase } from "@/lib/text"
-import { profileSchema, type ProfileValues } from "./schema"
-import { seoSitemapCacheTag } from "@/lib/seo-cache"
+import axios, { AxiosError } from "axios";
+import { revalidatePath, updateTag } from "next/cache";
+import { serverApi } from "@/lib/api/server";
+import { invalidateCurrentMuaProfileCache } from "@/lib/profile-cache";
+import { toTitleCase } from "@/lib/text";
+import { profileSchema, type ProfileValues } from "./schema";
+import { seoSitemapCacheTag } from "@/lib/seo-cache";
 
-export type ProfileField = keyof ProfileValues
+export type ProfileField = keyof ProfileValues;
 export type ProfileState = {
-  success?: string
-  error?: string
-  errors?: Partial<Record<ProfileField, string[]>>
-}
+  success?: string;
+  error?: string;
+  errors?: Partial<Record<ProfileField, string[]>>;
+};
 
 type LaravelValidationResponse = {
-  message?: string
-  errors?: Record<string, string[]>
-}
+  message?: string;
+  errors?: Record<string, string[]>;
+};
 
 function parseArray(value: FormDataEntryValue | null): unknown {
   try {
-    const parsed = JSON.parse(String(value ?? "[]")) as unknown
-    return Array.isArray(parsed) ? parsed : null
+    const parsed = JSON.parse(String(value ?? "[]")) as unknown;
+    return Array.isArray(parsed) ? parsed : null;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -45,7 +45,7 @@ const backendFields: Record<string, ProfileField> = {
   instagram_username: "instagramUsername",
   whatsapp_number: "whatsappNumber",
   address: "address",
-}
+};
 
 export async function updateProfile(
   _previousState: ProfileState | undefined,
@@ -67,13 +67,15 @@ export async function updateProfile(
     instagramUsername: String(formData.get("instagramUsername") ?? ""),
     whatsappNumber: String(formData.get("whatsappNumber") ?? ""),
     address: String(formData.get("address") ?? ""),
-  }
-  const parsed = profileSchema.safeParse(input)
-  if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors }
+  };
+  const parsed = profileSchema.safeParse(input);
+  if (!parsed.success) return { errors: parsed.error.flatten().fieldErrors };
 
-  const values = parsed.data
+  const values = parsed.data;
   try {
-    await (await serverApi()).put("/user/profile", {
+    await (
+      await serverApi()
+    ).put("/user/profile", {
       username: values.username,
       slug: values.slug,
       brand_name: toTitleCase(values.brandName),
@@ -93,98 +95,112 @@ export async function updateProfile(
       instagram_username: values.instagramUsername.replace(/^@/, "") || null,
       whatsapp_number: values.whatsappNumber,
       address: values.address || null,
-    })
+    });
   } catch (error) {
     if (!axios.isAxiosError(error)) {
-      return { error: error instanceof Error ? error.message : "Gagal memperbarui profil." }
+      return {
+        error:
+          error instanceof Error ? error.message : "Gagal memperbarui profil.",
+      };
     }
-    const response = (error as AxiosError<LaravelValidationResponse>).response
-    const errors: ProfileState["errors"] = {}
-    for (const [key, messages] of Object.entries(response?.data?.errors ?? {})) {
-      const field = backendFields[key.split(".")[0]]
-      if (field && !errors[field]) errors[field] = messages
+    const response = (error as AxiosError<LaravelValidationResponse>).response;
+    const errors: ProfileState["errors"] = {};
+    for (const [key, messages] of Object.entries(
+      response?.data?.errors ?? {},
+    )) {
+      const field = backendFields[key.split(".")[0]];
+      if (field && !errors[field]) errors[field] = messages;
     }
     return {
       error: response?.data?.message ?? "Periksa kembali data profil Anda.",
       ...(Object.keys(errors).length > 0 ? { errors } : {}),
-    }
+    };
   }
 
-  await invalidateCurrentMuaProfileCache(values.username)
-  updateTag(seoSitemapCacheTag("profiles"))
-  revalidatePath("/dashboard")
-  revalidatePath("/dashboard/profile")
-  revalidatePath("/dashboard/portfolios")
-  revalidatePath(`/${values.username}`)
-  revalidatePath("/area", "layout")
-  revalidatePath("/sitemap.xml")
-  return { success: "Profil berhasil diperbarui." }
+  await invalidateCurrentMuaProfileCache(values.username);
+  updateTag(seoSitemapCacheTag("profiles"));
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/profile");
+  revalidatePath("/dashboard/portfolios");
+  revalidatePath(`/${values.username}`);
+  revalidatePath("/area", "layout");
+  revalidatePath("/sitemap.xml");
+  return { success: "Profil berhasil diperbarui." };
 }
 
 export async function deleteProfileImage(
   purpose: "profile" | "cover",
 ): Promise<{ success?: string; error?: string }> {
   if (purpose !== "profile" && purpose !== "cover") {
-    return { error: "Jenis gambar tidak valid." }
+    return { error: "Jenis gambar tidak valid." };
   }
-  const field = purpose === "profile" ? "profile_image_url" : "cover_image_url"
-  let username: string | null | undefined
+  const field = purpose === "profile" ? "profile_image_url" : "cover_image_url";
+  let username: string | null | undefined;
   try {
-    const response = await (await serverApi()).put<{
-      data: { mua_profile?: { username?: string | null } }
-    }>("/user/profile", { [field]: null })
-    username = response.data.data?.mua_profile?.username
+    const response = await (
+      await serverApi()
+    ).put<{
+      data: { mua_profile?: { username?: string | null } };
+    }>("/user/profile", { [field]: null });
+    username = response.data.data?.mua_profile?.username;
   } catch (error) {
     const message = axios.isAxiosError<LaravelValidationResponse>(error)
       ? error.response?.data?.message
-      : undefined
-    return { error: message ?? "Gambar gagal dihapus. Silakan coba lagi." }
+      : undefined;
+    return { error: message ?? "Gambar gagal dihapus. Silakan coba lagi." };
   }
 
-  await invalidateCurrentMuaProfileCache(username)
-  updateTag(seoSitemapCacheTag("profiles"))
-  revalidatePath("/dashboard")
-  revalidatePath("/dashboard/profile")
-  if (username) revalidatePath(`/${username}`)
-  revalidatePath("/area", "layout")
-  revalidatePath("/sitemap.xml")
-  return { success: purpose === "profile" ? "Foto profil berhasil dihapus." : "Gambar cover berhasil dihapus." }
+  await invalidateCurrentMuaProfileCache(username);
+  updateTag(seoSitemapCacheTag("profiles"));
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/profile");
+  if (username) revalidatePath(`/${username}`);
+  revalidatePath("/area", "layout");
+  revalidatePath("/sitemap.xml");
+  return {
+    success:
+      purpose === "profile"
+        ? "Foto profil berhasil dihapus."
+        : "Gambar cover berhasil dihapus.",
+  };
 }
 
 export async function deleteBrandImage(
   url: string,
   username: string,
 ): Promise<{ success?: string; error?: string; supportedBrands?: string[] }> {
-  const parsedUrl = profileSchema.shape.supportedBrands.element.safeParse(url)
+  const parsedUrl = profileSchema.shape.supportedBrands.element.safeParse(url);
   if (!parsedUrl.success) {
     return {
       error:
         parsedUrl.error.issues[0]?.message ?? "URL gambar brand tidak valid.",
-    }
+    };
   }
 
   try {
-    const response = await (await serverApi()).delete<{
-      data: { supported_brands?: string[] }
-    }>("/dashboard/media/brands", { data: { url: parsedUrl.data } })
-    const supportedBrands = response.data.data?.supported_brands
+    const response = await (
+      await serverApi()
+    ).delete<{
+      data: { supported_brands?: string[] };
+    }>("/dashboard/media/brands", { data: { url: parsedUrl.data } });
+    const supportedBrands = response.data.data?.supported_brands;
     if (!Array.isArray(supportedBrands)) {
-      return { error: "Daftar brand terbaru tidak ditemukan dari backend." }
+      return { error: "Daftar brand terbaru tidak ditemukan dari backend." };
     }
 
-    await invalidateCurrentMuaProfileCache(username)
-    revalidatePath("/dashboard/profile")
-    if (/^[a-z0-9_]{3,30}$/.test(username)) revalidatePath(`/${username}`)
+    await invalidateCurrentMuaProfileCache(username);
+    revalidatePath("/dashboard/profile");
+    if (/^[a-z0-9_]{3,30}$/.test(username)) revalidatePath(`/${username}`);
     return {
       success: "Gambar brand berhasil dihapus.",
       supportedBrands,
-    }
+    };
   } catch (error) {
     const message = axios.isAxiosError<LaravelValidationResponse>(error)
       ? error.response?.data?.message
-      : undefined
+      : undefined;
     return {
       error: message ?? "Gambar brand gagal dihapus. Silakan coba lagi.",
-    }
+    };
   }
 }

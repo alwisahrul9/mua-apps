@@ -15,7 +15,6 @@ import {
 import { getCurrentMuaProfile } from "@/lib/profile-cache";
 import { siteConfig } from "@/lib/site-config";
 import BusinessLinksCard from "./components/BusinessLinksCard";
-import GoogleBusinessGuideCard from "./components/GoogleBusinessGuideCard";
 import {
   CircleCheck,
   CircleDollarSign,
@@ -51,6 +50,23 @@ const statusMeta: Record<
   },
 };
 
+const monthValuePattern = /^\d{4}-(0[1-9]|1[0-2])$/;
+const jakartaMonthFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "Asia/Jakarta",
+  year: "numeric",
+  month: "2-digit",
+});
+
+function bookingMonthValue(createdAt: string) {
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const parts = jakartaMonthFormatter.formatToParts(date);
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  return year && month ? `${year}-${month}` : null;
+}
+
 function BookingStatusBadge({ status }: { status: string }) {
   const meta = statusMeta[status] ?? {
     label: status.replaceAll("_", " "),
@@ -82,15 +98,17 @@ export default async function DashboardOverview({
     getCurrentMuaProfile(),
     listServices(1),
   ]);
-  const start = params.start
-    ? new Date(`${params.start}-01T00:00:00+07:00`)
-    : null;
-  const end = params.end ? new Date(`${params.end}-01T00:00:00+07:00`) : null;
-  if (end) end.setMonth(end.getMonth() + 1);
+  const startMonth =
+    params.start && monthValuePattern.test(params.start) ? params.start : null;
+  const endMonth =
+    params.end && monthValuePattern.test(params.end) ? params.end : null;
 
   const bookings = result.data.filter((booking) => {
-    const createdAt = new Date(booking.createdAt);
-    return (!start || createdAt >= start) && (!end || createdAt < end);
+    const month = bookingMonthValue(booking.createdAt);
+    if (!month) return false;
+    return (
+      (!startMonth || month >= startMonth) && (!endMonth || month <= endMonth)
+    );
   });
   const totalIncome = bookings
     .filter((booking) => booking.status === "COMPLETED")
@@ -106,11 +124,12 @@ export default async function DashboardOverview({
     { year: number; month: number; bookingCount: number; income: number }
   >();
   for (const booking of bookings) {
-    const date = new Date(booking.createdAt);
-    const key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    const key = bookingMonthValue(booking.createdAt);
+    if (!key) continue;
+    const [year, month] = key.split("-").map(Number);
     const item = monthly.get(key) ?? {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
+      year,
+      month,
       bookingCount: 0,
       income: 0,
     };
@@ -138,14 +157,11 @@ export default async function DashboardOverview({
           hasServices={services.data.length > 0}
         />
       )}
-      <GoogleBusinessGuideCard
-        publicProfileUrl={
-          profile?.username
-            ? `${siteConfig.url}/${encodeURIComponent(profile.username)}`
-            : undefined
-        }
+      <MonthRangeFilter
+        key={`${startMonth ?? ""}:${endMonth ?? ""}`}
+        initialStartMonth={startMonth ?? ""}
+        initialEndMonth={endMonth ?? ""}
       />
-      <MonthRangeFilter />
 
       <div className="grid gap-6 md:grid-cols-2">
         <Card className="rounded-2xl">
@@ -212,16 +228,14 @@ export default async function DashboardOverview({
         </div>
       </div>
 
-      {monthly.size > 0 && (
-        <div className="min-w-0 rounded-2xl border bg-background p-4 sm:p-6 dark:bg-background-dark">
-          <h2 className="mb-4 text-sm font-medium text-muted-foreground">
-            Statistik Per Bulan
-          </h2>
-          <div className="h-[400px] min-w-0">
-            <DashboardBarChart data={[...monthly.values()]} />
-          </div>
+      <div className="min-w-0 rounded-2xl border bg-background p-4 sm:p-6 dark:bg-background-dark">
+        <h2 className="mb-4 text-sm font-medium text-muted-foreground">
+          Statistik Per Bulan
+        </h2>
+        <div className="h-[400px] min-w-0">
+          <DashboardBarChart data={[...monthly.values()]} />
         </div>
-      )}
+      </div>
     </div>
   );
 }

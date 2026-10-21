@@ -16,7 +16,11 @@ export default async function LoginLayout({
   const userState = await getAuthenticatedUserState()
 
   if (userState) {
-    redirect(isProfileComplete(userState.profile) ? "/dashboard" : "/onboarding")
+    redirect(
+      userState.profileRequestSucceeded && !isProfileComplete(userState.profile)
+        ? "/onboarding"
+        : "/dashboard",
+    )
   }
 
   return children

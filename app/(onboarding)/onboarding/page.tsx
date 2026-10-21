@@ -16,6 +16,10 @@ export default async function OnboardingPage() {
 
   const { session, profile } = userState
 
+  if (!userState.profileRequestSucceeded && !isProfileComplete(profile)) {
+    throw new Error("Profil MUA tidak dapat diperiksa. Silakan coba kembali.")
+  }
+
   if (isProfileComplete(profile)) redirect("/dashboard")
 
   const provinces = await getProvinces().catch(() => [])

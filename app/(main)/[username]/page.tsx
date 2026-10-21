@@ -267,7 +267,7 @@ export default async function MuaPage({ params }: PageProps) {
   };
 
   return (
-    <>
+    <div className="mua-home-light min-h-screen bg-background text-foreground">
       <script
         id={`mua-structured-data-${profile.id}`}
         type="application/ld+json"
@@ -275,14 +275,14 @@ export default async function MuaPage({ params }: PageProps) {
           __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
         }}
       />
-      <Navbar username={username} brandName={profile.brandName} />
+      <Navbar username={username} brandName={profile.brandName} lightMode />
       <HomeClient
         profile={profile}
         portfolios={portfolios}
         services={services}
         reviews={reviews}
       />
-      <SiteFooter profile={profile} />
-    </>
+      <SiteFooter profile={profile} lightMode />
+    </div>
   );
 }

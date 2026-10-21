@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,10 @@ export default function ReviewForm({
     ReviewFormState | undefined,
     FormData
   >(sendReview, undefined);
+  const [selectedRating, setSelectedRating] = useState("");
+  const [reviewText, setReviewText] = useState("");
+  const [consent, setConsent] = useState(false);
+
   if (state?.success)
     return (
       <div className="rounded-3xl mt-5 border border-green-500/20 bg-green-500/10 p-8 text-center">
@@ -39,6 +43,8 @@ export default function ReviewForm({
                 type="radio"
                 name="rating"
                 value={rating}
+                checked={selectedRating === String(rating)}
+                onChange={(event) => setSelectedRating(event.target.value)}
                 className="peer sr-only"
               />
               <span className="flex min-h-11 items-center gap-1 rounded-full border border-foreground-dark/15 px-4 peer-checked:border-amber-400 peer-checked:bg-amber-400/10">
@@ -61,6 +67,8 @@ export default function ReviewForm({
           name="reviewText"
           rows={6}
           maxLength={2000}
+          value={reviewText}
+          onChange={(event) => setReviewText(event.target.value)}
           placeholder="Ceritakan pengalaman Anda menggunakan layanan MUA ini."
           aria-invalid={Boolean(state?.errors?.reviewText)}
           className="mt-2 w-full rounded-3xl border border-input bg-transparent px-4 py-3 outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -77,6 +85,8 @@ export default function ReviewForm({
             type="checkbox"
             name="consent"
             value="true"
+            checked={consent}
+            onChange={(event) => setConsent(event.target.checked)}
             className="mt-1 h-5 w-5 shrink-0 accent-primary-dark"
             aria-invalid={Boolean(state?.errors?.consent)}
           />

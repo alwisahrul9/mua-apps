@@ -1,6 +1,6 @@
 import type { MuaProfile } from "@/lib/api/types"
 import { unwrapData } from "@/lib/api/client"
-import { isValidWhatsappNumber, normalizeWhatsappNumber } from "@/lib/phone"
+import { isValidWhatsappNumber } from "@/lib/phone"
 
 export function extractMuaProfile(payload: unknown): MuaProfile | null {
   const data = unwrapData<Record<string, unknown>>(
@@ -39,7 +39,6 @@ export function isProfileComplete(
       profile.serviceArea?.length > 0 &&
       Boolean(profile.paymentMethod?.length) &&
       profile.whatsappNumber?.trim() &&
-      isValidWhatsappNumber(profile.whatsappNumber) &&
-      normalizeWhatsappNumber(profile.whatsappNumber) === profile.whatsappNumber,
+      isValidWhatsappNumber(profile.whatsappNumber),
   )
 }

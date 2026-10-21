@@ -9,9 +9,11 @@ import { siteConfig } from "@/lib/site-config";
 export function Navbar({
   username,
   brandName = siteConfig.name,
+  lightMode = false,
 }: {
   username?: string;
   brandName?: string;
+  lightMode?: boolean;
 }) {
   const pathname = usePathname();
   const homeHref = username ? `/${username}` : "/";
@@ -56,7 +58,13 @@ export function Navbar({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background-dark/80 backdrop-blur-md border-b border-foreground-dark/5">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b ${
+        lightMode
+          ? "border-foreground/5 bg-background/85 text-foreground"
+          : "border-foreground-dark/5 bg-background-dark/80"
+      }`}
+    >
       <div className="container-custom mx-auto">
         <div className="flex items-center justify-between h-20">
           <Link
@@ -64,7 +72,10 @@ export function Navbar({
             onClick={() => setActiveHash("")}
             className="font-serif text-2xl font-medium tracking-tight"
           >
-            {brandName} <span className="text-primary-dark italic">.</span>
+            {brandName}{" "}
+            <span className={`${lightMode ? "text-primary" : "text-primary-dark"} italic`}>
+              .
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -81,13 +92,23 @@ export function Navbar({
                       setActiveHash("");
                     }
                   }}
-                  className={`text-sm font-medium transition-colors hover:text-primary-dark relative ${isActive ? "text-primary-dark" : "text-muted-foreground-dark"}`}
+                  className={`relative text-sm font-medium transition-colors ${
+                    lightMode ? "hover:text-primary" : "hover:text-primary-dark"
+                  } ${
+                    isActive
+                      ? lightMode
+                        ? "text-primary"
+                        : "text-primary-dark"
+                      : lightMode
+                        ? "text-muted-foreground"
+                        : "text-muted-foreground-dark"
+                  }`}
                 >
                   {link.label}
                   {isActive && (
                     <motion.div
                       layoutId="navbar-indicator"
-                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-primary-dark rounded-full"
+                      className={`absolute -bottom-1 left-0 right-0 h-[2px] rounded-full ${lightMode ? "bg-primary" : "bg-primary-dark"}`}
                     />
                   )}
                 </Link>
@@ -98,7 +119,11 @@ export function Navbar({
           <div className="flex items-center gap-4">
             <Link
               href={username ? `${homeHref}/booking` : "/register"}
-              className="px-5 py-2.5 bg-foreground-dark text-background-dark text-sm font-medium rounded-full hover:bg-foreground-dark/90 transition-colors"
+              className={`rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
+                lightMode
+                  ? "bg-foreground text-background hover:bg-foreground/90"
+                  : "bg-foreground-dark text-background-dark hover:bg-foreground-dark/90"
+              }`}
             >
               {username ? "Pesan Jadwal" : "Daftar Gratis"}
             </Link>

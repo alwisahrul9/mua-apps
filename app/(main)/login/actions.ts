@@ -39,7 +39,7 @@ export async function login(
       email: parsed.data.email,
       password: parsed.data.password,
       redirect: false,
-      redirectTo: '/onboarding',
+      redirectTo: '/dashboard',
     })
 
     const resultUrl = new URL(result, 'http://localhost')
@@ -64,9 +64,9 @@ export async function login(
     return { error: 'Backend tidak dapat dihubungi. Silakan coba kembali.' }
   }
 
-  redirect('/onboarding')
+  redirect('/dashboard')
 }
 
 export async function loginWithGoogle() {
-  await signIn('google', { redirectTo: '/onboarding' })
+  await signIn('google', { redirectTo: '/dashboard' })
 }

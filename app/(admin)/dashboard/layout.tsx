@@ -21,10 +21,16 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const profile = await getCachedMuaProfile(
-    session.user.id,
-    session.accessToken,
-  ).catch(() => session.user.profile);
+  let profile;
+  try {
+    profile = await getCachedMuaProfile(
+      session.user.id,
+      session.accessToken,
+    );
+  } catch (error) {
+    if (!isProfileComplete(session.user.profile)) throw error;
+    profile = session.user.profile;
+  }
   if (!isProfileComplete(profile)) {
     redirect("/onboarding");
   }

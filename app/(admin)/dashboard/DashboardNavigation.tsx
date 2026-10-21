@@ -102,7 +102,9 @@ export default function DashboardNavigation({
             onClick={() => window.dispatchEvent(new Event("toggle-mobile-profile-menu"))}
             className={cn(
               "flex w-16 flex-col items-center gap-1 p-2 transition-colors",
-              pathname.startsWith("/dashboard/profile") || pathname.startsWith("/dashboard/settings")
+              pathname.startsWith("/dashboard/profile") ||
+                pathname.startsWith("/dashboard/settings") ||
+                pathname.startsWith("/dashboard/tips")
                 ? "text-primary dark:text-primary-dark"
                 : "text-muted-foreground dark:text-muted-foreground-dark",
             )}
