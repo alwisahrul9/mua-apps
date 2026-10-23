@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const appName =
   process.env.APP_ENV?.trim().toLowerCase() === "development"
-    ? "JadiCantik Dev"
+    ? "JadiCantik"
     : "JadiCantik";
 
 const nextConfig: NextConfig = {
@@ -26,26 +26,26 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
       {
-        protocol: 'https',
-        hostname: 'logo.clearbit.com',
+        protocol: "https",
+        hostname: "logo.clearbit.com",
       },
       {
-        protocol: 'https',
-        hostname: 't0.gstatic.com',
+        protocol: "https",
+        hostname: "t0.gstatic.com",
       },
       {
-        protocol: 'https',
-        hostname: '**',
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '5mb', // 👈 Tambahkan baris ini
+      bodySizeLimit: "5mb", // 👈 Tambahkan baris ini
     },
   },
 };

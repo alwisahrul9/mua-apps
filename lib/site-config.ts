@@ -16,8 +16,7 @@ function splitList(value: string | undefined) {
 
 export const siteConfig = {
   name: appName,
-  legalName:
-    process.env.NEXT_PUBLIC_BUSINESS_LEGAL_NAME?.trim() || appName,
+  legalName: process.env.NEXT_PUBLIC_BUSINESS_LEGAL_NAME?.trim() || appName,
   url: cleanUrl(process.env.NEXT_PUBLIC_SITE_URL) || defaultSiteUrl,
   city: process.env.NEXT_PUBLIC_BUSINESS_CITY?.trim() || "",
   region: process.env.NEXT_PUBLIC_BUSINESS_REGION?.trim() || "",

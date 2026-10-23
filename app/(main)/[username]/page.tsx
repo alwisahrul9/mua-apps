@@ -110,11 +110,12 @@ export default async function MuaPage({ params }: PageProps) {
 
   if (!profile || profile.homepageIsActive !== true) notFound();
 
-  const [portfolioResult, serviceResult, reviewResult] = await Promise.allSettled([
-    getPublicPortfolios(username),
-    getPublicServices(username),
-    getPublicReviews(username),
-  ]);
+  const [portfolioResult, serviceResult, reviewResult] =
+    await Promise.allSettled([
+      getPublicPortfolios(username),
+      getPublicServices(username),
+      getPublicReviews(username),
+    ]);
   const portfolios =
     portfolioResult.status === "fulfilled" ? portfolioResult.value : [];
   const services =
@@ -136,7 +137,10 @@ export default async function MuaPage({ params }: PageProps) {
   const muaFaqs = getMuaFaqs(profile);
   const hasPhysicalAddress = Boolean(profile.address?.trim());
   const validReviews = reviews.filter(
-    (review) => Number.isFinite(review.rating) && review.rating >= 1 && review.rating <= 5,
+    (review) =>
+      Number.isFinite(review.rating) &&
+      review.rating >= 1 &&
+      review.rating <= 5,
   );
   const averageRating = validReviews.length
     ? validReviews.reduce((total, review) => total + review.rating, 0) /
