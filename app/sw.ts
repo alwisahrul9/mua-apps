@@ -24,26 +24,54 @@ serwist.addEventListeners();
 
 self.addEventListener("push", (event: PushEvent) => {
   if (!event.data) return;
-  event.waitUntil((async () => {
-    try {
-      const data = event.data!.json() as { title: string; body: string; userId: string; icon?: string; tag?: string; url?: string; bookingId?: string };
-      const response = await fetch("/api/auth/session", { credentials: "same-origin", cache: "no-store" });
-      if (!response.ok) return;
-      const session = await response.json() as { user?: { id?: string } };
-      if (!session.user?.id || session.user.id !== data.userId) return;
-      await self.registration.showNotification(data.title, {
-        body: data.body,
-        icon: data.icon || "/icon.png",
-        badge: "/icon.png",
-        tag: data.tag,
-        data: { url: data.url || "/dashboard/bookings", bookingId: data.bookingId },
-      });
-      const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-      for (const client of clients) client.postMessage({ type: "booking-notification", bookingId: data.bookingId });
-    } catch {
-      // Ignore malformed payloads or unavailable login sessions.
-    }
-  })());
+  event.waitUntil(
+    (async () => {
+      try {
+        const data = event.data!.json() as {
+          title?: string;
+          body?: string;
+          message?: string;
+          icon?: string;
+          tag?: string;
+          url?: string;
+          bookingId?: string;
+          booking_id?: string;
+        };
+        const bookingId = data.bookingId ?? data.booking_id;
+
+        // The backend already sends each payload to a subscription owned by
+        // the authenticated user. Do not depend on a browser session here:
+        // push events must also work while the app is closed or the session
+        // endpoint is temporarily unavailable.
+        await self.registration.showNotification(
+          data.title || "Notifikasi JadiCantik",
+          {
+            body: data.body || data.message || "Ada aktivitas terbaru.",
+            icon: data.icon || "/icon.png",
+            badge: "/icon.png",
+            tag: data.tag,
+            data: {
+              url: data.url ||
+                (bookingId
+                  ? `/dashboard/bookings/${bookingId}`
+                  : "/dashboard/bookings"),
+              bookingId,
+            },
+          },
+        );
+
+        const clients = await self.clients.matchAll({
+          type: "window",
+          includeUncontrolled: true,
+        });
+        for (const client of clients) {
+          client.postMessage({ type: "booking-notification", bookingId });
+        }
+      } catch (error) {
+        console.error("Unable to display push notification", error);
+      }
+    })(),
+  );
 });
 
 self.addEventListener("notificationclick", (event: NotificationEvent) => {

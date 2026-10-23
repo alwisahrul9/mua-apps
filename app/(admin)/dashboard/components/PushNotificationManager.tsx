@@ -96,6 +96,13 @@ export function PushNotificationManager({
   async function subscribeToPush() {
     setIsLoading(true);
     try {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        throw new Error(
+          "Izin notifikasi belum diberikan. Aktifkan melalui pengaturan Chrome.",
+        );
+      }
+
       // Use register instead of .ready to prevent hanging if SW isn't active
       const registration = await navigator.serviceWorker.register("/sw.js", {
         scope: "/",
@@ -124,11 +131,14 @@ export function PushNotificationManager({
         userVisibleOnly: true,
         applicationServerKey,
       });
-      setSubscription(sub);
 
       const subJson = JSON.parse(JSON.stringify(sub));
       const result = await subscribeUser(subJson);
-      if (!result.success) throw new Error(result.error);
+      if (!result.success) {
+        await sub.unsubscribe();
+        throw new Error(result.error);
+      }
+      setSubscription(sub);
       toast.add({
         title: "Berhasil",
         description: "Notifikasi berhasil diaktifkan.",
