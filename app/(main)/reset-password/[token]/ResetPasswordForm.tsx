@@ -2,11 +2,11 @@
 
 import { useActionState, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Loader2, Lock } from "lucide-react"
+import { ArrowLeft, Loader2 } from "lucide-react"
 import { resetPassword } from "../../forgot-password/actions"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import PasswordInput from "@/components/PasswordInput"
 
 export default function ResetPasswordForm({
   token,
@@ -47,21 +47,17 @@ export default function ResetPasswordForm({
 
           <div className="space-y-2">
             <Label htmlFor="reset-password">Password Baru</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground-dark" />
-              <Input
-                id="reset-password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                disabled={pending}
-                aria-invalid={Boolean(state?.errors?.password)}
-                aria-describedby="reset-password-help"
-                className="h-auto rounded-xl border-foreground-dark/20 bg-transparent py-3 pl-10 pr-4"
-              />
-            </div>
+            <PasswordInput
+              id="reset-password"
+              name="password"
+              autoComplete="new-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              disabled={pending}
+              aria-invalid={Boolean(state?.errors?.password)}
+              aria-describedby="reset-password-help"
+              className="h-auto rounded-xl border-foreground-dark/20 bg-transparent py-3"
+            />
             <p id="reset-password-help" className="text-xs leading-5 text-muted-foreground-dark">
               Minimal 8 karakter dengan huruf besar, huruf kecil, angka, dan
               salah satu simbol @$!%*?&amp;.
@@ -73,20 +69,16 @@ export default function ResetPasswordForm({
 
           <div className="space-y-2">
             <Label htmlFor="password-confirmation">Konfirmasi Password Baru</Label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground-dark" />
-              <Input
-                id="password-confirmation"
-                name="passwordConfirmation"
-                type="password"
-                autoComplete="new-password"
-                value={passwordConfirmation}
-                onChange={(event) => setPasswordConfirmation(event.target.value)}
-                disabled={pending}
-                aria-invalid={Boolean(state?.errors?.passwordConfirmation)}
-                className="h-auto rounded-xl border-foreground-dark/20 bg-transparent py-3 pl-10 pr-4"
-              />
-            </div>
+            <PasswordInput
+              id="password-confirmation"
+              name="passwordConfirmation"
+              autoComplete="new-password"
+              value={passwordConfirmation}
+              onChange={(event) => setPasswordConfirmation(event.target.value)}
+              disabled={pending}
+              aria-invalid={Boolean(state?.errors?.passwordConfirmation)}
+              className="h-auto rounded-xl border-foreground-dark/20 bg-transparent py-3"
+            />
             {state?.errors?.passwordConfirmation && (
               <p className="text-xs text-red-500">
                 {state.errors.passwordConfirmation[0]}

@@ -13,6 +13,7 @@ type BookingFields = {
   instagram: string
   totalPerson: string
   serviceId: string
+  addOns: { addon_id: string; quantity: number }[]
   eventName: string
   eventDate: string
   eventTime: string
@@ -34,6 +35,8 @@ type LaravelValidationResponse = {
 const backendFieldNames: Record<string, keyof BookingFields> = {
   username: "muaSlug",
   service_id: "serviceId",
+  addons: "addOns",
+  add_ons: "addOns",
   client_name: "clientName",
   whatsapp: "whatsapp",
   instagram: "instagram",
@@ -52,6 +55,14 @@ const bookingSchema = z.object({
   instagram: z.string().optional(),
   totalPerson: z.coerce.number().min(1, "Jumlah orang minimal 1"),
   serviceId: z.string().min(1, "Layanan harus dipilih"),
+  addOns: z
+    .array(
+      z.object({
+        addon_id: z.string().min(1, "Add-on tidak valid"),
+        quantity: z.coerce.number().int().min(1).max(999),
+      }),
+    )
+    .max(50, "Jumlah add-on terlalu banyak"),
   eventName: z.string().min(1, "Jenis acara harus diisi"),
   eventDate: z.string().min(1, "Tanggal acara harus diisi"),
   eventTime: z.string().min(1, "Waktu acara harus diisi"),
@@ -67,12 +78,21 @@ export async function createBooking(
   _prevState: BookingState | null,
   formData: FormData,
 ): Promise<BookingState> {
-  const raw = Object.fromEntries(formData.entries())
+  const rawAddOns = String(formData.get("addOns") ?? "[]")
+  let addOns: unknown = []
+  try {
+    addOns = JSON.parse(rawAddOns)
+  } catch {
+    return {
+      errors: { addOns: ["Pilihan add-on tidak valid"] },
+    }
+  }
+
+  const raw = { ...Object.fromEntries(formData.entries()), addOns }
   const parsed = bookingSchema.safeParse(raw)
   if (!parsed.success) {
     return {
       errors: parsed.error.flatten().fieldErrors,
-      message: "Validasi gagal, mohon periksa kembali isian form Anda.",
     }
   }
 
@@ -82,6 +102,7 @@ export async function createBooking(
     const booking = await createPublicBooking({
       username: data.muaSlug,
       service_id: data.serviceId,
+      addons: data.addOns,
       client_name: data.clientName,
       whatsapp: data.whatsapp,
       instagram: data.instagram || null,
@@ -107,18 +128,19 @@ export async function createBooking(
     for (const [backendField, messages] of Object.entries(
       response?.data?.errors ?? {},
     )) {
-      const field = backendFieldNames[backendField]
-      if (field && Array.isArray(messages)) errors[field] = messages
+      const field = backendFieldNames[backendField.split(".")[0]]
+      if (field && Array.isArray(messages)) {
+        errors[field] = [...(errors[field] ?? []), ...messages]
+      }
     }
 
     const hasFieldErrors = Object.keys(errors).length > 0
+    if (hasFieldErrors) return { errors }
+
     return {
       message:
         response?.data?.message ??
-        (hasFieldErrors
-          ? "Periksa kembali data booking Anda."
-          : "Gagal membuat booking. Silakan coba lagi."),
-      ...(hasFieldErrors ? { errors } : {}),
+        "Gagal membuat booking. Silakan coba lagi.",
     }
   }
 

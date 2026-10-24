@@ -4,13 +4,18 @@ import { createHash } from "node:crypto"
 import { unstable_cache, updateTag } from "next/cache"
 import { auth } from "@/auth"
 import { createApiClient, unwrapData, unwrapList } from "@/lib/api/client"
-import type { Paginated, Portfolio, Service } from "@/lib/api/types"
+import type { AddOn, Paginated, Portfolio, Service } from "@/lib/api/types"
 import { getCachedMuaProfile } from "@/lib/profile-cache"
 
 const CONTENT_CACHE_SECONDS = 15 * 60
+const ADD_ON_CACHE_SECONDS = 5 * 60
 
 export function servicesCacheTag(userId: string) {
   return `services:${userId}`
+}
+
+export function addOnsCacheTag(userId: string) {
+  return `add-ons:${userId}`
 }
 
 export function publicServicesCacheTag(username: string) {
@@ -66,6 +71,27 @@ export async function getCachedService(
     {
       revalidate: CONTENT_CACHE_SECONDS,
       tags: [servicesCacheTag(userId)],
+    },
+  )()
+}
+
+export async function getCachedAddOns(
+  userId: string,
+  accessToken: string,
+  page = 1,
+): Promise<Paginated<AddOn>> {
+  return unstable_cache(
+    async () => {
+      const response = await createApiClient(accessToken).get(
+        "/dashboard/addons",
+        { params: { page } },
+      )
+      return unwrapList<AddOn>(response.data)
+    },
+    ["dashboard-add-ons", userId, tokenFingerprint(accessToken), String(page)],
+    {
+      revalidate: ADD_ON_CACHE_SECONDS,
+      tags: [addOnsCacheTag(userId)],
     },
   )()
 }
@@ -131,6 +157,14 @@ export async function invalidateCurrentServicesCache() {
   if (identity.username?.trim()) {
     updateTag(publicServicesCacheTag(identity.username))
   }
+}
+
+/** Panggil dari Server Action setelah mutasi add-on berhasil. */
+export async function invalidateCurrentAddOnsCache() {
+  const identity = await currentCacheIdentity()
+  if (!identity) return
+
+  updateTag(addOnsCacheTag(identity.userId))
 }
 
 /** Hanya panggil fungsi ini dari Server Action setelah mutasi portofolio berhasil. */

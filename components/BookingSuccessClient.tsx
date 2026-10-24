@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, Copy, Check, MessageCircle } from "lucide-react";
 import Link from "next/link";
-import type { PaymentMethod } from "@/lib/api/types";
+import type { BookingAddOn, PaymentMethod } from "@/lib/api/types";
 
 interface BookingSuccessClientProps {
   clientName: string;
@@ -13,6 +13,10 @@ interface BookingSuccessClientProps {
   dpAmount: number;
   paymentDeadline: Date;
   totalPerson: number;
+  serviceName?: string;
+  servicePrice?: number;
+  serviceSubtotal?: number;
+  addOns?: BookingAddOn[];
   homeHref?: string;
   homePageIsActive: boolean;
   whatsappNumber?: string | null;
@@ -26,6 +30,10 @@ export default function BookingSuccessClient({
   dpAmount,
   paymentDeadline,
   totalPerson,
+  serviceName,
+  servicePrice,
+  serviceSubtotal,
+  addOns = [],
   homeHref = "/",
   homePageIsActive,
   whatsappNumber,
@@ -56,6 +64,18 @@ export default function BookingSuccessClient({
   );
   const whatsappUrl = `https://wa.me/${getPhone}?text=${whatsappMessage}`;
   const returnHref = homePageIsActive ? homeHref : `${homeHref}/booking`;
+  const normalizedTotalPrice = Number(totalPrice) || 0;
+  const normalizedDpAmount = Number(dpAmount) || 0;
+  const normalizedServicePrice = Number(servicePrice) || 0;
+  const addOnTotal = addOns.reduce(
+    (total, addOn) => total + (Number(addOn.subtotal) || 0),
+    0,
+  );
+  const normalizedServiceSubtotal =
+    Number(serviceSubtotal) ||
+    (normalizedServicePrice > 0
+      ? normalizedServicePrice * Math.max(1, Number(totalPerson) || 1)
+      : Math.max(0, normalizedTotalPrice - addOnTotal));
 
   return (
     <div className="min-h-dvh pt-24 pb-12 px-4 container-custom flex items-center justify-center">
@@ -83,25 +103,76 @@ export default function BookingSuccessClient({
 
           <div className="bg-muted-dark/50 rounded-2xl p-4 sm:p-6 text-left mb-8 space-y-4">
             <h3 className="font-medium text-base sm:text-lg border-b border-foreground-dark/10 pb-3 sm:pb-4 mb-3 sm:mb-4">
-              Ringkasan Pembayaran
+              Rincian Harga
             </h3>
 
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-0">
-              <span className="text-muted-foreground-dark">Jumlah Orang</span>
-              <span className="font-medium">{totalPerson} Orang</span>
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-4 text-sm">
+                <div>
+                  <p className="font-medium text-foreground-dark">
+                    {serviceName || "Layanan Makeup"}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground-dark">
+                    {normalizedServicePrice > 0
+                      ? `Rp ${normalizedServicePrice.toLocaleString("id-ID")} × ${totalPerson} orang`
+                      : `${totalPerson} orang`}
+                  </p>
+                </div>
+                <span className="shrink-0 font-medium">
+                  Rp {normalizedServiceSubtotal.toLocaleString("id-ID")}
+                </span>
+              </div>
+
+              {addOns.length > 0 && (
+                <div className="space-y-3 border-t border-foreground-dark/10 pt-3">
+                  {addOns.map((addOn) => (
+                    <div
+                      key={addOn.id}
+                      className="flex items-start justify-between gap-4 text-sm"
+                    >
+                      <div>
+                        <p className="font-medium text-foreground-dark">
+                          {addOn.name}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground-dark">
+                          Rp {Number(addOn.unitPrice).toLocaleString("id-ID")}
+                          {addOn.billingType === "flat"
+                            ? " · Flat"
+                            : ` × ${addOn.quantity}${
+                                addOn.unit === "hourly"
+                                  ? " jam"
+                                  : addOn.unit === "person"
+                                    ? " orang"
+                                    : addOn.unit === "item"
+                                      ? " item"
+                                      : ""
+                              }`}
+                        </p>
+                      </div>
+                      <span className="shrink-0 font-medium">
+                        Rp {Number(addOn.subtotal).toLocaleString("id-ID")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-0">
-              <span className="text-muted-foreground-dark">Total Layanan</span>
-              <span className="font-medium">
-                Rp {totalPrice.toLocaleString("id-ID")}
+
+            <div className="flex items-center justify-between gap-4 border-t border-foreground-dark/10 pt-4 text-sm">
+              <span className="font-semibold text-foreground-dark">
+                Total Pesanan
+              </span>
+              <span className="text-base font-semibold text-foreground-dark">
+                Rp {normalizedTotalPrice.toLocaleString("id-ID")}
               </span>
             </div>
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm gap-1 sm:gap-0">
               <span className="text-muted-foreground-dark">
-                DP yang harus dibayar {dpAmount > 50000 ? "(30%)" : ""}
+                DP yang harus dibayar{" "}
+                {normalizedDpAmount > 50000 ? "(30%)" : ""}
               </span>
               <span className="font-medium text-primary-dark text-base sm:text-lg">
-                Rp {dpAmount.toLocaleString("id-ID")}
+                Rp {normalizedDpAmount.toLocaleString("id-ID")}
               </span>
             </div>
 

@@ -3,7 +3,7 @@
 import { apiErrorMessage } from "@/lib/api/client"
 import { serverApi } from "@/lib/api/server"
 
-export async function subscribeUser(subscription: PushSubscriptionJSON) {
+export async function subscribeUser(subscription: PushSubscriptionJSON, vapidPublicKey?: string | null) {
   const endpoint = subscription.endpoint
   const p256dh = subscription.keys?.p256dh
   const auth = subscription.keys?.auth
@@ -20,6 +20,7 @@ export async function subscribeUser(subscription: PushSubscriptionJSON) {
       endpoint,
       p256dh,
       auth,
+      ...(vapidPublicKey ? { vapid_public_key: vapidPublicKey } : {}),
     })
     return { success: true }
   } catch (error) {

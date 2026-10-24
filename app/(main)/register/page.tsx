@@ -8,6 +8,7 @@ import { register, type RegisterFields } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import PasswordInput from "@/components/PasswordInput";
 
 const fields = [
   {
@@ -103,12 +104,10 @@ export default function RegisterPage() {
                     <Label htmlFor={name} className="text-sm font-medium">
                       {label}
                     </Label>
-                    <div className="relative">
-                      <Icon className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground-dark" />
-                      <Input
+                    {type === "password" ? (
+                      <PasswordInput
                         id={name}
                         name={name}
-                        type={type}
                         placeholder={placeholder}
                         autoComplete={autoComplete}
                         value={values[name]}
@@ -120,9 +119,30 @@ export default function RegisterPage() {
                         aria-invalid={Boolean(fieldError)}
                         aria-describedby={describedBy}
                         suppressHydrationWarning
-                        className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 pl-10 pr-4 transition-all focus-visible:ring-primary-dark/50"
+                        className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 transition-all focus-visible:ring-primary-dark/50"
                       />
-                    </div>
+                    ) : (
+                      <div className="relative">
+                        <Icon className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground-dark" />
+                        <Input
+                          id={name}
+                          name={name}
+                          type={type}
+                          placeholder={placeholder}
+                          autoComplete={autoComplete}
+                          value={values[name]}
+                          onChange={(event) =>
+                            updateField(name, event.target.value)
+                          }
+                          required
+                          disabled={pending}
+                          aria-invalid={Boolean(fieldError)}
+                          aria-describedby={describedBy}
+                          suppressHydrationWarning
+                          className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 pl-10 pr-4 transition-all focus-visible:ring-primary-dark/50"
+                        />
+                      </div>
+                    )}
                     {name === "password" && (
                       <p
                         id="password-help"

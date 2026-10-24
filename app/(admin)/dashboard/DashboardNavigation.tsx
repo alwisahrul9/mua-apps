@@ -104,7 +104,8 @@ export default function DashboardNavigation({
               "flex w-16 flex-col items-center gap-1 p-2 transition-colors",
               pathname.startsWith("/dashboard/profile") ||
                 pathname.startsWith("/dashboard/settings") ||
-                pathname.startsWith("/dashboard/tips")
+                pathname.startsWith("/dashboard/tips") ||
+                pathname.startsWith("/dashboard/reviews")
                 ? "text-primary dark:text-primary-dark"
                 : "text-muted-foreground dark:text-muted-foreground-dark",
             )}

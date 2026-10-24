@@ -32,6 +32,20 @@ import { timeInputValue } from "@/lib/date-time";
 export default function EditBookingForm({ booking }: { booking: Booking }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const addOns = booking.addOns ?? [];
+
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(Number(amount) || 0);
+
+  const addOnQuantity = (unit: string | null | undefined, quantity: number) => {
+    const label =
+      unit === "hourly" ? "jam" : unit === "person" ? "orang" : "item";
+    return `${quantity} ${label}`;
+  };
 
   const mapStatusToDisplay = (status: string) => {
     switch (status) {
@@ -199,15 +213,42 @@ export default function EditBookingForm({ booking }: { booking: Booking }) {
               <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
                 Total Harga
               </p>
-              <p className="font-medium">
-                Rp {booking.totalPrice.toLocaleString("id-ID")}
-              </p>
+              <p className="font-medium">{formatCurrency(booking.totalPrice)}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
                 Lokasi
               </p>
               <p className="font-medium">{booking.location}</p>
+            </div>
+            <div className="md:col-span-2">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark">
+                Add-on Dipilih
+              </p>
+              {addOns.length > 0 ? (
+                <div className="mt-2 space-y-2">
+                  {addOns.map((addOn, index) => (
+                    <div
+                      key={`${addOn.id}-${index}`}
+                      className="flex flex-col gap-1 rounded-xl border border-foreground/10 bg-background p-3 dark:border-foreground-dark/10 dark:bg-background-dark sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="font-medium">{addOn.name}</p>
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark">
+                          {addOn.billingType === "flat"
+                            ? "1 paket"
+                            : addOnQuantity(addOn.unit, addOn.quantity)}
+                        </p>
+                      </div>
+                      <p className="font-medium">
+                        {formatCurrency(addOn.subtotal)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-1 font-medium">Tidak ada add-on</p>
+              )}
             </div>
             {booking.notes && (
               <div className="md:col-span-2">

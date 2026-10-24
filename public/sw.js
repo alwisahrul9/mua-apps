@@ -3265,25 +3265,36 @@ var serwist = new Serwist({
 serwist.addEventListeners();
 self.addEventListener("push", (event) => {
   if (!event.data) return;
-  event.waitUntil((async () => {
-    try {
-      const data = event.data.json();
-      const response = await fetch("/api/auth/session", { credentials: "same-origin", cache: "no-store" });
-      if (!response.ok) return;
-      const session = await response.json();
-      if (!session.user?.id || session.user.id !== data.userId) return;
-      await self.registration.showNotification(data.title, {
-        body: data.body,
-        icon: data.icon || "/icon.png",
-        badge: "/icon.png",
-        tag: data.tag,
-        data: { url: data.url || "/dashboard/bookings", bookingId: data.bookingId }
-      });
-      const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-      for (const client of clients) client.postMessage({ type: "booking-notification", bookingId: data.bookingId });
-    } catch {
-    }
-  })());
+  event.waitUntil(
+    (async () => {
+      try {
+        const data = event.data.json();
+        const bookingId = data.bookingId ?? data.booking_id;
+        await self.registration.showNotification(
+          data.title || "Notifikasi JadiCantik",
+          {
+            body: data.body || data.message || "Ada aktivitas terbaru.",
+            icon: data.icon || "/icon.png",
+            badge: "/icon.png",
+            tag: data.tag,
+            data: {
+              url: data.url || (bookingId ? `/dashboard/bookings/${bookingId}` : "/dashboard/bookings"),
+              bookingId
+            }
+          }
+        );
+        const clients = await self.clients.matchAll({
+          type: "window",
+          includeUncontrolled: true
+        });
+        for (const client of clients) {
+          client.postMessage({ type: "booking-notification", bookingId });
+        }
+      } catch (error) {
+        console.error("Unable to display push notification", error);
+      }
+    })()
+  );
 });
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();

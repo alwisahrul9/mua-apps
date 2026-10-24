@@ -2,16 +2,18 @@ import "server-only";
 
 import { serverApi } from "@/lib/api/server";
 import { unwrapData, unwrapList } from "@/lib/api/client";
-import type { Booking, Paginated, Service } from "@/lib/api/types";
+import type { AddOn, Booking, Paginated, Review, Service } from "@/lib/api/types";
 import { auth } from "@/auth";
 import { getCachedNotifications } from "@/lib/notification-cache";
 import { getCachedMuaProfile } from "@/lib/profile-cache";
 import {
   getCachedPortfolio,
   getCachedPortfolios,
+  getCachedAddOns,
   getCachedService,
   getCachedServices,
 } from "@/lib/content-cache";
+import { normalizeBookingRecord } from "@/lib/booking-normalizer";
 
 async function dashboardIdentity() {
   const session = await auth();
@@ -26,9 +28,48 @@ export async function listServices(page = 1): Promise<Paginated<Service>> {
   return getCachedServices(session.userId, session.accessToken, page);
 }
 
+export async function listAllServices(): Promise<Service[]> {
+  const first = await listServices(1);
+  const services = [...first.data];
+
+  for (let page = 2; page <= (first.lastPage ?? 1); page += 1) {
+    const result = await listServices(page);
+    services.push(...result.data);
+  }
+
+  return services;
+}
+
 export async function getService(id: string) {
   const session = await dashboardIdentity();
   return getCachedService(session.userId, session.accessToken, id);
+}
+
+export async function listAddOns(page = 1): Promise<Paginated<AddOn>> {
+  const session = await dashboardIdentity();
+  return getCachedAddOns(session.userId, session.accessToken, page);
+}
+
+export async function getAddOn(id: string) {
+  const response = await (
+    await serverApi()
+  ).get(`/dashboard/addons/${encodeURIComponent(id)}`);
+  return unwrapData<AddOn>(response.data);
+}
+
+export async function listDashboardReviews(
+  page = 1,
+  serviceId?: string,
+): Promise<Paginated<Review>> {
+  const response = await (
+    await serverApi()
+  ).post("/dashboard/reviews", {
+    _method: "get",
+    page,
+    ...(serviceId ? { service_id: serviceId } : {}),
+  });
+
+  return unwrapList<Review>(response.data);
 }
 
 export async function listPortfolios() {
@@ -66,7 +107,8 @@ export async function getBooking(id: string) {
   const response = await (
     await serverApi()
   ).get(`/dashboard/bookings/${encodeURIComponent(id)}`);
-  return unwrapData<Booking>(response.data);
+  const booking = unwrapData<Record<string, unknown>>(response.data);
+  return normalizeBookingRecord(booking);
 }
 
 export async function listNotifications() {

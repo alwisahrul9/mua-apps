@@ -9,6 +9,7 @@ import {
   Loader2,
   LogOut,
   Settings,
+  Star,
   User,
   X,
 } from "lucide-react";
@@ -365,6 +366,14 @@ export default function TopNav({
                     >
                       <CalendarCheck2 className="h-4 w-4" />
                       Buka Form Booking
+                    </Link>
+                    <Link
+                      href="/dashboard/reviews"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="mb-1 flex items-center gap-3 rounded-xl px-2 py-2 text-sm font-medium hover:bg-muted dark:hover:bg-muted-dark"
+                    >
+                      <Star className="h-4 w-4" />
+                      Review
                     </Link>
                     <Link
                       href="/dashboard/profile"

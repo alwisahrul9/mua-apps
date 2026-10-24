@@ -6,7 +6,7 @@ import { redirect } from "next/navigation"
 import { z } from "zod"
 import { apiErrorMessage } from "@/lib/api/client"
 import { serverApi } from "@/lib/api/server"
-import { listServices } from "@/lib/api/dashboard"
+import { listAddOns, listServices } from "@/lib/api/dashboard"
 import { invalidateCurrentServicesCache } from "@/lib/content-cache"
 
 const serviceSchema = z.object({
@@ -64,6 +64,26 @@ export async function getServicesPage(page: number) {
       currentPage: page,
       lastPage: page,
       error: apiErrorMessage(error, "Gagal memuat layanan berikutnya."),
+    }
+  }
+}
+
+export async function getAddOnsPage(page: number) {
+  try {
+    const result = await listAddOns(page)
+    return {
+      data: result.data,
+      currentPage: result.currentPage ?? page,
+      lastPage: result.lastPage ?? page,
+      total: result.total ?? result.data.length,
+    }
+  } catch (error) {
+    return {
+      data: [],
+      currentPage: page,
+      lastPage: page,
+      total: 0,
+      error: apiErrorMessage(error, "Gagal memuat daftar add-on."),
     }
   }
 }

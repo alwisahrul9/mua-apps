@@ -20,9 +20,19 @@ import { Button } from "@/components/ui/button";
 import { formatEventTime } from "@/lib/date-time";
 import type { Booking } from "@/lib/api/types";
 import ReviewLinkButton from "./ReviewLinkButton";
+import { CardFooter } from "@/components/ui/card";
 
 export default function BookingDetail({ booking }: { booking: Booking }) {
   const [copied, setCopied] = useState(false);
+  const addOns = booking.addOns ?? [];
+  const totalPrice = Number(booking.totalPrice) || 0;
+  const dpAmount = Number(booking.dpAmount) || 0;
+  const addOnSubtotal = addOns.reduce(
+    (total, addOn) => total + (Number(addOn.subtotal) || 0),
+    0,
+  );
+  const serviceSubtotal =
+    Number(booking.serviceSubtotal) || Math.max(0, totalPrice - addOnSubtotal);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -45,7 +55,13 @@ export default function BookingDetail({ booking }: { booking: Booking }) {
       style: "currency",
       currency: "IDR",
       minimumFractionDigits: 0,
-    }).format(amount);
+    }).format(Number(amount) || 0);
+  };
+
+  const addOnQuantity = (unit: string | null | undefined, quantity: number) => {
+    const label =
+      unit === "hourly" ? "jam" : unit === "person" ? "orang" : "item";
+    return `${quantity} ${label}`;
   };
 
   return (
@@ -238,6 +254,30 @@ export default function BookingDetail({ booking }: { booking: Booking }) {
                     </p>
                     <p className="font-medium">{booking.totalPerson} Orang</p>
                   </div>
+                  <div className="border-t border-primary/10 pt-3 dark:border-primary-dark/10">
+                    <p className="mb-2 text-sm text-muted-foreground dark:text-muted-foreground-dark">
+                      Add-on Dipilih
+                    </p>
+                    {addOns.length > 0 ? (
+                      <div className="space-y-2">
+                        {addOns.map((addOn, index) => (
+                          <div
+                            key={`${addOn.id}-${index}`}
+                            className="flex items-start justify-between gap-3 rounded-xl bg-background/70 px-3 py-2 dark:bg-background-dark/60"
+                          >
+                            <p className="font-medium">{addOn.name}</p>
+                            <p className="shrink-0 text-sm text-muted-foreground dark:text-muted-foreground-dark">
+                              {addOn.billingType === "flat"
+                                ? "1 paket"
+                                : addOnQuantity(addOn.unit, addOn.quantity)}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm font-medium">Tidak ada add-on</p>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -257,20 +297,49 @@ export default function BookingDetail({ booking }: { booking: Booking }) {
                       {booking.status.replace("_", " ")}
                     </Badge>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
-                      Total Harga
-                    </p>
-                    <p className="font-semibold">
-                      {formatCurrency(booking.totalPrice)}
-                    </p>
+                  <div className="space-y-2 border-t border-foreground/10 pt-3 dark:border-foreground-dark/10">
+                    <p className="text-sm font-medium">Rincian Harga</p>
+                    <div className="flex items-start justify-between gap-4 text-sm">
+                      <div>
+                        <p>{booking.service?.name ?? "Layanan"}</p>
+                        {Number(booking.servicePrice) > 0 && (
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground-dark">
+                            {formatCurrency(Number(booking.servicePrice))} ×{" "}
+                            {booking.totalPerson} orang
+                          </p>
+                        )}
+                      </div>
+                      <p className="shrink-0 font-medium">
+                        {formatCurrency(serviceSubtotal)}
+                      </p>
+                    </div>
+                    {addOns.map((addOn, index) => (
+                      <div
+                        key={`price-${addOn.id}-${index}`}
+                        className="flex items-start justify-between gap-4 text-sm"
+                      >
+                        <div>
+                          <p>{addOn.name}</p>
+                          <p className="text-xs text-muted-foreground dark:text-muted-foreground-dark">
+                            {formatCurrency(addOn.unitPrice)} × {addOn.quantity}
+                          </p>
+                        </div>
+                        <p className="shrink-0 font-medium">
+                          {formatCurrency(addOn.subtotal)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between items-center border-t border-foreground/10 pt-3 dark:border-foreground-dark/10">
+                    <p className="font-medium">Total Harga</p>
+                    <p className="font-semibold">{formatCurrency(totalPrice)}</p>
                   </div>
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark">
                       DP (Down Payment)
                     </p>
                     <p className="font-medium text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark">
-                      {formatCurrency(booking.dpAmount)}
+                      {formatCurrency(dpAmount)}
                     </p>
                   </div>
                   <div className="flex justify-between items-center">
@@ -278,7 +347,7 @@ export default function BookingDetail({ booking }: { booking: Booking }) {
                       Sisa Pembayaran
                     </p>
                     <p className="font-medium text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark">
-                      {formatCurrency(booking.totalPrice - booking.dpAmount)}
+                      {formatCurrency(totalPrice - dpAmount)}
                     </p>
                   </div>
                   <div className="border-t border-foreground/10 dark:border-foreground-dark/10 dark:border-foreground dark:border-foreground-dark/10 pt-3 flex items-start gap-3">
@@ -320,21 +389,23 @@ export default function BookingDetail({ booking }: { booking: Booking }) {
         {booking.status === "COMPLETED" && (
           <div className="border-t border-foreground/10 bg-muted/20 p-5 dark:border-foreground-dark/10 dark:bg-muted-dark/20 sm:p-6">
             <p className="mb-3 text-sm text-muted-foreground dark:text-muted-foreground-dark">
-              Kirim tautan satu kali kepada klien untuk meminta ulasan setelah layanan selesai.
+              Kirim tautan satu kali kepada klien untuk meminta ulasan setelah
+              layanan selesai.
             </p>
             <ReviewLinkButton bookingId={booking.id} />
           </div>
         )}
         {booking.status !== "COMPLETED" && booking.status !== "CANCELED" && (
-          <div className="flex justify-end border-t border-foreground/10 bg-muted/20 p-5 dark:border-foreground-dark/10 dark:bg-muted-dark/20 sm:p-6">
-            <Link
-              href={`/dashboard/bookings/${booking.id}/edit`}
-              className="h-11 inline-flex w-full justify-center items-center gap-2 rounded-xl bg-primary px-6 font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-primary-dark dark:text-primary-foreground-dark dark:hover:bg-primary-dark/90"
+          <CardFooter className="justify-end border-t border-foreground/10 bg-muted/20 p-5 dark:border-foreground-dark/10 dark:bg-muted-dark/20 sm:p-6">
+            <Button
+              render={<Link href={`/dashboard/bookings/${booking.id}/edit`} />}
+              nativeButton={false}
+              className="h-11 w-full mt-5 rounded-xl px-6 sm:w-auto"
             >
               <Edit2 className="w-4 h-4" />
               Edit Booking
-            </Link>
-          </div>
+            </Button>
+          </CardFooter>
         )}
       </section>
     </div>

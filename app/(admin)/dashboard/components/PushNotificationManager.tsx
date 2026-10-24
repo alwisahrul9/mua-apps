@@ -5,19 +5,7 @@ import { useRouter } from "next/navigation";
 import { Bell, BellOff, Loader2 } from "lucide-react";
 import { subscribeUser, unsubscribeUser } from "../notifications/push-actions";
 import { toast } from "@/components/ui/toast";
-
-function urlBase64ToUint8Array(base64String: string) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
+import { activePushRegistration, configuredVapidPublicKey, isCurrentPushSubscription, subscriptionVapidPublicKey, vapidKeyBytes } from "@/lib/web-push";
 
 export function PushNotificationManager({
   showLabel = false,
@@ -33,7 +21,7 @@ export function PushNotificationManager({
 
   useEffect(() => {
     let cancelled = false;
-    const supported = "serviceWorker" in navigator && "PushManager" in window;
+    const supported = "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
     queueMicrotask(() => {
       if (!cancelled) setIsSupported(supported);
     });
@@ -47,11 +35,7 @@ export function PushNotificationManager({
       };
     }
 
-    navigator.serviceWorker
-      .register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      })
+    activePushRegistration()
       .then((registration) =>
         Promise.race([
           registration.pushManager.getSubscription(),
@@ -60,8 +44,12 @@ export function PushNotificationManager({
       )
       .then(async (sub) => {
         if (cancelled) return;
+        if (sub && !isCurrentPushSubscription(sub)) {
+          setSubscription(null);
+          return;
+        }
         if (sub) {
-          const result = await subscribeUser(sub.toJSON());
+          const result = await subscribeUser(sub.toJSON(), subscriptionVapidPublicKey(sub));
           if (!result.success) {
             toast.add({ title: "Aktifkan kembali notifikasi", description: result.error, type: "error", timeout: 6000 });
             setSubscription(null);
@@ -104,10 +92,7 @@ export function PushNotificationManager({
       }
 
       // Use register instead of .ready to prevent hanging if SW isn't active
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
+      const registration = await activePushRegistration();
 
       // Check if an existing subscription exists and unsubscribe it first to avoid
       // "Registration failed - push service error" when VAPID keys have changed.
@@ -123,9 +108,9 @@ export function PushNotificationManager({
         await (existingSub as PushSubscription).unsubscribe();
       }
 
-      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!.trim();
+      const vapidKey = configuredVapidPublicKey();
 
-      const applicationServerKey = urlBase64ToUint8Array(vapidKey);
+      const applicationServerKey = vapidKeyBytes(vapidKey);
 
       const sub = await registration.pushManager.subscribe({
         userVisibleOnly: true,
@@ -133,7 +118,7 @@ export function PushNotificationManager({
       });
 
       const subJson = JSON.parse(JSON.stringify(sub));
-      const result = await subscribeUser(subJson);
+      const result = await subscribeUser(subJson, subscriptionVapidPublicKey(sub));
       if (!result.success) {
         await sub.unsubscribe();
         throw new Error(result.error);
@@ -162,10 +147,7 @@ export function PushNotificationManager({
   async function unsubscribeFromPush() {
     setIsLoading(true);
     try {
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
+      const registration = await activePushRegistration();
       const sub = await Promise.race([
         registration.pushManager.getSubscription(),
         new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500)),

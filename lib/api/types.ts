@@ -35,9 +35,35 @@ export type Service = {
   description: string | null;
   price: number;
   iconName: string;
+  addOns?: AddOn[];
   deletedAt?: string | null;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type AddOn = {
+  id: string;
+  userId?: string;
+  name: string;
+  description: string | null;
+  billingType: "flat" | "per_unit";
+  unit: "item" | "hourly" | "person" | null;
+  price: number;
+  isActive: boolean;
+  serviceIds?: string[];
+  services?: Pick<Service, "id" | "name" | "price">[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type BookingAddOn = {
+  id: string;
+  name: string;
+  billingType?: "flat" | "per_unit";
+  unit?: "item" | "hourly" | "person" | null;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
 };
 
 export type Portfolio = {
@@ -52,6 +78,7 @@ export type Portfolio = {
 };
 
 export type Booking = {
+  paymentMethod: PaymentMethod[] | null | undefined;
   id: string;
   userId?: string;
   serviceId: string;
@@ -69,6 +96,9 @@ export type Booking = {
   status: BookingStatus;
   totalPrice: number;
   dpAmount: number;
+  servicePrice?: number;
+  serviceSubtotal?: number;
+  addOns?: BookingAddOn[];
   createdAt: string;
   updatedAt?: string;
   service?: Service;
@@ -86,10 +116,12 @@ export type Notification = {
 
 export type Review = {
   id: string;
+  serviceId?: string | null;
   clientName: string;
   rating: number;
   reviewText: string;
   serviceName?: string | null;
+  service?: Pick<Service, "id" | "name"> | null;
   eventDate?: string | null;
   createdAt: string;
 };

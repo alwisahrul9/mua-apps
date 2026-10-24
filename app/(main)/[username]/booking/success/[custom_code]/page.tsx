@@ -14,6 +14,7 @@ export default async function TenantBookingSuccessPage({
   ]);
 
   if (!booking || !profile) redirect(`/${username}/booking`);
+
   if (new Date() > new Date(booking.paymentDeadline)) {
     redirect(`/${username}/booking?error=expired`);
   }
@@ -26,10 +27,14 @@ export default async function TenantBookingSuccessPage({
       dpAmount={booking.dpAmount}
       paymentDeadline={new Date(booking.paymentDeadline)}
       totalPerson={booking.totalPerson}
+      serviceName={booking.service?.name}
+      servicePrice={booking.servicePrice}
+      serviceSubtotal={booking.serviceSubtotal}
+      addOns={booking.addOns}
       homeHref={`/${username}`}
       homePageIsActive={profile.homepageIsActive}
       whatsappNumber={profile.whatsappNumber}
-      paymentMethod={profile.paymentMethod}
+      paymentMethod={booking.paymentMethod}
     />
   );
 }

@@ -19,7 +19,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { subscribeUser } from "../notifications/push-actions";
+import { subscribeUser, unsubscribeUser } from "../notifications/push-actions";
+import { activePushRegistration, configuredVapidPublicKey, isCurrentPushSubscription, subscriptionVapidPublicKey, vapidKeyBytes } from "@/lib/web-push";
 import { toast } from "@/components/ui/toast";
 import PwaInstallGuide from "@/components/PwaInstallGuide";
 import { siteConfig } from "@/lib/site-config";
@@ -32,12 +33,7 @@ import {
 const DISMISSED_AT_KEY = "jadi-cantik-app-setup-dismissed-at";
 const REMINDER_INTERVAL = 7 * 24 * 60 * 60 * 1000;
 
-function urlBase64ToUint8Array(value: string) {
-  const padding = "=".repeat((4 - (value.length % 4)) % 4);
-  const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
-  const rawData = window.atob(base64);
-  return Uint8Array.from(rawData, (character) => character.charCodeAt(0));
-}
+
 
 export default function AppSetupDialog() {
   const [open, setOpen] = useState(false);
@@ -78,10 +74,17 @@ export default function AppSetupDialog() {
     });
 
     if (supported) {
-      navigator.serviceWorker
-        .register("/sw.js", { scope: "/", updateViaCache: "none" })
+      activePushRegistration()
         .then((registration) => registration.pushManager.getSubscription())
-        .then((subscription) => setPushEnabled(Boolean(subscription)))
+        .then(async (subscription) => {
+          if (cancelled) return;
+          if (!subscription || !isCurrentPushSubscription(subscription)) {
+            setPushEnabled(false);
+            return;
+          }
+          const result = await subscribeUser(subscription.toJSON(), subscriptionVapidPublicKey(subscription));
+          if (!cancelled) setPushEnabled(result.success);
+        })
         .catch(() => undefined);
     }
 
@@ -138,22 +141,23 @@ export default function AppSetupDialog() {
         return;
       }
 
-      const registration = await navigator.serviceWorker.register("/sw.js", {
-        scope: "/",
-        updateViaCache: "none",
-      });
+      const registration = await activePushRegistration();
       const existing = await registration.pushManager.getSubscription();
-      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim();
-      if (!vapidKey) throw new Error("VAPID public key belum dikonfigurasi");
-
-      const subscription =
-        existing ??
-        (await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(vapidKey),
-        }));
-      const result = await subscribeUser(subscription.toJSON());
-      if (!result.success) throw new Error(result.error);
+      const vapidKey = configuredVapidPublicKey();
+      if (existing) {
+        const cleanup = await unsubscribeUser(existing.endpoint);
+        if (!cleanup.success) throw new Error(cleanup.error);
+        await existing.unsubscribe();
+      }
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: vapidKeyBytes(vapidKey),
+      });
+      const result = await subscribeUser(subscription.toJSON(), subscriptionVapidPublicKey(subscription));
+      if (!result.success) {
+        await subscription.unsubscribe();
+        throw new Error(result.error);
+      }
 
       setPushEnabled(true);
       setMessage("Notifikasi berhasil diaktifkan.");

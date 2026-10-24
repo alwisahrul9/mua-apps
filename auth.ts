@@ -11,6 +11,15 @@ const credentialsSchema = z.object({
   password: z.string().min(1),
 })
 
+type GoogleLoginError =
+  | "GoogleTokenMissing"
+  | "GoogleBackendRejected"
+  | "GoogleBackendUnavailable"
+
+function googleLoginErrorUrl(error: GoogleLoginError) {
+  return `/login?error=${error}`
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   session: { strategy: "jwt" },
@@ -74,8 +83,69 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (!requiresAuth) return true
       return Boolean(auth?.user && auth.accessToken)
     },
-    async jwt({ token, user, account }) {
+    async signIn({ user, account }) {
+      if (account?.provider !== "google") return true
+
+      if (!account.id_token) {
+        console.error("[auth][google] Google tidak mengembalikan ID token.")
+        return googleLoginErrorUrl("GoogleTokenMissing")
+      }
+
+      try {
+        const response = await publicApi.post("/auth/google", {
+          id_token: account.id_token,
+        })
+        const payload = unwrapData<AuthResponse & { accessToken?: string }>(
+          response.data,
+        )
+        const accessToken = payload.token ?? payload.accessToken
+
+        if (!payload.user || !accessToken) {
+          console.error(
+            "[auth][google] Respons backend tidak memuat user atau access token.",
+          )
+          return googleLoginErrorUrl("GoogleBackendRejected")
+        }
+
+        Object.assign(user, {
+          id: payload.user.id,
+          name: payload.user.name,
+          email: payload.user.email,
+          image: payload.user.profile?.profileImageUrl ?? user.image,
+          accessToken,
+          roles: payload.user.roles ?? [],
+          permissions: payload.user.permissions ?? [],
+          isEmailVerified: Boolean(payload.user.emailVerifiedAt),
+          verificationEmailResendAvailableAt:
+            payload.user.verificationEmailResendAvailableAt ?? null,
+          verificationEmailRetryAfter:
+            payload.user.verificationEmailRetryAfter ?? 0,
+          profile: payload.user.profile ?? null,
+        })
+
+        return true
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          console.error("[auth][google] Backend menolak login Google.", {
+            apiUrl: `${publicApi.defaults.baseURL}/auth/google`,
+            status: error.response?.status ?? null,
+            message: error.response?.data?.message ?? error.message,
+          })
+
+          return googleLoginErrorUrl(
+            error.response
+              ? "GoogleBackendRejected"
+              : "GoogleBackendUnavailable",
+          )
+        }
+
+        console.error("[auth][google] Login Google gagal.", error)
+        return googleLoginErrorUrl("GoogleBackendRejected")
+      }
+    },
+    async jwt({ token, user }) {
       if (user) {
+        token.sub = user.id
         token.accessToken = user.accessToken
         token.roles = user.roles
         token.permissions = user.permissions
@@ -84,24 +154,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           user.verificationEmailResendAvailableAt
         token.verificationEmailRetryAfter = user.verificationEmailRetryAfter
         token.profile = user.profile
-      }
-
-      if (account?.provider === "google" && account.id_token) {
-        const response = await publicApi.post("/auth/google", { id_token: account.id_token })
-        const payload = unwrapData<AuthResponse & { accessToken?: string }>(response.data)
-        token.accessToken = payload.token ?? payload.accessToken
-        token.sub = payload.user.id
-        token.name = payload.user.name
-        token.email = payload.user.email
-        token.picture = payload.user.profile?.profileImageUrl ?? token.picture
-        token.roles = payload.user.roles ?? []
-        token.permissions = payload.user.permissions ?? []
-        token.isEmailVerified = Boolean(payload.user.emailVerifiedAt)
-        token.verificationEmailResendAvailableAt =
-          payload.user.verificationEmailResendAvailableAt ?? null
-        token.verificationEmailRetryAfter =
-          payload.user.verificationEmailRetryAfter ?? 0
-        token.profile = payload.user.profile ?? null
       }
 
       return token

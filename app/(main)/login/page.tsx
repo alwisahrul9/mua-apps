@@ -10,13 +10,14 @@ import {
 import { useFormStatus } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
+import { Mail, ArrowRight, Loader2 } from "lucide-react";
 import { login, loginWithGoogle, type LoginFields } from "./actions";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { resendVerificationEmail } from "@/app/actions/email-verification";
+import PasswordInput from "@/components/PasswordInput";
 
 const verificationDeadlineKey = "registration-email-verification-resend-at";
 
@@ -185,6 +186,22 @@ function LoginForm() {
   const verificationResendAt = searchParams.get("resend_at");
   const passwordResetSucceeded = searchParams.get("password_reset") === "1";
   const oauthError = searchParams.get("error");
+  const oauthErrorMessage = (() => {
+    switch (oauthError) {
+      case "OAuthAccountNotLinked":
+        return "Email ini sudah terdaftar dengan metode login lain. Masuk menggunakan email dan password.";
+      case "GoogleTokenMissing":
+        return "Google tidak mengirimkan token login. Coba pilih akun Google kembali.";
+      case "GoogleBackendUnavailable":
+        return "Server autentikasi belum dapat dihubungi. Coba kembali beberapa saat lagi.";
+      case "GoogleBackendRejected":
+        return "Token Google ditolak oleh backend. Pastikan Google Client ID pada frontend dan backend menggunakan nilai yang sama.";
+      case null:
+        return null;
+      default:
+        return "Login Google gagal diproses. Pastikan URL callback Google sesuai dengan domain yang sedang digunakan.";
+    }
+  })();
 
   function updateField(name: keyof LoginFields, value: string) {
     setValues((current) => ({ ...current, [name]: value }));
@@ -221,11 +238,9 @@ function LoginForm() {
             </div>
           )}
 
-          {oauthError && (
+          {oauthErrorMessage && (
             <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-500">
-              {oauthError === "OAuthAccountNotLinked"
-                ? "Email ini sudah terdaftar dengan metode login lain. Masuk menggunakan email dan password."
-                : "Login Google gagal diproses. Pastikan konfigurasi Google pada frontend dan backend sudah benar."}
+              {oauthErrorMessage}
             </div>
           )}
 
@@ -273,28 +288,24 @@ function LoginForm() {
                   Lupa password?
                 </Link>
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
-                <Input
-                  id="password"
-                  required
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  value={values.password}
-                  onChange={(event) =>
-                    updateField("password", event.target.value)
-                  }
-                  disabled={pending}
-                  aria-invalid={Boolean(state?.errors?.password)}
-                  aria-describedby={
-                    state?.errors?.password ? "password-error" : undefined
-                  }
-                  suppressHydrationWarning
-                  className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
-                  placeholder="••••••••"
-                />
-              </div>
+              <PasswordInput
+                id="password"
+                required
+                name="password"
+                autoComplete="current-password"
+                value={values.password}
+                onChange={(event) =>
+                  updateField("password", event.target.value)
+                }
+                disabled={pending}
+                aria-invalid={Boolean(state?.errors?.password)}
+                aria-describedby={
+                  state?.errors?.password ? "password-error" : undefined
+                }
+                suppressHydrationWarning
+                className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 focus-visible:ring-primary-dark/50"
+                placeholder="••••••••"
+              />
               {state?.errors?.password && (
                 <p id="password-error" className="text-xs text-red-500">
                   {state.errors.password[0]}

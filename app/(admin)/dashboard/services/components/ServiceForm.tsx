@@ -1,12 +1,23 @@
-"use client"
+"use client";
 
-import { useActionState, useState } from "react"
-import FormActions from "./FormActions"
-import { createService, updateService, type ServiceField } from "../actions"
-import { Brush, Camera, Crown, Heart, Sparkles, Star, Scissors, Flower2, Gem, Wand2 } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useActionToast } from "@/hooks/use-action-toast"
+import { useActionState, useState } from "react";
+import FormActions from "./FormActions";
+import { createService, updateService, type ServiceField } from "../actions";
+import {
+  Brush,
+  Camera,
+  Crown,
+  Heart,
+  Sparkles,
+  Star,
+  Scissors,
+  Flower2,
+  Gem,
+  Wand2,
+} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useActionToast } from "@/hooks/use-action-toast";
 
 type Service = {
   id?: string;
@@ -14,7 +25,7 @@ type Service = {
   price: number;
   description: string | null;
   iconName?: string;
-}
+};
 
 const AVAILABLE_ICONS = [
   { name: "Sparkles", icon: Sparkles },
@@ -27,16 +38,26 @@ const AVAILABLE_ICONS = [
   { name: "Flower2", icon: Flower2 },
   { name: "Gem", icon: Gem },
   { name: "Wand2", icon: Wand2 },
-]
+];
 
-export default function ServiceForm({ service, actionType }: { service?: Service, actionType: "create" | "update" }) {
-  const updateAction = service?.id ? updateService.bind(null, service.id) : createService
-  const action = actionType === "create" ? createService : updateAction
+export default function ServiceForm({
+  service,
+  actionType,
+}: {
+  service?: Service;
+  actionType: "create" | "update";
+}) {
+  const updateAction = service?.id
+    ? updateService.bind(null, service.id)
+    : createService;
+  const action = actionType === "create" ? createService : updateAction;
 
-  const [state, formAction, isPending] = useActionState(action, undefined)
-  const [selectedIcon, setSelectedIcon] = useState(service?.iconName || "Sparkles")
-  useActionToast(state)
-  const fieldError = (field: ServiceField) => state?.errors?.[field]?.[0]
+  const [state, formAction, isPending] = useActionState(action, undefined);
+  const [selectedIcon, setSelectedIcon] = useState(
+    service?.iconName || "Sparkles",
+  );
+  useActionToast(state);
+  const fieldError = (field: ServiceField) => state?.errors?.[field]?.[0];
 
   return (
     <form action={formAction} noValidate className="space-y-6">
@@ -60,10 +81,11 @@ export default function ServiceForm({ service, actionType }: { service?: Service
               type="button"
               onClick={() => setSelectedIcon(name)}
               aria-pressed={selectedIcon === name}
-              className={`flex items-center justify-center p-3 rounded-xl border transition-all ${selectedIcon === name
-                ? "bg-primary/10 dark:bg-primary-dark/10 dark:bg-primary dark:bg-primary-dark/10 border-primary dark:border-primary-dark dark:border-primary dark:border-primary-dark text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark shadow-sm"
-                : "bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border-border text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
-                }`}
+              className={`flex items-center justify-center p-3 rounded-xl border transition-all ${
+                selectedIcon === name
+                  ? "bg-primary/10 dark:bg-primary-dark/10 dark:bg-primary dark:bg-primary-dark/10 border-primary dark:border-primary-dark dark:border-primary dark:border-primary-dark text-primary dark:text-primary-dark dark:text-primary dark:text-primary-dark shadow-sm"
+                  : "bg-background dark:bg-background-dark dark:bg-background dark:bg-background-dark border-border text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark hover:bg-accent dark:bg-accent-dark dark:bg-accent dark:bg-accent-dark hover:text-accent-foreground dark:text-accent-foreground-dark dark:text-accent-foreground dark:text-accent-foreground-dark"
+              }`}
               title={name}
             >
               <Icon className="w-5 h-5" />
@@ -121,9 +143,7 @@ export default function ServiceForm({ service, actionType }: { service?: Service
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">
-          Deskripsi (Opsional)
-        </Label>
+        <Label htmlFor="description">Deskripsi (Opsional)</Label>
         <textarea
           id="description"
           name="description"
@@ -131,7 +151,9 @@ export default function ServiceForm({ service, actionType }: { service?: Service
           rows={4}
           placeholder="Tuliskan deskripsi singkat mengenai layanan ini..."
           aria-invalid={Boolean(fieldError("description"))}
-          aria-describedby={fieldError("description") ? "description-error" : undefined}
+          aria-describedby={
+            fieldError("description") ? "description-error" : undefined
+          }
           className={`flex min-h-[80px] w-full rounded-xl border bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground dark:text-muted-foreground-dark dark:text-muted-foreground dark:text-muted-foreground-dark focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 ${fieldError("description") ? "border-red-500 focus-visible:ring-red-500/30" : "border-input focus-visible:ring-ring"}`}
         ></textarea>
         {fieldError("description") && (
@@ -142,9 +164,21 @@ export default function ServiceForm({ service, actionType }: { service?: Service
       </div>
 
       <FormActions
-        submitText={actionType === "create" ? (isPending ? "Menyimpan..." : "Simpan Layanan") : (isPending ? "Menyimpan..." : "Simpan Perubahan")}
-        cancelHref={actionType === "create" ? "/dashboard/services" : `/dashboard/services/${service?.id}`}
+        submitText={
+          actionType === "create"
+            ? isPending
+              ? "Menyimpan..."
+              : "Simpan Layanan"
+            : isPending
+              ? "Menyimpan..."
+              : "Simpan Perubahan"
+        }
+        cancelHref={
+          actionType === "create"
+            ? "/dashboard/services"
+            : `/dashboard/services/${service?.id}`
+        }
       />
     </form>
-  )
+  );
 }

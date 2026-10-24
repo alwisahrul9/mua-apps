@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
-import { useCallback, useRef, useState } from "react"
-import Link from "next/link"
-import { Loader2 } from "lucide-react"
-import type { Service } from "@/lib/api/types"
+import { useCallback, useRef, useState } from "react";
+import Link from "next/link";
+import { Loader2, Plus } from "lucide-react";
+import type { Service } from "@/lib/api/types";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,76 +12,84 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { getServicesPage } from "../actions"
+} from "@/components/ui/card";
+import { getServicesPage } from "../actions";
 
 type ServiceListClientProps = {
-  initialServices: Service[]
-  initialPage: number
-  initialLastPage: number
-}
+  initialServices: Service[];
+  initialPage: number;
+  initialLastPage: number;
+};
 
 export default function ServiceListClient({
   initialServices,
   initialPage,
   initialLastPage,
 }: ServiceListClientProps) {
-  const [services, setServices] = useState(initialServices)
-  const [page, setPage] = useState(initialPage)
-  const [hasMore, setHasMore] = useState(initialPage < initialLastPage)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const observer = useRef<IntersectionObserver | null>(null)
+  const [services, setServices] = useState(initialServices);
+  const [page, setPage] = useState(initialPage);
+  const [hasMore, setHasMore] = useState(initialPage < initialLastPage);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const loadMoreServices = useCallback(async () => {
-    if (loading || !hasMore) return
+    if (loading || !hasMore) return;
 
-    setLoading(true)
-    setError(null)
-    const result = await getServicesPage(page + 1)
+    setLoading(true);
+    setError(null);
+    const result = await getServicesPage(page + 1);
 
     if (result.error) {
-      setError(result.error)
+      setError(result.error);
     } else {
       setServices((current) => {
-        const existingIds = new Set(current.map((service) => service.id))
+        const existingIds = new Set(current.map((service) => service.id));
         return [
           ...current,
           ...result.data.filter((service) => !existingIds.has(service.id)),
-        ]
-      })
-      setPage(result.currentPage)
-      setHasMore(result.currentPage < result.lastPage)
+        ];
+      });
+      setPage(result.currentPage);
+      setHasMore(result.currentPage < result.lastPage);
     }
-    setLoading(false)
-  }, [hasMore, loading, page])
+    setLoading(false);
+  }, [hasMore, loading, page]);
 
   const lastServiceRef = useCallback(
     (node: HTMLAnchorElement | null) => {
-      observer.current?.disconnect()
-      if (!node || loading || !hasMore || error) return
+      observer.current?.disconnect();
+      if (!node || loading || !hasMore || error) return;
 
       observer.current = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) void loadMoreServices()
+          if (entry.isIntersecting) void loadMoreServices();
         },
         { rootMargin: "200px 0px" },
-      )
-      observer.current.observe(node)
+      );
+      observer.current.observe(node);
     },
     [error, hasMore, loadMoreServices, loading],
-  )
+  );
 
   if (services.length === 0) {
     return (
       <Card className="border-foreground/10 shadow-sm rounded-2xl dark:border-foreground-dark/10">
-        <CardContent className="flex flex-col items-center justify-center p-8 text-center">
+        <CardContent className="flex flex-col items-center justify-center gap-4 p-8 text-center sm:p-12">
           <p className="text-muted-foreground dark:text-muted-foreground-dark">
             Belum ada layanan yang ditambahkan.
           </p>
+          <Button
+            render={<Link href="/dashboard/services/create" />}
+            nativeButton={false}
+            className="h-10 rounded-xl px-4 text-xs shadow-sm sm:h-11 sm:px-6 sm:text-sm"
+          >
+            <Plus className="h-4 w-4" />
+            Tambah Layanan
+          </Button>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -124,7 +133,9 @@ export default function ServiceListClient({
 
       {error && (
         <div className="space-y-3 py-4 text-center">
-          <p role="alert" className="text-sm text-red-500">{error}</p>
+          <p role="alert" className="text-sm text-red-500">
+            {error}
+          </p>
           <button
             type="button"
             onClick={() => void loadMoreServices()}
@@ -141,5 +152,5 @@ export default function ServiceListClient({
         </p>
       )}
     </div>
-  )
+  );
 }
