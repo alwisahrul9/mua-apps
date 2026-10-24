@@ -5,6 +5,23 @@ import { extractMuaProfile, isProfileComplete } from "@/lib/profile";
 
 const authRoutes = new Set(["/login", "/register", "/forgot-password"]);
 
+function isSessionCookie(name: string) {
+  return (
+    name.includes("authjs.session-token") ||
+    name.includes("next-auth.session-token")
+  );
+}
+
+function clearAuthCookies(
+  request: { cookies: { getAll(): { name: string }[] } },
+  response: NextResponse,
+) {
+  for (const cookie of request.cookies.getAll()) {
+    if (isSessionCookie(cookie.name)) response.cookies.delete(cookie.name);
+  }
+  return response;
+}
+
 export const proxy = auth(async (request) => {
   const { pathname } = request.nextUrl;
   const session = request.auth;
@@ -17,16 +34,14 @@ export const proxy = auth(async (request) => {
 
   if (!session?.user || !session.accessToken) {
     if (isDashboardRoute || isOnboardingRoute) {
-      return NextResponse.redirect(new URL("/login", request.url));
+      return clearAuthCookies(
+        request,
+        NextResponse.redirect(new URL("/login?reason=session-invalid", request.url)),
+      );
     }
 
-    return NextResponse.next();
+    return clearAuthCookies(request, NextResponse.next());
   }
-
-  // DashboardLayout mengambil profil terbaru untuk navbar sekaligus memblokir
-  // profil yang belum lengkap. Hindari request backend kedua di Proxy pada
-  // setiap navigasi dashboard.
-  if (isDashboardRoute) return NextResponse.next();
 
   const response = await fetch(`${apiBaseUrl}/user/profile`, {
     headers: {
@@ -36,6 +51,17 @@ export const proxy = auth(async (request) => {
     cache: "no-store",
     signal: AbortSignal.timeout(5_000),
   }).catch(() => null);
+
+  if (response?.status === 401) {
+    return clearAuthCookies(
+      request,
+      NextResponse.redirect(new URL("/login?reason=session-expired", request.url)),
+    );
+  }
+
+  // DashboardLayout tetap menangani kelengkapan profil dan data navbar.
+  // Request ini khusus memastikan token backend masih valid.
+  if (isDashboardRoute) return NextResponse.next();
 
   const profileResponseSucceeded = response?.ok === true;
   const profile = profileResponseSucceeded
