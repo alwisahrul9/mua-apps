@@ -52,7 +52,7 @@ function GoogleLoginButton() {
       type="submit"
       variant="outline"
       disabled={pending}
-      className="h-auto w-full rounded-full border-foreground-dark/20 bg-transparent py-3.5 text-foreground-dark hover:bg-muted-dark disabled:opacity-60"
+      className="h-auto w-full rounded-full border-foreground/20 bg-transparent py-3.5 text-foreground hover:bg-muted disabled:opacity-60"
     >
       {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : <GoogleIcon />}
       {pending ? "Menghubungkan ke Google..." : "Lanjutkan dengan Google"}
@@ -143,7 +143,7 @@ function RegistrationSuccessNotice({ resendAt }: { resendAt: string | null }) {
   return (
     <div
       role="status"
-      className="mb-6 rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-500"
+      className="mb-6 rounded-xl border border-green-700/30 bg-green-50 p-4 text-sm text-green-800"
     >
       Periksa email Anda untuk melakukan verifikasi. Jika email tidak ada di
       inbox, periksa folder Spam.{" "}
@@ -165,7 +165,7 @@ function RegistrationSuccessNotice({ resendAt }: { resendAt: string | null }) {
       {message && (
         <p
           className={`mt-2 ${
-            messageType === "error" ? "text-red-500" : "text-green-500"
+            messageType === "error" ? "text-red-700" : "text-green-700"
           }`}
         >
           {message}
@@ -208,11 +208,11 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-dvh pt-24 pb-12 px-4 container-custom flex items-center justify-center">
+    <div className="public-light flex min-h-dvh w-full items-center justify-center bg-background px-4 pb-12 pt-24 text-foreground">
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
           <h1 className="font-serif text-4xl mb-4">MUA Dashboard</h1>
-          <p className="text-muted-foreground-dark">
+          <p className="text-muted-foreground">
             Silakan login untuk mengelola booking.
           </p>
         </div>
@@ -220,26 +220,26 @@ function LoginForm() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-background-dark border border-foreground-dark/10 rounded-3xl p-8 shadow-sm"
+          className="rounded-3xl border border-foreground/10 bg-card p-8 shadow-sm"
         >
           {registrationSucceeded && (
             <RegistrationSuccessNotice resendAt={verificationResendAt} />
           )}
 
           {passwordResetSucceeded && (
-            <div className="mb-6 rounded-xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-500">
+            <div className="mb-6 rounded-xl border border-green-700/30 bg-green-50 p-4 text-sm text-green-800">
               Password berhasil diperbarui. Silakan login dengan password baru.
             </div>
           )}
 
           {state?.error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+            <div className="mb-6 rounded-xl border border-red-700/30 bg-red-50 p-4 text-sm text-red-800">
               {state.error}
             </div>
           )}
 
           {oauthErrorMessage && (
-            <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-500">
+            <div className="mb-6 rounded-xl border border-red-700/30 bg-red-50 p-4 text-sm text-red-800">
               {oauthErrorMessage}
             </div>
           )}
@@ -250,7 +250,7 @@ function LoginForm() {
                 Email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                <Mail className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                 <Input
                   id="email"
                   required
@@ -265,12 +265,12 @@ function LoginForm() {
                     state?.errors?.email ? "email-error" : undefined
                   }
                   suppressHydrationWarning
-                  className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
+                  className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all"
                   placeholder="admin@example.com"
                 />
               </div>
               {state?.errors?.email && (
-                <p id="email-error" className="text-xs text-red-500">
+                <p id="email-error" className="text-xs text-red-700">
                   {state.errors.email[0]}
                 </p>
               )}
@@ -283,7 +283,7 @@ function LoginForm() {
                 </Label>
                 <Link
                   href="/forgot-password"
-                  className="text-sm font-medium text-primary-dark transition-opacity hover:opacity-80"
+                  className="text-sm font-medium text-primary transition-opacity hover:opacity-80"
                 >
                   Lupa password?
                 </Link>
@@ -303,11 +303,11 @@ function LoginForm() {
                   state?.errors?.password ? "password-error" : undefined
                 }
                 suppressHydrationWarning
-                className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 focus-visible:ring-primary-dark/50"
+                className="h-auto w-full rounded-xl border-foreground/20 bg-transparent py-3 focus-visible:ring-primary/50"
                 placeholder="••••••••"
               />
               {state?.errors?.password && (
-                <p id="password-error" className="text-xs text-red-500">
+                <p id="password-error" className="text-xs text-red-700">
                   {state.errors.password[0]}
                 </p>
               )}
@@ -316,7 +316,7 @@ function LoginForm() {
             <Button
               type="submit"
               disabled={pending}
-              className="w-full h-auto py-4 bg-primary-dark text-primary-foreground-dark hover:bg-primary-dark rounded-full font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full h-auto py-4 bg-primary text-primary-foreground hover:bg-primary rounded-full font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {pending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -329,18 +329,18 @@ function LoginForm() {
             </Button>
           </form>
 
-          <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground-dark">
-            <span className="h-px flex-1 bg-foreground-dark/10" />
+          <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="h-px flex-1 bg-foreground/10" />
             atau
-            <span className="h-px flex-1 bg-foreground-dark/10" />
+            <span className="h-px flex-1 bg-foreground/10" />
           </div>
 
           <form action={loginWithGoogle}>
             <GoogleLoginButton />
           </form>
-          <p className="mt-6 text-center text-sm text-muted-foreground-dark">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Belum memiliki akun?{" "}
-            <Link href="/register" className="font-medium text-primary-dark">
+            <Link href="/register" className="font-medium text-primary">
               Daftar sekarang
             </Link>
           </p>

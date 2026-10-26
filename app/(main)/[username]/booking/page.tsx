@@ -32,12 +32,16 @@ export default async function TenantBookingPage({ params }: PageProps) {
   ]);
   if (!profile || services.length < 1) notFound();
   return (
-    <>
-      <Navbar username={username} brandName={profile.brandName} />
+    <div className="public-light min-h-dvh bg-background text-foreground">
+      <Navbar
+        username={username}
+        brandName={profile.brandName}
+        lightMode
+      />
       <Suspense>
         <BookingPageClient slug={username} />
       </Suspense>
-      <SiteFooter profile={profile} />
-    </>
+      <SiteFooter profile={profile} lightMode />
+    </div>
   );
 }

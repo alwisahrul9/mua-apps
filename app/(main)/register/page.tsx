@@ -59,11 +59,11 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="container-custom flex min-h-dvh items-center justify-center px-4 pb-12 pt-24">
+    <div className="public-light flex min-h-dvh w-full items-center justify-center bg-background px-4 pb-12 pt-24 text-foreground">
       <div className="w-full max-w-md">
         <div className="mb-10 text-center">
           <h1 className="mb-4 font-serif text-4xl">Buat Akun MUA</h1>
-          <p className="text-muted-foreground-dark">
+          <p className="text-muted-foreground">
             Daftar untuk mengelola layanan, portofolio, dan booking.
           </p>
         </div>
@@ -71,10 +71,10 @@ export default function RegisterPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl border border-foreground-dark/10 bg-background-dark p-8 shadow-sm"
+          className="rounded-3xl border border-foreground/10 bg-card p-8 shadow-sm"
         >
           {state?.error && (
-            <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-500">
+            <div className="mb-6 rounded-xl border border-red-700/30 bg-red-50 p-4 text-sm text-red-800">
               {state.error}
             </div>
           )}
@@ -119,11 +119,11 @@ export default function RegisterPage() {
                         aria-invalid={Boolean(fieldError)}
                         aria-describedby={describedBy}
                         suppressHydrationWarning
-                        className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 transition-all focus-visible:ring-primary-dark/50"
+                        className="h-auto w-full rounded-xl border-foreground/20 bg-transparent py-3 transition-all focus-visible:ring-primary/50"
                       />
                     ) : (
                       <div className="relative">
-                        <Icon className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground-dark" />
+                        <Icon className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
                         <Input
                           id={name}
                           name={name}
@@ -139,21 +139,21 @@ export default function RegisterPage() {
                           aria-invalid={Boolean(fieldError)}
                           aria-describedby={describedBy}
                           suppressHydrationWarning
-                          className="h-auto w-full rounded-xl border-foreground-dark/20 bg-transparent py-3 pl-10 pr-4 transition-all focus-visible:ring-primary-dark/50"
+                          className="h-auto w-full rounded-xl border-foreground/20 bg-transparent py-3 pl-10 pr-4 transition-all focus-visible:ring-primary/50"
                         />
                       </div>
                     )}
                     {name === "password" && (
                       <p
                         id="password-help"
-                        className="text-xs leading-5 text-muted-foreground-dark"
+                        className="text-xs leading-5 text-muted-foreground"
                       >
                         Minimal 8 karakter dengan huruf besar, huruf kecil,
                         angka, dan salah satu simbol @$!%*?&amp;
                       </p>
                     )}
                     {fieldError && (
-                      <p id={`${name}-error`} className="text-xs text-red-500">
+                      <p id={`${name}-error`} className="text-xs text-red-700">
                         {fieldError[0]}
                       </p>
                     )}
@@ -165,7 +165,7 @@ export default function RegisterPage() {
             <Button
               type="submit"
               disabled={pending}
-              className="flex h-auto w-full items-center justify-center gap-2 rounded-full bg-primary-dark py-4 font-medium text-primary-foreground-dark transition-opacity hover:bg-primary-dark hover:opacity-90 disabled:opacity-50"
+              className="flex h-auto w-full items-center justify-center gap-2 rounded-full bg-primary py-4 font-medium text-primary-foreground transition-opacity hover:bg-primary hover:opacity-90 disabled:opacity-50"
             >
               {pending ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -178,9 +178,9 @@ export default function RegisterPage() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground-dark">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Sudah memiliki akun?{" "}
-            <Link href="/login" className="font-medium text-primary-dark">
+            <Link href="/login" className="font-medium text-primary">
               Masuk
             </Link>
           </p>

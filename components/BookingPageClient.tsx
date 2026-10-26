@@ -223,7 +223,7 @@ export default function BookingPage({ slug }: { slug: string }) {
     <div className="min-h-dvh pt-24 pb-12 px-4 container-custom">
       <Link
         href={slug ? `/${slug}` : "/"}
-        className="inline-flex items-center text-muted-foreground-dark hover:text-foreground-dark transition-colors mb-8 text-sm"
+        className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors mb-8 text-sm"
       >
         <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
         Kembali ke Beranda
@@ -234,7 +234,7 @@ export default function BookingPage({ slug }: { slug: string }) {
           <h1 className="font-serif text-4xl md:text-5xl mb-4">
             Formulir Booking
           </h1>
-          <p className="text-muted-foreground-dark">
+          <p className="text-muted-foreground">
             Silakan lengkapi data berikut untuk menjadwalkan layanan makeup
             Anda.
           </p>
@@ -244,7 +244,7 @@ export default function BookingPage({ slug }: { slug: string }) {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-start gap-3"
+            className="mb-8 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-700 flex items-start gap-3"
           >
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <div>
@@ -262,7 +262,7 @@ export default function BookingPage({ slug }: { slug: string }) {
           <div
             role="alert"
             aria-live="polite"
-            className="mb-8 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-red-500"
+            className="mb-8 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-red-700"
           >
             <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
             <p className="text-sm">{state.message}</p>
@@ -272,7 +272,7 @@ export default function BookingPage({ slug }: { slug: string }) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-background-dark border border-foreground-dark/10 rounded-3xl p-6 shadow-sm"
+          className="rounded-3xl border border-foreground/10 bg-card p-6 shadow-sm"
         >
           <form
             ref={formRef}
@@ -290,7 +290,7 @@ export default function BookingPage({ slug }: { slug: string }) {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Nama Lengkap</Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                  <User className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                   <Input
                     required
                     name="clientName"
@@ -298,12 +298,12 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.clientName}
                     onChange={updateField("clientName")}
                     aria-invalid={Boolean(state?.errors?.clientName)}
-                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
+                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all"
                     placeholder="Nama Anda"
                   />
                 </div>
                 {state?.errors?.clientName && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.clientName[0]}
                   </p>
                 )}
@@ -311,7 +311,7 @@ export default function BookingPage({ slug }: { slug: string }) {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Nomor WhatsApp</Label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                  <Phone className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                   <Input
                     required
                     name="whatsapp"
@@ -319,12 +319,12 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.whatsapp}
                     onChange={updateField("whatsapp")}
                     aria-invalid={Boolean(state?.errors?.whatsapp)}
-                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
+                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all"
                     placeholder="081234567890"
                   />
                 </div>
                 {state?.errors?.whatsapp && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.whatsapp[0]}
                   </p>
                 )}
@@ -338,7 +338,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                 </Label>
                 <div className="relative">
                   <svg
-                    className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark"
+                    className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -359,12 +359,12 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.instagram}
                     onChange={updateField("instagram")}
                     aria-invalid={Boolean(state?.errors?.instagram)}
-                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
+                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all"
                     placeholder="@username"
                   />
                 </div>
                 {state?.errors?.instagram && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.instagram[0]}
                   </p>
                 )}
@@ -372,7 +372,7 @@ export default function BookingPage({ slug }: { slug: string }) {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Jumlah Orang</Label>
                 <div className="relative">
-                  <Users className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                  <Users className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                   <Input
                     required
                     name="totalPerson"
@@ -381,12 +381,12 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.totalPerson}
                     onChange={updateField("totalPerson")}
                     aria-invalid={Boolean(state?.errors?.totalPerson)}
-                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
+                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all"
                     placeholder="1"
                   />
                 </div>
                 {state?.errors?.totalPerson && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.totalPerson[0]}
                   </p>
                 )}
@@ -406,11 +406,11 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.serviceId}
                     onChange={updateService}
                     aria-invalid={Boolean(state?.errors?.serviceId)}
-                    className="w-full pl-4 pr-10 py-3 h-auto rounded-xl border border-foreground-dark/20 bg-transparent text-foreground-dark focus:outline-none focus:ring-2 focus:ring-primary-dark/50 transition-all appearance-none disabled:opacity-50"
+                    className="w-full pl-4 pr-10 py-3 h-auto rounded-xl border border-foreground/20 bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none disabled:opacity-50"
                   >
                     <option
                       value=""
-                      className="text-foreground-dark bg-background-dark"
+                      className="bg-card text-foreground"
                     >
                       {isLoadingServices
                         ? "Memuat layanan..."
@@ -422,7 +422,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                       <option
                         key={service.id}
                         value={service.id}
-                        className="text-foreground-dark bg-background-dark"
+                        className="bg-card text-foreground"
                       >
                         {service.name} - Rp{" "}
                         {Number(service.price).toLocaleString("id-ID")}
@@ -430,7 +430,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                     ))}
                   </select>
                   <svg
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground-dark pointer-events-none"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -445,11 +445,11 @@ export default function BookingPage({ slug }: { slug: string }) {
                   </svg>
                 </div>
                 {state?.errors?.serviceId && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.serviceId[0]}
                   </p>
                 )}
-                <p className="text-xs text-foreground-dark/50 mt-1">
+                <p className="text-xs text-foreground/50 mt-1">
                   *Harga belum termasuk ongkos transportasi, dan/atau biaya
                   lainnya.
                 </p>
@@ -457,7 +457,7 @@ export default function BookingPage({ slug }: { slug: string }) {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Jenis Acara</Label>
                 <div className="relative">
-                  <Sparkles className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                  <Sparkles className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                   <Input
                     required
                     name="eventName"
@@ -465,12 +465,12 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.eventName}
                     onChange={updateField("eventName")}
                     aria-invalid={Boolean(state?.errors?.eventName)}
-                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
+                    className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all"
                     placeholder="Misal: Lamaran, Akad, Pesta"
                   />
                 </div>
                 {state?.errors?.eventName && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.eventName[0]}
                   </p>
                 )}
@@ -488,14 +488,14 @@ export default function BookingPage({ slug }: { slug: string }) {
                     className={`space-y-4 rounded-2xl border p-4 outline-none sm:p-5 ${
                       state?.errors?.addOns
                         ? "border-red-500/60 ring-2 ring-red-500/20"
-                        : "border-foreground-dark/10"
+                        : "border-foreground/10"
                     }`}
                   >
                     <div>
-                      <h2 className="font-medium text-foreground-dark">
+                      <h2 className="font-medium text-foreground">
                         Add-on Layanan
                       </h2>
-                      <p className="mt-1 text-xs leading-5 text-muted-foreground-dark">
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">
                         Pilih tambahan yang dibutuhkan.
                       </p>
                     </div>
@@ -509,8 +509,8 @@ export default function BookingPage({ slug }: { slug: string }) {
                             key={addOn.id}
                             className={`rounded-2xl border p-4 transition-colors ${
                               selected
-                                ? "border-primary-dark bg-primary-dark/10"
-                                : "border-foreground-dark/10"
+                                ? "border-primary bg-primary/10"
+                                : "border-foreground/10"
                             }`}
                           >
                             <div className="flex items-start gap-3">
@@ -518,10 +518,10 @@ export default function BookingPage({ slug }: { slug: string }) {
                                 type="button"
                                 aria-pressed={selected}
                                 onClick={() => toggleAddOn(addOn)}
-                                className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-dark/50 disabled:cursor-wait disabled:opacity-50 ${
+                                className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:cursor-wait disabled:opacity-50 ${
                                   selected
-                                    ? "border-primary-dark bg-primary-dark text-primary-foreground-dark"
-                                    : "border-foreground-dark/30"
+                                    ? "border-primary bg-primary text-primary-foreground"
+                                    : "border-foreground/30"
                                 }`}
                                 aria-label={`${selected ? "Hapus" : "Pilih"} add-on ${addOn.name}`}
                               >
@@ -532,15 +532,15 @@ export default function BookingPage({ slug }: { slug: string }) {
                                 onClick={() => toggleAddOn(addOn)}
                                 className="min-w-0 flex-1 text-left focus-visible:outline-none disabled:cursor-wait disabled:opacity-60"
                               >
-                                <span className="block font-medium text-foreground-dark">
+                                <span className="block font-medium text-foreground">
                                   {addOn.name}
                                 </span>
                                 {addOn.description && (
-                                  <span className="mt-1 block text-xs leading-5 text-muted-foreground-dark">
+                                  <span className="mt-1 block text-xs leading-5 text-muted-foreground">
                                     {addOn.description}
                                   </span>
                                 )}
-                                <span className="mt-2 block text-sm font-medium text-primary-dark">
+                                <span className="mt-2 block text-sm font-medium text-primary">
                                   Rp{" "}
                                   {Number(addOn.price).toLocaleString("id-ID")}
                                   {addOn.billingType === "per_unit"
@@ -551,8 +551,8 @@ export default function BookingPage({ slug }: { slug: string }) {
                             </div>
 
                             {selected && addOn.billingType === "per_unit" && (
-                              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-foreground-dark/10 pt-3">
-                                <span className="text-xs text-muted-foreground-dark">
+                              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-foreground/10 pt-3">
+                                <span className="text-xs text-muted-foreground">
                                   Kuantitas
                                 </span>
                                 <div className="flex items-center gap-2">
@@ -562,7 +562,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                                       updateAddOnQuantity(addOn, quantity - 1)
                                     }
                                     disabled={quantity <= 1}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground-dark/20 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40"
                                     aria-label={`Kurangi kuantitas ${addOn.name}`}
                                   >
                                     <Minus className="h-4 w-4" />
@@ -588,7 +588,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                                       updateAddOnQuantity(addOn, quantity + 1)
                                     }
                                     disabled={quantity >= 999}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground-dark/20 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/20 disabled:cursor-not-allowed disabled:opacity-40"
                                     aria-label={`Tambah kuantitas ${addOn.name}`}
                                   >
                                     <Plus className="h-4 w-4" />
@@ -603,7 +603,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                   </section>
                 )}
                 {state?.errors?.addOns && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-red-700">
                     {state.errors.addOns[0]}
                   </p>
                 )}
@@ -614,7 +614,7 @@ export default function BookingPage({ slug }: { slug: string }) {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Tanggal Acara</Label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                  <Calendar className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                   <Input
                     required
                     name="eventDate"
@@ -622,11 +622,11 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.eventDate}
                     onChange={updateField("eventDate")}
                     aria-invalid={Boolean(state?.errors?.eventDate)}
-                    className="w-full pl-10 pr-4 py-3 h-auto min-h-11 rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all appearance-none cursor-pointer"
+                    className="w-full pl-10 pr-4 py-3 h-auto min-h-11 rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all appearance-none cursor-pointer"
                   />
                 </div>
                 {state?.errors?.eventDate && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.eventDate[0]}
                   </p>
                 )}
@@ -634,7 +634,7 @@ export default function BookingPage({ slug }: { slug: string }) {
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Waktu Acara</Label>
                 <div className="relative">
-                  <Clock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                  <Clock className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                   <Input
                     required
                     name="eventTime"
@@ -642,11 +642,11 @@ export default function BookingPage({ slug }: { slug: string }) {
                     value={formValues.eventTime}
                     onChange={updateField("eventTime")}
                     aria-invalid={Boolean(state?.errors?.eventTime)}
-                    className="w-full pl-10 pr-4 py-3 h-auto min-h-11 rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all appearance-none cursor-pointer"
+                    className="w-full pl-10 pr-4 py-3 h-auto min-h-11 rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all appearance-none cursor-pointer"
                   />
                 </div>
                 {state?.errors?.eventTime && (
-                  <p className="text-red-500 text-xs mt-1">
+                  <p className="text-red-700 text-xs mt-1">
                     {state.errors.eventTime[0]}
                   </p>
                 )}
@@ -656,7 +656,7 @@ export default function BookingPage({ slug }: { slug: string }) {
             <div className="space-y-2">
               <Label className="text-sm font-medium">Lokasi / Alamat</Label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground-dark" />
+                <MapPin className="absolute left-3 top-3.5 w-5 h-5 text-muted-foreground" />
                 <Input
                   required
                   name="location"
@@ -664,12 +664,12 @@ export default function BookingPage({ slug }: { slug: string }) {
                   value={formValues.location}
                   onChange={updateField("location")}
                   aria-invalid={Boolean(state?.errors?.location)}
-                  className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground-dark/20 bg-transparent focus-visible:ring-primary-dark/50 transition-all"
+                  className="w-full pl-10 pr-4 py-3 h-auto rounded-xl border-foreground/20 bg-transparent focus-visible:ring-primary/50 transition-all"
                   placeholder="Kota atau alamat lengkap"
                 />
               </div>
               {state?.errors?.location && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-700 text-xs mt-1">
                   {state.errors.location[0]}
                 </p>
               )}
@@ -685,11 +685,11 @@ export default function BookingPage({ slug }: { slug: string }) {
                 value={formValues.notes}
                 onChange={updateField("notes")}
                 aria-invalid={Boolean(state?.errors?.notes)}
-                className="w-full px-4 py-3 rounded-xl border border-foreground-dark/20 bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-dark/50 transition-all resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-foreground/20 bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 transition-all resize-none"
                 placeholder="Ada permintaan khusus?"
               />
               {state?.errors?.notes && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-red-700 text-xs mt-1">
                   {state.errors.notes[0]}
                 </p>
               )}
@@ -698,11 +698,11 @@ export default function BookingPage({ slug }: { slug: string }) {
             <Button
               disabled={formLocked}
               type="submit"
-              className="w-full py-6 bg-foreground-dark text-background-dark rounded-full font-medium transition-all hover:bg-foreground-dark/90 flex items-center justify-center disabled:opacity-70"
+              className="w-full py-6 bg-foreground text-background rounded-full font-medium transition-all hover:bg-foreground/90 flex items-center justify-center disabled:opacity-70"
             >
               {isPending || isRedirecting ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-background-dark/30 border-t-background rounded-full animate-spin"></span>
+                  <span className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin"></span>
                   {isRedirecting ? "Membuka halaman sukses..." : "Memproses..."}
                 </span>
               ) : (
@@ -713,8 +713,8 @@ export default function BookingPage({ slug }: { slug: string }) {
           </form>
 
           <Dialog open={confirmationOpen} onOpenChange={setConfirmationOpen}>
-            <DialogContent className="max-h-[90dvh] grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:max-w-xl">
-              <DialogHeader className="border-b border-foreground/10 px-5 py-5 pr-14 dark:border-foreground-dark/10 sm:px-6">
+            <DialogContent className="public-light max-h-[90dvh] grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden bg-card p-0 text-foreground sm:max-w-xl">
+              <DialogHeader className="border-b border-foreground/10 px-5 py-5 pr-14 sm:px-6">
                 <DialogTitle className="font-serif text-xl">
                   Konfirmasi Pesanan
                 </DialogTitle>
@@ -725,7 +725,7 @@ export default function BookingPage({ slug }: { slug: string }) {
               </DialogHeader>
 
               <div className="space-y-5 overflow-y-auto px-5 py-3 sm:px-6">
-                <section className="grid gap-3 rounded-2xl border border-foreground/10 p-4 text-sm dark:border-foreground-dark/10 sm:grid-cols-2">
+                <section className="grid gap-3 rounded-2xl border border-foreground/10 p-4 text-sm sm:grid-cols-2">
                   <ConfirmationItem
                     label="Nama Klien"
                     value={formValues.clientName}
@@ -749,7 +749,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                     <ShoppingBag className="h-4 w-4" />
                     Layanan dan Add-on
                   </h3>
-                  <div className="space-y-3 rounded-2xl border border-foreground/10 p-4 dark:border-foreground-dark/10">
+                  <div className="space-y-3 rounded-2xl border border-foreground/10 p-4">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="font-medium">{selectedService?.name}</p>
@@ -768,7 +768,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                     </div>
 
                     {selectedAddOnDetails.length > 0 ? (
-                      <div className="space-y-3 border-t border-foreground/10 pt-3 dark:border-foreground-dark/10">
+                      <div className="space-y-3 border-t border-foreground/10 pt-3">
                         {selectedAddOnDetails.map(({ addOn, quantity }) => (
                           <div
                             key={addOn.id}
@@ -793,12 +793,12 @@ export default function BookingPage({ slug }: { slug: string }) {
                         ))}
                       </div>
                     ) : (
-                      <p className="border-t border-foreground/10 pt-3 text-xs text-muted-foreground dark:border-foreground-dark/10">
+                      <p className="border-t border-foreground/10 pt-3 text-xs text-muted-foreground">
                         Tidak ada add-on yang dipilih.
                       </p>
                     )}
 
-                    <div className="flex items-center justify-between border-t border-foreground/10 pt-3 font-semibold dark:border-foreground-dark/10">
+                    <div className="flex items-center justify-between border-t border-foreground/10 pt-3 font-semibold">
                       <span>Estimasi Total</span>
                       <span>
                         Rp{" "}
@@ -810,7 +810,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                   </div>
                 </section>
 
-                <section className="grid gap-3 rounded-2xl border border-foreground/10 p-4 text-sm dark:border-foreground-dark/10 sm:grid-cols-2">
+                <section className="grid gap-3 rounded-2xl border border-foreground/10 p-4 text-sm sm:grid-cols-2">
                   <ConfirmationItem
                     label="Jenis Acara"
                     value={formValues.eventName}
@@ -851,7 +851,7 @@ export default function BookingPage({ slug }: { slug: string }) {
                 </p>
               </div>
 
-              <DialogFooter className="border-t border-foreground/10 p-5 dark:border-foreground-dark/10 sm:px-6">
+              <DialogFooter className="border-t border-foreground/10 p-5 sm:px-6">
                 <Button
                   type="button"
                   variant="outline"

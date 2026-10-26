@@ -10,5 +10,9 @@ export default function ResetPasswordLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return (
+    <div className="public-light min-h-dvh w-full bg-background text-foreground">
+      {children}
+    </div>
+  )
 }

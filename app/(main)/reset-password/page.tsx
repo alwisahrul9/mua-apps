@@ -19,19 +19,19 @@ export default async function ResetPasswordPage({
   }
 
   return (
-    <main className="container-custom flex min-h-dvh items-center justify-center px-4 pb-12 pt-24">
-      <section className="w-full max-w-md rounded-3xl border border-foreground-dark/10 bg-background-dark p-6 text-center shadow-sm sm:p-8">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-dark/10 text-primary-dark">
+    <main className="flex min-h-dvh w-full items-center justify-center bg-background px-4 pb-12 pt-24 text-foreground">
+      <section className="w-full max-w-md rounded-3xl border border-foreground/10 bg-card p-6 text-center shadow-sm sm:p-8">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
           <KeyRound className="h-6 w-6" />
         </div>
         <h1 className="mt-5 font-serif text-3xl">Tautan reset tidak valid</h1>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground-dark">
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
           Token reset password tidak ditemukan. Minta tautan baru melalui
           halaman lupa password.
         </p>
         <Link
           href="/forgot-password"
-          className="mt-7 inline-flex items-center gap-2 font-medium text-primary-dark transition-opacity hover:opacity-80"
+          className="mt-7 inline-flex items-center gap-2 font-medium text-primary transition-opacity hover:opacity-80"
         >
           <ArrowLeft className="h-4 w-4" />
           Minta tautan baru
