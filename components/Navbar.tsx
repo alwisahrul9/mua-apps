@@ -9,7 +9,7 @@ import { siteConfig } from "@/lib/site-config";
 export function Navbar({
   username,
   brandName = siteConfig.name,
-  lightMode = false,
+  lightMode = true,
 }: {
   username?: string;
   brandName?: string;

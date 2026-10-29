@@ -3,5 +3,9 @@ export default function Layout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return children;
+    return (
+        <div className="public-light min-h-dvh bg-background text-foreground">
+            {children}
+        </div>
+    );
 }

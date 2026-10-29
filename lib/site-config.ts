@@ -26,8 +26,12 @@ export const siteConfig = {
   ownerName: process.env.NEXT_PUBLIC_MUA_NAME?.trim() || "",
   experience: process.env.NEXT_PUBLIC_MUA_EXPERIENCE?.trim() || "",
   phone: process.env.NEXT_PUBLIC_PHONE_NUMBER?.trim() || "",
-  instagramUrl: cleanUrl(process.env.NEXT_PUBLIC_INSTAGRAM_URL),
-  tiktokUrl: cleanUrl(process.env.NEXT_PUBLIC_TIKTOK_URL),
+  instagramUrl:
+    cleanUrl(process.env.NEXT_PUBLIC_INSTAGRAM_URL) ||
+    "https://www.instagram.com/jadicantikofficial",
+  tiktokUrl:
+    cleanUrl(process.env.NEXT_PUBLIC_TIKTOK_URL) ||
+    "https://www.tiktok.com/@jadicantik.offici",
   googleBusinessUrl: cleanUrl(process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL),
 } as const;
 

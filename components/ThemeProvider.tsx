@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
 
 type Theme = "light" | "dark" | "system"
 type ResolvedTheme = Exclude<Theme, "system">
@@ -55,6 +56,7 @@ export function ThemeProvider({
   enableSystem?: boolean
   disableTransitionOnChange?: boolean
 }) {
+  const pathname = usePathname()
   const fallbackTheme = enableSystem ? defaultTheme : "light"
   const [theme, setThemeState] = React.useState<Theme>(() =>
     storedTheme(fallbackTheme),
@@ -65,6 +67,9 @@ export function ThemeProvider({
     () => "dark" as const,
   )
   const resolvedTheme = theme === "system" ? currentSystemTheme : theme
+  const isDashboardRoute =
+    pathname === "/dashboard" || pathname.startsWith("/dashboard/")
+  const appliedTheme: ResolvedTheme = isDashboardRoute ? resolvedTheme : "light"
 
   React.useLayoutEffect(() => {
     let style: HTMLStyleElement | null = null
@@ -74,13 +79,13 @@ export function ThemeProvider({
       document.head.appendChild(style)
     }
 
-    applyTheme(resolvedTheme)
+    applyTheme(appliedTheme)
     if (style) {
       window.getComputedStyle(document.body)
       style.remove()
     }
 
-  }, [disableTransitionOnChange, resolvedTheme])
+  }, [appliedTheme, disableTransitionOnChange])
 
   const setTheme = React.useCallback((nextTheme: Theme) => {
     try {

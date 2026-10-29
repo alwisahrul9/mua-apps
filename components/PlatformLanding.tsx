@@ -8,12 +8,32 @@ import {
   Images,
   LayoutDashboard,
   MessageCircle,
+  Music2,
   ShieldCheck,
   Sparkles,
   Users,
 } from "lucide-react";
 import HomeAuthActions from "@/components/HomeAuthActions";
 import { siteConfig } from "@/lib/site-config";
+
+function InstagramIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-6 w-6"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.75" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 const features = [
   {
@@ -106,14 +126,14 @@ export default function PlatformLanding({
             <a href="#fitur" className="transition hover:text-foreground">
               Fitur
             </a>
-            <a
-              href="#cara-kerja"
-              className="transition hover:text-foreground"
-            >
+            <a href="#cara-kerja" className="transition hover:text-foreground">
               Cara kerja
             </a>
             <a href="#faq" className="transition hover:text-foreground">
               FAQ
+            </a>
+            <a href="#kontak" className="transition hover:text-foreground">
+              Kontak
             </a>
           </nav>
           <HomeAuthActions variant="header" authenticated={authenticated} />
@@ -173,9 +193,7 @@ export default function PlatformLanding({
                       key={label}
                       className="rounded-2xl border border-foreground/10 bg-muted/30 p-4"
                     >
-                      <p className="text-xs text-muted-foreground">
-                        {label}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{label}</p>
                       <p className="mt-2 text-xl font-semibold">{value}</p>
                     </div>
                   ))}
@@ -183,9 +201,7 @@ export default function PlatformLanding({
                 <div className="mt-3 rounded-2xl border border-foreground/10 p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <p className="text-sm font-medium">Booking terbaru</p>
-                    <span className="text-xs text-primary">
-                      Lihat semua
-                    </span>
+                    <span className="text-xs text-primary">Lihat semua</span>
                   </div>
                   {[
                     "Makeup Wisuda",
@@ -226,8 +242,8 @@ export default function PlatformLanding({
               Kelola bisnis tanpa aplikasi yang rumit
             </h2>
             <p className="mt-5 leading-7 text-muted-foreground">
-              Fokus pada klien dan hasil makeup. {siteConfig.name} membantu merapikan
-              sisi digital bisnis Anda.
+              Fokus pada klien dan hasil makeup. {siteConfig.name} membantu
+              merapikan sisi digital bisnis Anda.
             </p>
           </div>
           <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -355,6 +371,66 @@ export default function PlatformLanding({
         </div>
       </section>
 
+      <section
+        id="kontak"
+        className="scroll-mt-20 border-t border-foreground/10 bg-muted/20 py-24"
+      >
+        <div className="container-custom grid items-center gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+              Kontak JadiCantik
+            </p>
+            <h2 className="mt-4 font-serif text-4xl md:text-5xl">
+              Ikuti Perjalanan Kami
+            </h2>
+            <p className="mt-5 max-w-xl leading-7 text-muted-foreground">
+              Dapatkan informasi fitur terbaru, tips mengelola bisnis MUA, dan
+              panduan penggunaan JadiCantik melalui media sosial resmi kami.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <a
+              href={siteConfig.instagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group rounded-3xl border border-foreground/10 bg-card p-6 transition hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
+              aria-label="Buka Instagram JadiCantik di tab baru"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <InstagramIcon />
+              </span>
+              <p className="mt-6 text-sm text-muted-foreground">Instagram</p>
+              <p className="mt-1 text-lg font-semibold text-foreground group-hover:text-primary">
+                @jadicantikofficial
+              </p>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                Lihat informasi, tutorial, dan perkembangan terbaru JadiCantik.
+              </p>
+            </a>
+
+            <a
+              href={siteConfig.tiktokUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group rounded-3xl border border-foreground/10 bg-card p-6 transition hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
+              aria-label="Buka TikTok JadiCantik di tab baru"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <Music2 className="h-6 w-6" aria-hidden="true" />
+              </span>
+              <p className="mt-6 text-sm text-muted-foreground">TikTok</p>
+              <p className="mt-1 text-lg font-semibold text-foreground group-hover:text-primary">
+                @jadicantikofficial
+              </p>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                Tonton demo singkat dan tips praktis untuk aktivitas MUA.
+              </p>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <footer className="border-t border-foreground/10 bg-muted/20">
         <div className="container-custom flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -377,7 +453,7 @@ export default function PlatformLanding({
             </Link>
             <HomeAuthActions variant="footer" authenticated={authenticated} />
             <a
-              href="mailto:halo@jadicantik.com"
+              href="#kontak"
               className="inline-flex items-center gap-2 hover:text-foreground"
             >
               <MessageCircle className="h-4 w-4" />

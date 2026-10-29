@@ -32,16 +32,16 @@ export default async function BlogPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-background-dark pb-24 pt-32 text-foreground-dark">
+      <main className="min-h-screen bg-background pb-24 pt-32 text-foreground">
         <div className="container-custom">
           <header className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               Panduan JadiCantik
             </p>
             <h1 className="mt-3 font-serif text-4xl sm:text-5xl">
               Panduan Makeup dan MUA
             </h1>
-            <p className="mt-5 text-lg leading-8 text-muted-foreground-dark">
+            <p className="mt-5 text-lg leading-8 text-muted-foreground">
               Informasi praktis untuk calon klien dan makeup artist, mulai dari
               memilih layanan hingga mempersiapkan hari acara.
             </p>
@@ -50,22 +50,22 @@ export default async function BlogPage() {
             {articles.map((article) => (
               <article
                 key={article.slug}
-                className="rounded-3xl border border-foreground-dark/10 p-7"
+                className="rounded-3xl border border-foreground/10 p-7"
               >
                 <h2 className="font-serif text-2xl">
                   <Link
                     href={`/blog/${article.slug}`}
-                    className="hover:text-primary-dark"
+                    className="hover:text-primary"
                   >
                     {article.title}
                   </Link>
                 </h2>
-                <p className="mt-4 leading-7 text-muted-foreground-dark">
+                <p className="mt-4 leading-7 text-muted-foreground">
                   {article.description}
                 </p>
                 <Link
                   href={`/blog/${article.slug}`}
-                  className="mt-6 inline-flex items-center gap-2 font-medium text-primary-dark"
+                  className="mt-6 inline-flex items-center gap-2 font-medium text-primary"
                 >
                   Baca panduan <ArrowRight className="h-4 w-4" />
                 </Link>

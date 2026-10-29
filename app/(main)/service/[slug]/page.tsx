@@ -114,13 +114,13 @@ export default async function ServiceDirectoryPage({ params }: PageProps) {
         }}
       />
       <Navbar />
-      <main className="min-h-screen bg-background-dark pb-24 pt-32 text-foreground-dark">
+      <main className="min-h-screen bg-background pb-24 pt-32 text-foreground">
         <div className="container-custom">
           <nav
             aria-label="Breadcrumb"
-            className="text-sm text-muted-foreground-dark"
+            className="text-sm text-muted-foreground"
           >
-            <Link href="/" className="hover:text-primary-dark">
+            <Link href="/" className="hover:text-primary">
               Beranda
             </Link>
             <span aria-hidden="true"> / </span>
@@ -130,12 +130,12 @@ export default async function ServiceDirectoryPage({ params }: PageProps) {
             <h1 className="font-serif text-4xl leading-tight sm:text-5xl">
               Temukan {category.name} Profesional
             </h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground-dark">
+            <p className="mt-6 text-lg leading-8 text-muted-foreground">
               Pilih makeup artist untuk {category.description}. Lihat profil,
               wilayah pelayanan, harga awal, dan hasil karya sebelum booking.
             </p>
           </header>
-          <p className="mt-10 text-sm text-muted-foreground-dark">
+          <p className="mt-10 text-sm text-muted-foreground">
             Menampilkan {entries.length} makeup artist.
           </p>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

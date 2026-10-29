@@ -18,7 +18,7 @@ export default function PasswordInput({
     <div className="relative">
       <Lock
         aria-hidden="true"
-        className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground-dark"
+        className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground"
       />
       <Input
         {...props}
@@ -33,7 +33,7 @@ export default function PasswordInput({
         aria-label={visible ? "Sembunyikan password" : "Tampilkan password"}
         aria-pressed={visible}
         title={visible ? "Sembunyikan password" : "Tampilkan password"}
-        className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground-dark transition-colors hover:bg-foreground-dark/10 hover:text-foreground-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-dark/50 disabled:pointer-events-none disabled:opacity-50"
+        className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:opacity-50"
       >
         {visible ? (
           <EyeOff aria-hidden="true" className="h-4.5 w-4.5" />

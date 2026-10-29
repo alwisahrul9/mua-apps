@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertOctagon, RefreshCcw, Home } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { usePathname } from "next/navigation";
 
 export default function Error({
   error,
@@ -12,15 +13,20 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const pathname = usePathname();
+  const lightMode = !(
+    pathname === "/dashboard" || pathname.startsWith("/dashboard/")
+  );
+
   useEffect(() => {
     // Optionally log the error to an error reporting service
     console.error(error);
   }, [error]);
 
   return (
-    <div className="dark flex min-h-screen flex-col bg-background-dark text-foreground-dark">
-      <Navbar />
-      <main className="flex-1 flex items-center justify-center min-h-[80vh] px-4 py-16 bg-background dark:bg-background-dark text-foreground dark:text-foreground-dark">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <Navbar lightMode={lightMode} />
+      <main className="flex-1 flex items-center justify-center min-h-[80vh] px-4 py-16 bg-background dark:bg-background text-foreground dark:text-foreground">
         <div className="max-w-md w-full text-center space-y-8">
           <div className="flex justify-center">
             <div className="relative">
@@ -30,10 +36,10 @@ export default function Error({
           </div>
           
           <div className="space-y-4">
-            <h1 className="text-3xl md:text-4xl font-serif text-foreground dark:text-foreground-dark">
+            <h1 className="text-3xl md:text-4xl font-serif text-foreground dark:text-foreground">
               Terjadi Kesalahan
             </h1>
-            <p className="text-muted-foreground dark:text-muted-foreground-dark text-sm md:text-base leading-relaxed">
+            <p className="text-muted-foreground dark:text-muted-foreground text-sm md:text-base leading-relaxed">
               Maaf, ada masalah di sistem kami saat memproses halaman ini. Silakan coba muat ulang atau kembali ke beranda.
             </p>
           </div>
@@ -41,14 +47,14 @@ export default function Error({
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => reset()}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary dark:bg-primary-dark text-primary-foreground dark:text-primary-foreground-dark rounded-full font-medium hover:bg-primary/90 dark:hover:bg-primary-dark/90 transition-all shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary dark:bg-primary text-primary-foreground dark:text-primary-foreground rounded-full font-medium hover:bg-primary/90 dark:hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto"
             >
               <RefreshCcw className="w-5 h-5" />
               Coba Lagi
             </button>
             <Link 
               href="/" 
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-muted dark:bg-muted-dark text-foreground dark:text-foreground-dark rounded-full font-medium hover:bg-muted/80 dark:hover:bg-muted-dark/80 transition-all border border-foreground/5 dark:border-foreground-dark/5 hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-muted dark:bg-muted text-foreground dark:text-foreground rounded-full font-medium hover:bg-muted/80 dark:hover:bg-muted/80 transition-all border border-foreground/5 dark:border-foreground/5 hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto"
             >
               <Home className="w-5 h-5" />
               Beranda

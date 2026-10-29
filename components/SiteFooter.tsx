@@ -5,7 +5,7 @@ import type { MuaProfile } from "@/lib/api/types"
 
 export function SiteFooter({
   profile,
-  lightMode = false,
+  lightMode = true,
 }: {
   profile: MuaProfile;
   lightMode?: boolean;

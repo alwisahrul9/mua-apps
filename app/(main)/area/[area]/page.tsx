@@ -116,13 +116,13 @@ export default async function AreaDirectoryPage({ params }: PageProps) {
         }}
       />
       <Navbar />
-      <main className="min-h-screen bg-background-dark pb-24 pt-32 text-foreground-dark">
+      <main className="min-h-screen bg-background pb-24 pt-32 text-foreground">
         <div className="container-custom">
           <nav
             aria-label="Breadcrumb"
-            className="text-sm text-muted-foreground-dark"
+            className="text-sm text-muted-foreground"
           >
-            <Link href="/" className="hover:text-primary-dark">
+            <Link href="/" className="hover:text-primary">
               Beranda
             </Link>
             <span aria-hidden="true"> / </span>
@@ -132,13 +132,13 @@ export default async function AreaDirectoryPage({ params }: PageProps) {
             <h1 className="font-serif text-4xl leading-tight sm:text-5xl">
               Daftar Makeup Artist Profesional di {areaName}
             </h1>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground-dark">
+            <p className="mt-6 text-lg leading-8 text-muted-foreground">
               Cari MUA di {areaName} untuk makeup wisuda, wedding, lamaran,
               photoshoot, dan pesta. Bandingkan service, harga awal, wilayah
               pelayanan, serta portofolio sebelum melakukan booking.
             </p>
           </header>
-          <p className="mt-10 text-sm text-muted-foreground-dark">
+          <p className="mt-10 text-sm text-muted-foreground">
             Menampilkan {entries.length} makeup artist yang melayani {areaName}.
           </p>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

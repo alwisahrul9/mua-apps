@@ -21,17 +21,17 @@ export default function LogoutDialog() {
           <Button
             type="button"
             variant="outline"
-            className="rounded-full border-foreground-dark/15 bg-transparent text-foreground-dark hover:bg-muted-dark"
+            className="rounded-full border-foreground/15 bg-transparent text-foreground hover:bg-muted"
           />
         }
       >
         <LogOut className="h-4 w-4" />
         Logout
       </AlertDialogTrigger>
-      <AlertDialogContent className="w-[calc(100%-2rem)] rounded-2xl border border-foreground-dark/10 bg-background-dark text-foreground-dark">
+      <AlertDialogContent className="w-[calc(100%-2rem)] rounded-2xl border border-foreground/10 bg-background text-foreground">
         <AlertDialogHeader>
           <AlertDialogTitle>Keluar dari akun?</AlertDialogTitle>
-          <AlertDialogDescription className="text-muted-foreground-dark">
+          <AlertDialogDescription className="text-muted-foreground">
             Data onboarding yang belum disimpan akan hilang. Anda perlu login kembali untuk melanjutkannya.
           </AlertDialogDescription>
         </AlertDialogHeader>

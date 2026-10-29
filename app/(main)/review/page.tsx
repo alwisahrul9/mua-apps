@@ -20,39 +20,39 @@ export default async function ReviewPage({
     !review || review.valid === false || review.alreadyReviewed;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background-dark px-4 py-16 text-foreground-dark">
-      <section className="w-full max-w-xl rounded-3xl border border-foreground-dark/10 bg-muted-dark/20 p-6 shadow-xl sm:p-10">
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-16 text-foreground">
+      <section className="w-full max-w-xl rounded-3xl border border-foreground/10 bg-muted/20 p-6 shadow-xl sm:p-10">
         {unavailable ? (
           <div className="text-center">
             <CircleAlert className="mx-auto h-10 w-10 text-amber-500" />
             <h1 className="mt-4 font-serif text-3xl">
               Tautan Ulasan Tidak Tersedia
             </h1>
-            <p className="mt-3 text-muted-foreground-dark">
+            <p className="mt-3 text-muted-foreground">
               Tautan tidak valid, sudah digunakan, atau telah kedaluwarsa.
             </p>
             <Link
               href="/"
-              className="mt-6 inline-flex rounded-full border border-foreground-dark/15 px-6 py-3"
+              className="mt-6 inline-flex rounded-full border border-foreground/15 px-6 py-3"
             >
               Kembali ke Beranda
             </Link>
           </div>
         ) : (
           <>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-dark">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
               Ulasan Klien
             </p>
             <h1 className="mt-3 font-serif text-3xl">
               Bagikan Pengalaman Anda
               {review.brandName ? ` dengan ${review.brandName}` : ""}
             </h1>
-            <p className="mt-3 text-muted-foreground-dark">
+            <p className="mt-3 text-muted-foreground">
               Ulasan jujur Anda membantu calon klien memilih layanan yang
               sesuai.
             </p>
             {review.serviceName && (
-              <p className="mt-4 rounded-2xl bg-primary-dark/10 p-4 text-sm">
+              <p className="mt-4 rounded-2xl bg-primary/10 p-4 text-sm">
                 Layanan: <strong>{review.serviceName}</strong>
               </p>
             )}

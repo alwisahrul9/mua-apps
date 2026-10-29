@@ -66,7 +66,7 @@ export default function RootLayout({
       )}
     >
       <head />
-      <body className="min-h-full flex flex-col font-sans bg-background-dark text-foreground-dark selection:bg-primary/30">
+      <body className="min-h-full flex flex-col bg-background font-sans text-foreground selection:bg-primary/30">
         <SerwistProvider swUrl="/sw.js">
           <ThemeProvider
             attribute="class"

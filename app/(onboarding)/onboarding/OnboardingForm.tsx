@@ -187,42 +187,42 @@ export default function OnboardingForm({
   }
 
   return (
-    <main className="flex min-h-dvh items-center bg-[radial-gradient(circle_at_top_right,rgba(205,170,125,0.15),transparent_38%)] px-4 py-10 text-foreground-dark">
+    <main className="public-light flex min-h-dvh items-center bg-background bg-[radial-gradient(circle_at_top_right,rgba(143,87,75,0.12),transparent_38%)] px-4 py-10 text-foreground">
       <div className="mx-auto w-full max-w-4xl">
         <div className="mb-8 flex items-center justify-between gap-4">
           <Link href="/" className="font-serif text-2xl">
-            {siteConfig.name} <span className="italic text-primary-dark">.</span>
+            {siteConfig.name} <span className="italic text-primary">.</span>
           </Link>
           <div className="flex items-center gap-2">
-            <span className="hidden rounded-full border border-foreground-dark/10 px-4 py-2 text-xs text-muted-foreground-dark sm:inline-flex">
+            <span className="hidden rounded-full border border-foreground/10 px-4 py-2 text-xs text-muted-foreground sm:inline-flex">
               Satu langkah lagi
             </span>
             <LogoutDialog />
           </div>
         </div>
 
-        <div className="grid overflow-hidden rounded-3xl border border-foreground-dark/10 bg-background-dark shadow-xl shadow-black/5 md:grid-cols-[0.85fr_1.4fr]">
-          <aside className="border-b border-foreground-dark/10 bg-primary-dark/8 p-7 md:border-b-0 md:border-r md:p-9">
-            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-dark/15 text-primary-dark">
+        <div className="grid overflow-hidden rounded-3xl border border-foreground/10 bg-background shadow-xl shadow-black/5 md:grid-cols-[0.85fr_1.4fr]">
+          <aside className="border-b border-foreground/10 bg-primary/8 p-7 md:border-b-0 md:border-r md:p-9">
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
               <Sparkles className="h-6 w-6" />
             </div>
-            <p className="text-sm font-medium text-primary-dark">
+            <p className="text-sm font-medium text-primary">
               Selamat datang, {userName}
             </p>
             <h1 className="mt-3 font-serif text-3xl leading-tight">
               Siapkan identitas bisnis Anda
             </h1>
-            <p className="mt-4 text-sm leading-6 text-muted-foreground-dark">
+            <p className="mt-4 text-sm leading-6 text-muted-foreground">
               Pilih username, lalu isi nama brand, wilayah layanan, metode
               pembayaran, dan nomor WhatsApp agar halaman MUA Anda siap
               digunakan.
             </p>
 
-            <div className="mt-8 rounded-2xl border border-foreground-dark/10 bg-background-dark/60 p-4">
-              <p className="text-xs text-muted-foreground-dark">
+            <div className="mt-8 rounded-2xl border border-foreground/10 bg-background/60 p-4">
+              <p className="text-xs text-muted-foreground">
                 Alamat halaman Anda
               </p>
-              <p className="mt-1 truncate text-sm font-medium text-primary-dark">
+              <p className="mt-1 truncate text-sm font-medium text-primary">
                 /{username || "username-anda"}
               </p>
             </div>
@@ -235,13 +235,13 @@ export default function OnboardingForm({
           >
             <div>
               <h2 className="font-serif text-2xl">Profil Awal MUA</h2>
-              <p className="mt-1 text-sm text-muted-foreground-dark">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Informasi lainnya dapat Anda tambahkan nanti melalui dashboard.
               </p>
             </div>
 
             {state?.error && (
-              <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-500">
+              <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-700">
                 {state.error}
               </div>
             )}
@@ -249,7 +249,7 @@ export default function OnboardingForm({
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <div className="relative">
-                <AtSign className="absolute left-3 top-3 h-5 w-5 text-muted-foreground-dark" />
+                <AtSign className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="username"
                   name="username"
@@ -275,12 +275,12 @@ export default function OnboardingForm({
                   className="h-11 rounded-xl pl-10"
                 />
               </div>
-              <p className="text-xs text-muted-foreground-dark">
+              <p className="text-xs text-muted-foreground">
                 Gunakan huruf kecil, angka, atau underscore tanpa spasi.
                 Username akan dipakai pada alamat halaman publik Anda.
               </p>
               {fieldError("username") && (
-                <p id="username-error" className="text-xs text-red-500">
+                <p id="username-error" className="text-xs text-red-700">
                   {fieldError("username")}
                 </p>
               )}
@@ -289,7 +289,7 @@ export default function OnboardingForm({
             <div className="space-y-2">
               <Label htmlFor="brandName">Nama Brand</Label>
               <div className="relative">
-                <Building2 className="absolute left-3 top-3 h-5 w-5 text-muted-foreground-dark" />
+                <Building2 className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="brandName"
                   name="brandName"
@@ -312,7 +312,7 @@ export default function OnboardingForm({
                 />
               </div>
               {fieldError("brandName") && (
-                <p id="brandName-error" className="text-xs text-red-500">
+                <p id="brandName-error" className="text-xs text-red-700">
                   {fieldError("brandName")}
                 </p>
               )}
@@ -334,7 +334,7 @@ export default function OnboardingForm({
                     setLoadingRegencies(Boolean(nextProvinceCode));
                   }}
                   disabled={pending || provinces.length === 0}
-                  className="h-11 w-full appearance-none rounded-xl border border-foreground-dark/20 bg-background-dark px-3 pr-10 text-base text-foreground-dark outline-none transition [color-scheme:dark] focus:border-primary-dark focus:ring-2 focus:ring-primary-dark/30 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                  className="h-11 w-full appearance-none rounded-xl border border-foreground/20 bg-background px-3 pr-10 text-base text-foreground outline-none transition [color-scheme:light] focus:border-primary focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                 >
                   <option value="">
                     {provinces.length > 0
@@ -347,13 +347,13 @@ export default function OnboardingForm({
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground-dark" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               </div>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   {manualArea ? (
                     <>
-                      <MapPin className="absolute left-3 top-3 h-5 w-5 text-muted-foreground-dark" />
+                      <MapPin className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                       <Input
                         id="serviceAreaDraft"
                         value={areaDraft}
@@ -373,7 +373,7 @@ export default function OnboardingForm({
                         placeholder="Ketik nama kota/kabupaten"
                         disabled={pending}
                         aria-invalid={Boolean(fieldError("serviceArea"))}
-                        className="h-11 rounded-xl bg-background-dark pl-10 text-base md:text-sm"
+                        className="h-11 rounded-xl bg-background pl-10 text-base md:text-sm"
                       />
                     </>
                   ) : (
@@ -400,7 +400,7 @@ export default function OnboardingForm({
                           regencies.length === 0
                         }
                         aria-invalid={Boolean(fieldError("serviceArea"))}
-                        className="h-11 w-full appearance-none rounded-xl border border-foreground-dark/20 bg-background-dark px-3 pr-10 text-base text-foreground-dark outline-none transition [color-scheme:dark] focus:border-primary-dark focus:ring-2 focus:ring-primary-dark/30 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                        className="h-11 w-full appearance-none rounded-xl border border-foreground/20 bg-background px-3 pr-10 text-base text-foreground outline-none transition [color-scheme:light] focus:border-primary focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                       >
                         <option value="">
                           {loadingRegencies
@@ -416,7 +416,7 @@ export default function OnboardingForm({
                         ))}
                         <option value="__manual__">Isi secara manual</option>
                       </select>
-                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground-dark" />
+                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     </>
                   )}
                 </div>
@@ -431,7 +431,7 @@ export default function OnboardingForm({
                   Tambah
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground-dark">
+              <p className="text-xs text-muted-foreground">
                 Pilih kota/kabupaten dari daftar atau gunakan pilihan isi
                 manual. Hanya nama kota/kabupaten yang disimpan.
               </p>
@@ -443,13 +443,13 @@ export default function OnboardingForm({
                     setAreaDraft("");
                   }}
                   disabled={pending || !provinceCode || regencies.length === 0}
-                  className="text-xs font-medium text-primary-dark underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                  className="text-xs font-medium text-primary underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Kembali pilih dari daftar
                 </button>
               )}
               {regionError && (
-                <p className="text-xs text-amber-500">{regionError}</p>
+                <p className="text-xs text-amber-700">{regionError}</p>
               )}
 
               {serviceArea.length > 0 && (
@@ -457,7 +457,7 @@ export default function OnboardingForm({
                   {serviceArea.map((area) => (
                     <span
                       key={area}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-foreground-dark/10 bg-muted-dark/50 px-3 py-1.5 text-sm"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-muted/50 px-3 py-1.5 text-sm"
                     >
                       {area}
                       <button
@@ -468,7 +468,7 @@ export default function OnboardingForm({
                           )
                         }
                         disabled={pending}
-                        className="rounded-full text-muted-foreground-dark transition hover:text-foreground-dark"
+                        className="rounded-full text-muted-foreground transition hover:text-foreground"
                         aria-label={`Hapus ${area}`}
                       >
                         <X className="h-3.5 w-3.5" />
@@ -480,7 +480,7 @@ export default function OnboardingForm({
               )}
 
               {fieldError("serviceArea") && (
-                <p className="text-xs text-red-500">
+                <p className="text-xs text-red-700">
                   {fieldError("serviceArea")}
                 </p>
               )}
@@ -489,13 +489,13 @@ export default function OnboardingForm({
             <div className="space-y-3">
               <div>
                 <Label>Metode Pembayaran</Label>
-                <p className="mt-1 text-xs text-muted-foreground-dark">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Tambahkan rekening bank atau dompet digital yang digunakan
                   untuk menerima pembayaran klien.
                 </p>
               </div>
 
-              <div className="space-y-3 rounded-2xl border border-foreground-dark/10 bg-muted-dark/20 p-4">
+              <div className="space-y-3 rounded-2xl border border-foreground/10 bg-muted/20 p-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="paymentName" className="text-xs">
@@ -517,10 +517,10 @@ export default function OnboardingForm({
                       placeholder="Contoh: BCA atau GoPay"
                       disabled={pending}
                       aria-invalid={Boolean(paymentDraftErrors.paymentName)}
-                      className="h-11 rounded-xl bg-background-dark text-base md:text-sm"
+                      className="h-11 rounded-xl bg-background text-base md:text-sm"
                     />
                     {paymentDraftErrors.paymentName?.[0] && (
-                      <p className="text-xs text-red-500">
+                      <p className="text-xs text-red-700">
                         {paymentDraftErrors.paymentName[0]}
                       </p>
                     )}
@@ -548,10 +548,10 @@ export default function OnboardingForm({
                       autoComplete="off"
                       disabled={pending}
                       aria-invalid={Boolean(paymentDraftErrors.accountNumber)}
-                      className="h-11 rounded-xl bg-background-dark text-base md:text-sm"
+                      className="h-11 rounded-xl bg-background text-base md:text-sm"
                     />
                     {paymentDraftErrors.accountNumber?.[0] && (
-                      <p className="text-xs text-red-500">
+                      <p className="text-xs text-red-700">
                         {paymentDraftErrors.accountNumber[0]}
                       </p>
                     )}
@@ -579,10 +579,10 @@ export default function OnboardingForm({
                     autoComplete="name"
                     disabled={pending}
                     aria-invalid={Boolean(paymentDraftErrors.accountName)}
-                    className="h-11 rounded-xl bg-background-dark text-base md:text-sm"
+                    className="h-11 rounded-xl bg-background text-base md:text-sm"
                   />
                   {paymentDraftErrors.accountName?.[0] && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-red-700">
                       {paymentDraftErrors.accountName[0]}
                     </p>
                   )}
@@ -605,16 +605,16 @@ export default function OnboardingForm({
                   {paymentMethods.map((method, index) => (
                     <div
                       key={`${method.paymentName}-${method.accountNumber}-${index}`}
-                      className="flex items-center gap-3 rounded-xl border border-foreground-dark/10 bg-muted-dark/40 p-3"
+                      className="flex items-center gap-3 rounded-xl border border-foreground/10 bg-muted/40 p-3"
                     >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-dark/15 text-primary-dark">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
                         <CreditCard className="h-4 w-4" />
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">
                           {method.paymentName} · {method.accountNumber}
                         </p>
-                        <p className="truncate text-xs text-muted-foreground-dark">
+                        <p className="truncate text-xs text-muted-foreground">
                           a.n. {method.accountName}
                         </p>
                       </div>
@@ -628,7 +628,7 @@ export default function OnboardingForm({
                           )
                         }
                         disabled={pending}
-                        className="rounded-full p-1 text-muted-foreground-dark transition hover:bg-foreground-dark/5 hover:text-foreground-dark"
+                        className="rounded-full p-1 text-muted-foreground transition hover:bg-foreground/5 hover:text-foreground"
                         aria-label={`Hapus metode pembayaran ${method.paymentName}`}
                       >
                         <X className="h-4 w-4" />
@@ -639,7 +639,7 @@ export default function OnboardingForm({
               )}
 
               {fieldError("paymentMethods") && (
-                <p className="text-xs text-red-500">
+                <p className="text-xs text-red-700">
                   {fieldError("paymentMethods")}
                 </p>
               )}
@@ -648,7 +648,7 @@ export default function OnboardingForm({
             <div className="space-y-2">
               <Label htmlFor="whatsappNumber">Nomor WhatsApp</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground-dark" />
+                <Phone className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="whatsappNumber"
                   name="whatsappNumber"
@@ -679,11 +679,11 @@ export default function OnboardingForm({
                   className="h-11 rounded-xl pl-10"
                 />
               </div>
-              <p className="text-xs text-muted-foreground-dark">
+              <p className="text-xs text-muted-foreground">
                 Nomor akan disimpan otomatis dalam format 628xxx.
               </p>
               {fieldError("whatsappNumber") && (
-                <p id="whatsappNumber-error" className="text-xs text-red-500">
+                <p id="whatsappNumber-error" className="text-xs text-red-700">
                   {fieldError("whatsappNumber")}
                 </p>
               )}
@@ -692,7 +692,7 @@ export default function OnboardingForm({
             <Button
               type="submit"
               disabled={pending}
-              className="h-auto w-full rounded-full bg-primary-dark py-3.5 text-primary-foreground-dark hover:bg-primary-dark hover:opacity-90"
+              className="h-auto w-full rounded-full bg-primary py-3.5 text-primary-foreground hover:bg-primary hover:opacity-90"
             >
               {pending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

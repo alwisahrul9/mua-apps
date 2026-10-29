@@ -93,11 +93,11 @@ export default async function BlogArticlePage({ params }: PageProps) {
         }}
       />
       <Navbar />
-      <main className="min-h-screen bg-background-dark pb-24 pt-32 text-foreground-dark">
+      <main className="min-h-screen bg-background pb-24 pt-32 text-foreground">
         <article className="container-custom max-w-3xl">
           <nav
             aria-label="Breadcrumb"
-            className="text-sm text-muted-foreground-dark"
+            className="text-sm text-muted-foreground"
           >
             <Link href="/">Beranda</Link> / <Link href="/blog">Panduan</Link>
           </nav>
@@ -105,12 +105,12 @@ export default async function BlogArticlePage({ params }: PageProps) {
             <h1 className="font-serif text-4xl leading-tight sm:text-5xl">
               {title}
             </h1>
-            <p className="mt-5 text-lg leading-8 text-muted-foreground-dark">
+            <p className="mt-5 text-lg leading-8 text-muted-foreground">
               {description}
             </p>
           </header>
           {article ? (
-            <div className="mt-12 whitespace-pre-wrap text-base leading-8 text-muted-foreground-dark">
+            <div className="mt-12 whitespace-pre-wrap text-base leading-8 text-muted-foreground">
               {article.content}
             </div>
           ) : (
@@ -121,13 +121,13 @@ export default async function BlogArticlePage({ params }: PageProps) {
                   {section.paragraphs.map((paragraph) => (
                     <p
                       key={paragraph}
-                      className="mt-4 leading-8 text-muted-foreground-dark"
+                      className="mt-4 leading-8 text-muted-foreground"
                     >
                       {paragraph}
                     </p>
                   ))}
                   {section.tips && (
-                    <ul className="mt-5 list-disc space-y-3 pl-6 text-muted-foreground-dark">
+                    <ul className="mt-5 list-disc space-y-3 pl-6 text-muted-foreground">
                       {section.tips.map((tip) => (
                         <li key={tip}>{tip}</li>
                       ))}
@@ -137,17 +137,17 @@ export default async function BlogArticlePage({ params }: PageProps) {
               ))}
             </div>
           )}
-          <aside className="mt-14 rounded-3xl bg-primary-dark/10 p-7">
+          <aside className="mt-14 rounded-3xl bg-primary/10 p-7">
             <h2 className="font-serif text-2xl">
               Temukan MUA untuk acara Anda
             </h2>
-            <p className="mt-3 text-muted-foreground-dark">
+            <p className="mt-3 text-muted-foreground">
               Lihat profil, layanan, wilayah pelayanan, harga awal, dan
               portofolio makeup artist di JadiCantik.
             </p>
             <Link
               href="/service/wisuda"
-              className="mt-5 inline-flex rounded-full bg-foreground-dark px-6 py-3 font-medium text-background-dark"
+              className="mt-5 inline-flex rounded-full bg-foreground px-6 py-3 font-medium text-background"
             >
               Cari Makeup Artist
             </Link>
